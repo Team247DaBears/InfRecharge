@@ -23,6 +23,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    Devices.Init();
+    DriveStation.Init();
   }
 
   @Override
