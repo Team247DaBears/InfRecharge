@@ -85,6 +85,8 @@ Icon
 
 # Thumbnails
 ._*
+snap_*.jpg
+gradle.properties
 
 # Files that might appear in the root of a volume
 .DocumentRevisions-V100
@@ -157,5 +159,5 @@ gradle-app.setting
 bin/
 imgui.ini
 
-
+!/libs/*opencv*
 # End of https://www.gitignore.io/api/c++,java,linux,macos,gradle,windows,visualstudiocode
