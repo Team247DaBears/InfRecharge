@@ -18,13 +18,25 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
+
+  Lifter lifter;
+  static DriverStation driverstation;
+  Devices devices;
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
    */
   @Override
   public void robotInit() {
-    DriveStation.Init();
+    System.out.println("Command Position:"); 
+    lifter=new Lifter();
+    driverstation=new DriverStation();
+    devices=new Devices();
+    Devices.Init();
+    DriverStation.Init();
+   
+
+    
   }
 
   @Override
@@ -42,7 +54,9 @@ public class Robot extends TimedRobot {
 
   int counter=0;
   @Override
-  public void teleopPeriodic()
+  public void teleopPeriodic() {
+    lifter.setPosition(); 
+  
   }
 
   @Override
