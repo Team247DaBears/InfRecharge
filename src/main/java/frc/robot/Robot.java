@@ -8,6 +8,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -17,14 +18,30 @@ import edu.wpi.first.wpilibj.TimedRobot;
  * project.
  */
 public class Robot extends TimedRobot {
+  Drive drive;
+  Devices devices;
+  
+
+  Lifter lifter;
+  static DriverStation driverstation;
+  
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
    */
   @Override
   public void robotInit() {
+    System.out.println("Command Position:"); 
+    lifter=new Lifter();
+    driverstation=new DriverStation();
+    devices=new Devices();
     Devices.Init();
-    DriveStation.Init();
+    DriverStation.Init();
+    drive=new Drive();
+    
+   
+
+    
   }
 
   @Override
@@ -39,8 +56,15 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
   }
 
+
+  int counter=0;
   @Override
   public void teleopPeriodic() {
+    lifter.setPosition(); 
+    
+    drive.drive();
+  
+  
   }
 
   @Override
