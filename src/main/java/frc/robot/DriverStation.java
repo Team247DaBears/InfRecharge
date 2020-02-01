@@ -1,12 +1,13 @@
 package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
+import java.lang.Math;
 
 public class DriverStation
 {
     private static final int LEFTPORT=0;
     private static final int RIGHTPORT=1;
     private static final int OPERATORPORT=2;
-
+private static final double Deadband=8D;
     private static final int Y_AXIS=1;
     private static final int X_AXIS=0;
 
@@ -27,7 +28,7 @@ public class DriverStation
     private static final int JSB_POSITION_1=2;
     private static final int JSB_POSITION_2=1;
     private static final int JSB_POSITION_3=3;
-
+  
 
 
 
@@ -39,15 +40,26 @@ public static void Init()
     }
 
     public static double  getLeftSpeed()
-    {
-        return -1*leftStick.getRawAxis(Y_AXIS);
+    
+    {double Joystick_calc=0; double JoystickValue=leftStick.getRawAxis(Y_AXIS);double Joystick_val=0;
+        if(java.lang.Math.abs(JoystickValue) < Deadband ){
+            Joystick_calc = 0;}
+            else{
+ 
+			Joystick_calc = (1 / (1 - Deadband)) * (Joystick_val + (-java.lang.Math.signum(Joystick_val) * Deadband));}
+           
+              return -1*Joystick_calc;
     }
 
     public static double getRightSpeed()
-    {
-        return -1*rightStick.getRawAxis(Y_AXIS);
-    }
-
+     {double Joystick_calc=0; double JoystickValue=leftStick.getRawAxis(X_AXIS);double Joystick_val=0;
+            if(java.lang.Math.abs(JoystickValue) < Deadband ){
+                Joystick_calc = 0;}
+                else{
+     
+                Joystick_calc = (1 / (1 - Deadband)) * (Joystick_val + (-java.lang.Math.signum(Joystick_val) * Deadband));}
+               
+                  return -1*Joystick_calc;}
 
 public static LifterStates getCommandedPosition()
 {
