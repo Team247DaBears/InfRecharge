@@ -7,7 +7,7 @@ public class DriverStation
     private static final int LEFTPORT=0;
     private static final int RIGHTPORT=1;
     private static final int OPERATORPORT=2;
-private static final double Deadband=8D;
+private static final double Deadband=2D;
     private static final int Y_AXIS=1;
     private static final int X_AXIS=0;
 
