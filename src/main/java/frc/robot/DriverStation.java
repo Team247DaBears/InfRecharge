@@ -13,7 +13,11 @@ public class DriverStation
     private static  Joystick leftStick;
     private static  Joystick rightStick;
     private static Joystick operatorStick;  //driver two
-
+  
+    private static final int JSB_ROLLERSFORWARD=0;
+      private static final int JSB_ROLLERSREVERSE=1;
+      private static final int AXIS_CLAWOPENCLOSE=2;
+  
     //buttons on driver stick
     private static final int JSB_GEARSHIFT=1;
 
@@ -59,6 +63,34 @@ public static LifterStates getCommandedPosition()
      else {
 
         return LifterStates.Hold;
+
      }
 }
+
+
+
+
+public static boolean getGearButton()
+    {
+         
+		return rightStick.getRawButton(JSB_GEARSHIFT);
+    }
+
+    public static boolean getClawButton()
+    {
+         if (operatorStick.getRawAxis(AXIS_CLAWOPENCLOSE)>0.5) return true;
+        else return false;
+    }
+
+    public static boolean rollersForward()
+    {
+        return operatorStick.getRawButton(JSB_ROLLERSFORWARD);
+    }
+
+    public static boolean rollersReverse()
+    {
+        return operatorStick.getRawButton(JSB_ROLLERSREVERSE);
+    }
 }
+
+  
