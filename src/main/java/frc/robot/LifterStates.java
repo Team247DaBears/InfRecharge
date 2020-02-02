@@ -1,6 +1,6 @@
 package frc.robot;
 
-public enum LifterStates{
+public enum LifterStates implements Cloneable{
 
 Low,
 High,

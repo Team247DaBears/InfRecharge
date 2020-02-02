@@ -1,30 +1,10 @@
 package frc.robot;
 
 import frc.robot.DetectTarget;
-import com.kylecorry.frc.vision.Range;
-import com.kylecorry.frc.vision.camera.CameraSettings;
-import com.kylecorry.frc.vision.camera.FOV;
-import com.kylecorry.frc.vision.camera.Resolution;
-import com.kylecorry.frc.vision.contourFilters.ContourFilter;
-import com.kylecorry.frc.vision.contourFilters.StandardContourFilter;
-import com.kylecorry.frc.vision.filters.HSVFilter;
-import com.kylecorry.frc.vision.filters.TargetFilter;
-import com.kylecorry.frc.vision.targetConverters.TargetGrouping;
-import com.kylecorry.frc.vision.targetConverters.TargetUtils;
 import com.kylecorry.frc.vision.targeting.Target;
-import com.kylecorry.frc.vision.targeting.TargetFinder;
 
 import org.opencv.core.*;
-import org.opencv.core.Point;
 import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.imgproc.Imgproc;
-
-import static org.junit.Assert.assertEquals;
-
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;

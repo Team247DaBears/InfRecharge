@@ -1,6 +1,6 @@
 package frc.robot;
 
-public enum TargetStates {
+public enum TargetStates implements Cloneable{
     TargetStart,
     TargetDrive,
     TargetLift,
