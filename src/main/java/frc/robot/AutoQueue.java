@@ -41,8 +41,10 @@ public class AutoQueue {
 
     public static AutoControlData getQueue()
     {
-        AutoControlData tempStateData;
-        tempStateData = autodata.poll();
+        AutoControlData tempStateData = null;
+        if (autodata.size() > 0) {
+            tempStateData = autodata.poll();
+        }
 
         if (tempStateData == null) {
             AutoControlData tempTeleOpt = new AutoControlData();
@@ -50,6 +52,14 @@ public class AutoQueue {
             return tempTeleOpt;
         }
         return tempStateData;
+    }
+
+    public static int removeCurrent()
+    {
+        if (autodata.size() > 0) {
+            autodata.remove();
+        }
+        return autodata.size();
     }
 
     public static AutoControlData currentQueue()

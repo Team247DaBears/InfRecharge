@@ -71,6 +71,9 @@ public class testAutoData {
       Assert.assertEquals(true,(q.autoState==AutoStates.Target));
       
       Assert.assertEquals(0,AutoQueue.getSize());
+      Assert.assertEquals(0,AutoQueue.removeCurrent());
+      q=AutoQueue.getQueue();
+      Assert.assertEquals(0,AutoQueue.getSize());
       Assert.assertEquals(AutoStates.TeleOpt,AutoQueue.currentQueue().autoState);
       Assert.assertEquals(AutoStates.TeleOpt,AutoQueue.getQueue().autoState);
 
