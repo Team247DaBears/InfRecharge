@@ -3,8 +3,8 @@ package frc.robot;
 public class AutoQueue {
     public static final int MaxSize = 30;
     public static final int MaxDistance = 300;
-    public static final int MaxSpeed = 50;
-    public static final int CalcSpeed = -99999999;
+    public static final Double MaxSpeed = 50.0;
+    public static final Double CalcSpeed = -99999999.0;
 
     public static final java.util.Queue<AutoControlData> autodata = new java.util.ArrayDeque<>();
    

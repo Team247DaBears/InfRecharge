@@ -20,33 +20,33 @@ public class testAutoData {
       q.targetState = TargetStates.TargetDrive;
       q.gearState = GearStates.LowGearPressed;
       q.LeftDriveCount=5;
-      q.LeftDriveSpeed=5;
+      q.LeftDriveSpeed=5.0;
       q.RightDriveCount=3;
-      q.RightDriveSpeed=-99999999;
+      q.RightDriveSpeed=AutoQueue.CalcSpeed;
 
       Assert.assertEquals(1,AutoQueue.addQueue(q));
       q.autoState = AutoStates.Lifter;
       Assert.assertEquals(AutoStates.Drive,AutoQueue.currentQueue().autoState);
 
       q.LeftDriveCount=0;
-      q.LeftDriveSpeed=0;
+      q.LeftDriveSpeed=0.0;
       q.RightDriveCount=7;
-      q.RightDriveSpeed=5;
+      q.RightDriveSpeed=5.0;
       Assert.assertEquals(2,AutoQueue.addQueue(q));
 
       q.LeftDriveCount=0;
-      q.LeftDriveSpeed=0;
+      q.LeftDriveSpeed=0.0;
       q.RightDriveCount=0;
-      q.RightDriveSpeed=0;
+      q.RightDriveSpeed=0.0;
       Assert.assertEquals(3,AutoQueue.addQueue(q));
 
       q.autoState = AutoStates.Target;
       q.targetState = TargetStates.TargetCollect;
       q.gearState = GearStates.LowGearPressed;
       q.LeftDriveCount=0;
-      q.LeftDriveSpeed=0;
+      q.LeftDriveSpeed=0.0;
       q.RightDriveCount=0;
-      q.RightDriveSpeed=0;
+      q.RightDriveSpeed=0.0;
       Assert.assertEquals(4,AutoQueue.addQueue(q));
 
       System.out.println("WaitingQueue : " + AutoQueue.waitingQueue()); 
@@ -79,7 +79,7 @@ public class testAutoData {
       Assert.assertEquals(AutoStates.TeleOpt,AutoQueue.getQueue().autoState);
 
       boolean error=false;
-      q.LeftDriveSpeed =AutoQueue.MaxSpeed+1;
+      q.LeftDriveSpeed =AutoQueue.MaxSpeed+1.0;
       try {
         AutoQueue.addQueue(q);
       }
@@ -90,8 +90,8 @@ public class testAutoData {
       Assert.assertEquals(true,error); // Exceeded Left Max Speed
       error = false;
 
-      q.LeftDriveSpeed =0;
-      q.RightDriveSpeed =AutoQueue.MaxSpeed+1;
+      q.LeftDriveSpeed =0.0;
+      q.RightDriveSpeed =AutoQueue.MaxSpeed+1.0;
       try {
         AutoQueue.addQueue(q);
       }
@@ -113,8 +113,8 @@ public class testAutoData {
       Assert.assertEquals(true,error); // AutoCalc Both Speeds
 
       error = false;
-      q.LeftDriveSpeed =0;
-      q.RightDriveSpeed =0;
+      q.LeftDriveSpeed =0.0;
+      q.RightDriveSpeed =0.0;
       try {
         int i=0;
         while(i<(AutoQueue.MaxSize+1))

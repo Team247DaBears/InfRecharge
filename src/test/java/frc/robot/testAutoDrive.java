@@ -23,7 +23,7 @@ public class testAutoDrive {
       q.driveState = DriveStates.Drive;
       q.gearState = GearStates.HighGearPressed;
       q.LeftDriveCount=5;
-      q.LeftDriveSpeed=5;
+      q.LeftDriveSpeed=5.0;
       q.RightDriveCount=5;
       q.RightDriveSpeed=AutoQueue.CalcSpeed;
 

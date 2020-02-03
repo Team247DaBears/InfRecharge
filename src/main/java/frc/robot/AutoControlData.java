@@ -13,10 +13,10 @@ public class AutoControlData implements Cloneable {
     TargetStates targetState = TargetStates.TargetOff;
 
 
-    int LeftDriveSpeed=0;
+    Double LeftDriveSpeed=0.0;
     int LeftDriveCount=0;
 
-    int RightDriveSpeed=0;
+    Double RightDriveSpeed=0.0;
     int RightDriveCount=0;
 
     public AutoControlData() {
