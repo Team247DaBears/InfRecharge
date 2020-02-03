@@ -18,7 +18,6 @@ public class testDetectTarget {
       // The following 3 lines are for desktop usage, assign the Mat image to the camera image when deploying to a robot
       
       DetectTarget detectTarget = new DetectTarget();
-      detectTarget.CleanupOldFiles();
  
       OpenCVManager.getInstance().load(new SystemProperties());
       System.out.println(getClass().getResource("").getFile());

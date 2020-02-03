@@ -151,21 +151,5 @@ public Target detectTopTarget(Mat image){
     // The following line is for desktop testing, use the CameraServer to display the image on a robot
     Imgcodecs.imwrite("snap_" + name + System.currentTimeMillis() + ".jpg", image);
   }
-	public void CleanupOldFiles() {
-		File dir = new File("/");
-        String pattern = "snap(.*)";
-        Pattern r = Pattern.compile(pattern);
-        System.out.println("path: "+ dir.getAbsolutePath());
-
-        // Now create matcher object.
-		File[] listFiles = dir.listFiles();
-		for(File file : listFiles){
-            Matcher m = r.matcher(file.getAbsolutePath());
-            if (m.find()) {
-                System.out.println("delete: "+ file.getAbsolutePath());
-//                file.delete(); //
-            }
-		}
-	}
 
 }

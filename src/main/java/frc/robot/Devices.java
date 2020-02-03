@@ -5,6 +5,11 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 package frc.robot;
+
+import com.revrobotics.CANEncoder;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.*;
+
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -32,6 +37,12 @@ public class Devices {
       public static SpeedController frontRight;
       public static SpeedController backLeft;
       public static SpeedController backRight;
+
+      public static EncoderSparkMax frontLeftEncoder;
+      public static EncoderSparkMax frontRightEncoder;
+      public static EncoderSparkMax backLeftEncoder;
+      public static EncoderSparkMax backRightEncoder;
+
       public static DoubleSolenoid gearShift;
    
       //So, I'll add another set of controls, and you can comment out whichever is unused.
@@ -61,11 +72,12 @@ System.out.println("Devices");
 leftRollerMotor=new Victor(LEFTROLLER);
 rightRollerMotor=new Victor(RIGHTROLLER);
 
-frontLeft=testableSparkMax.Init(FRONTLEFTPWM, null,SparkMax);
-frontRight=testableSparkMax.Init(BACKLEFTPWM, null,SparkMax);
+frontLeft=testableSparkMax.Init(FRONTLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,SparkMax);
+frontRight=testableSparkMax.Init(BACKLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,SparkMax);
 
-backLeft=testableSparkMax.Init(FRONTRIGHTPWM, null,SparkMax);
-backRight=testableSparkMax.Init(BACKRIGHTPWM, null,SparkMax);
+backLeft=testableSparkMax.Init(FRONTRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,SparkMax);
+backRight=testableSparkMax.Init(BACKRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,SparkMax);
+
 
 //frontLeft=new Victor(FRONTLEFTPWM);
 //frontRight=new Victor(FRONTRIGHTPWM);
