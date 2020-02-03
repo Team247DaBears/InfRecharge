@@ -3,6 +3,14 @@ plugins {
     id "edu.wpi.first.GradleRIO" version "2020.1.2"
 }
 
+List<String> wpilibDesktopJni(String platform) {
+    return ["edu.wpi.first.thirdparty.frc2020.opencv:opencv-jni:${wpi.opencvVersion}:${platform}@jar".toString(),
+            "edu.wpi.first.hal:hal-jni:${wpi.wpilibVersion}:${platform}@jar".toString(),
+            "edu.wpi.first.wpiutil:wpiutil-jni:${wpi.wpilibVersion}:${platform}@jar".toString(),
+            "edu.wpi.first.ntcore:ntcore-jni:${wpi.wpilibVersion}:${platform}@jar".toString(),
+            "edu.wpi.first.cscore:cscore-jni:${wpi.wpilibVersion}:${platform}@jar".toString()]
+}
+
 sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 
@@ -69,6 +77,9 @@ dependencies {
     implementation 'gov.nist.math:jama:1.0.3'
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.hamcrest:hamcrest:2.1'
+    testImplementation 'com.github.mockito:mockito:3.2.10'
+    testImplementation(wpilibDesktopJni(wpi.platforms.desktop))
+    testImplementation(wpi.deps.vendor.jni(wpi.platforms.desktop))
 
     simulation wpi.deps.sim.gui(wpi.platforms.desktop, false)
 }

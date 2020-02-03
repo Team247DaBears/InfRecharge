@@ -2,9 +2,9 @@ package frc.robot;
 
 public class AutoQueue {
     public static final int MaxSize = 30;
-    public static final Long MaxDistance = 300L;
-    public static final Long MaxSpeed = 50L;
-    public static final Long CalcSpeed = -99999999L;
+    public static final int MaxDistance = 300;
+    public static final int MaxSpeed = 50;
+    public static final int CalcSpeed = -99999999;
 
     public static final java.util.Queue<AutoControlData> autodata = new java.util.ArrayDeque<>();
    
@@ -58,6 +58,14 @@ public class AutoQueue {
     {
         if (autodata.size() > 0) {
             autodata.remove();
+        }
+        return autodata.size();
+    }
+
+    public static int clearQueue()
+    {
+        if (autodata.size() > 0) {
+            autodata.removeAll(autodata);
         }
         return autodata.size();
     }

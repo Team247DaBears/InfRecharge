@@ -13,39 +13,40 @@ public class testAutoData {
   @Test
   public void test(){
       // The following 3 lines are for desktop usage, assign the Mat image to the camera image when deploying to a robot
+      AutoQueue.clearQueue();
       AutoControlData q=new AutoControlData();      
 
       q.autoState = AutoStates.Drive;
       q.targetState = TargetStates.TargetDrive;
       q.gearState = GearStates.LowGearPressed;
-      q.LeftDriveCount=5L;
-      q.LeftDriveSpeed=5L;
-      q.RightDriveCount=3L;
-      q.RightDriveSpeed=-99999999L;
+      q.LeftDriveCount=5;
+      q.LeftDriveSpeed=5;
+      q.RightDriveCount=3;
+      q.RightDriveSpeed=-99999999;
 
       Assert.assertEquals(1,AutoQueue.addQueue(q));
       q.autoState = AutoStates.Lifter;
       Assert.assertEquals(AutoStates.Drive,AutoQueue.currentQueue().autoState);
 
-      q.LeftDriveCount=0L;
-      q.LeftDriveSpeed=0L;
-      q.RightDriveCount=7L;
-      q.RightDriveSpeed=5L;
+      q.LeftDriveCount=0;
+      q.LeftDriveSpeed=0;
+      q.RightDriveCount=7;
+      q.RightDriveSpeed=5;
       Assert.assertEquals(2,AutoQueue.addQueue(q));
 
-      q.LeftDriveCount=0L;
-      q.LeftDriveSpeed=0L;
-      q.RightDriveCount=0L;
-      q.RightDriveSpeed=0L;
+      q.LeftDriveCount=0;
+      q.LeftDriveSpeed=0;
+      q.RightDriveCount=0;
+      q.RightDriveSpeed=0;
       Assert.assertEquals(3,AutoQueue.addQueue(q));
 
       q.autoState = AutoStates.Target;
       q.targetState = TargetStates.TargetCollect;
       q.gearState = GearStates.LowGearPressed;
-      q.LeftDriveCount=0L;
-      q.LeftDriveSpeed=0L;
-      q.RightDriveCount=0L;
-      q.RightDriveSpeed=0L;
+      q.LeftDriveCount=0;
+      q.LeftDriveSpeed=0;
+      q.RightDriveCount=0;
+      q.RightDriveSpeed=0;
       Assert.assertEquals(4,AutoQueue.addQueue(q));
 
       System.out.println("WaitingQueue : " + AutoQueue.waitingQueue()); 
@@ -56,7 +57,7 @@ public class testAutoData {
       Assert.assertEquals(q.autoState,AutoStates.Drive);
 
       q = AutoQueue.getQueue();
-      Assert.assertEquals(true,(q.LeftDriveSpeed==0L));
+      Assert.assertEquals(true,(q.LeftDriveSpeed==0));
 
       q = AutoQueue.getQueue();
       Assert.assertEquals(true,(q.RightDriveSpeed==0L));
@@ -89,7 +90,7 @@ public class testAutoData {
       Assert.assertEquals(true,error); // Exceeded Left Max Speed
       error = false;
 
-      q.LeftDriveSpeed =0L;
+      q.LeftDriveSpeed =0;
       q.RightDriveSpeed =AutoQueue.MaxSpeed+1;
       try {
         AutoQueue.addQueue(q);
@@ -112,8 +113,8 @@ public class testAutoData {
       Assert.assertEquals(true,error); // AutoCalc Both Speeds
 
       error = false;
-      q.LeftDriveSpeed =0L;
-      q.RightDriveSpeed =0L;
+      q.LeftDriveSpeed =0;
+      q.RightDriveSpeed =0;
       try {
         int i=0;
         while(i<(AutoQueue.MaxSize+1))
