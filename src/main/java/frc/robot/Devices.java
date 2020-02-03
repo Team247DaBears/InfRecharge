@@ -5,19 +5,24 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 package frc.robot;
+
+import com.revrobotics.CANEncoder;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.*;
+
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Victor;
 
-
 /**
  * This class will contain all code for various devices
  * (Replaces IO)
  */
 public class Devices {
-    private static final int GEARFORWARD = 1;
+  private static final boolean SparkMax = false;
+  private static final int GEARFORWARD = 1;
     private static final int GEARREVERSE = 0;
     
     private static final int FRONTLEFTPWM = 1;
@@ -32,6 +37,12 @@ public class Devices {
       public static SpeedController frontRight;
       public static SpeedController backLeft;
       public static SpeedController backRight;
+
+      public static EncoderSparkMax frontLeftEncoder;
+      public static EncoderSparkMax frontRightEncoder;
+      public static EncoderSparkMax backLeftEncoder;
+      public static EncoderSparkMax backRightEncoder;
+
       public static DoubleSolenoid gearShift;
    
       //So, I'll add another set of controls, and you can comment out whichever is unused.
@@ -60,12 +71,19 @@ public class Devices {
 System.out.println("Devices");
 leftRollerMotor=new Victor(LEFTROLLER);
 rightRollerMotor=new Victor(RIGHTROLLER);
-frontLeft=new Victor(FRONTLEFTPWM);
 
-frontRight=new Victor(FRONTRIGHTPWM);
-backLeft=new Victor(BACKLEFTPWM);
+frontLeft=testableSparkMax.Init(FRONTLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,SparkMax);
+frontRight=testableSparkMax.Init(BACKLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,SparkMax);
 
-backRight=new Victor(BACKRIGHTPWM);
+backLeft=testableSparkMax.Init(FRONTRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,SparkMax);
+backRight=testableSparkMax.Init(BACKRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,SparkMax);
+
+
+//frontLeft=new Victor(FRONTLEFTPWM);
+//frontRight=new Victor(FRONTRIGHTPWM);
+
+//backLeft=new Victor(BACKLEFTPWM);
+//backRight=new Victor(BACKRIGHTPWM);
 
 frontRight.setInverted(true);
 backRight.setInverted(true);

@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import frc.robot.AutoControlData;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -56,16 +58,29 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
   }
 
-
   int counter=0;
   @Override
   public void teleopPeriodic() {
-    lifter.setPosition(); 
-    
-    drive.drive();
-  
-  
-  }
+    AutoControlData autoControlData = AutoQueue.currentQueue();
+      switch (autoControlData.autoState) {
+        case TeleOpt: {
+          lifter.setPosition();   
+          drive.drive();
+        }
+        case Target: {
+
+        }
+        case Lifter: {
+          
+        }
+        case Collecter: {
+          
+        }
+        case Drive: {
+          
+        }
+      }
+    }  
 
   @Override
   public void testInit() {
