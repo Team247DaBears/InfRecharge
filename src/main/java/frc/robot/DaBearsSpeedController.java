@@ -25,12 +25,12 @@ public  class DaBearsSpeedController implements SpeedController {
     public DaBearsSpeedController(int pwm, MotorType type, boolean sparkmax, int encodepwm,int encodetype) {
         populateController(pwm, type, sparkmax);
         useEncoder = true;
-        if (useSparkMax) {
-            sparkMaxEncoder = new CANEncoder((CANSparkMax)sparkMaxMotor);    
-        }
-        else {
-            victorEncoder = new Encoder(encodepwm, encodetype);
-        }
+     //   if (useSparkMax) {
+     //       sparkMaxEncoder = new CANEncoder((CANSparkMax)sparkMaxMotor);    
+     //   }
+     //   else {
+     //       victorEncoder = new Encoder(encodepwm, encodetype);
+     //   }
     }
 
     public DaBearsSpeedController(int pwm, MotorType type, boolean sparkmax) {
@@ -81,11 +81,11 @@ public  class DaBearsSpeedController implements SpeedController {
         if (useSparkMax) {
             if (sparkMaxEncoder!=null) {
                 currentPosition = Position - sparkMaxEncoder.getPosition();
-                System.out.println("sparkmax:" + currentPosition);
+ //               System.out.println("sparkmax:" + currentPosition);
             }
             else {
                 currentPosition--;
-                System.out.println("decrementer:" + currentPosition);
+ //               System.out.println("decrementer:" + currentPosition);
             }
         }
         else {
@@ -93,16 +93,16 @@ public  class DaBearsSpeedController implements SpeedController {
 //                return Position - victorEncoder.get();
                 if (isRunningTest()) {
                     currentPosition--;
-                    System.out.println("decrementer:" + currentPosition);
+ //                   System.out.println("decrementer:" + currentPosition);
                 }
                 else {
                     currentPosition = Position - victorEncoder.get();
-                    System.out.println("victor:" + currentPosition);
+ //                   System.out.println("victor:" + currentPosition);
                 }
             }
             else {
                 currentPosition--;
-                System.out.println("decrementer:" + currentPosition);
+ //               System.out.println("decrementer:" + currentPosition);
             }
         }
     }

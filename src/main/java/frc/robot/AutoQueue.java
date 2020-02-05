@@ -63,6 +63,7 @@ public class AutoQueue {
         if (tempStateData == null) {
             AutoControlData tempTeleOpt = new AutoControlData();
             tempTeleOpt.autoState = AutoStates.TeleOpt;
+            tempTeleOpt.WriteLog = false;
             return tempTeleOpt;
         }
         return tempStateData;
@@ -92,6 +93,7 @@ public class AutoQueue {
         if (tempStateData == null) {
             AutoControlData tempTeleOpt = new AutoControlData();
             tempTeleOpt.autoState = AutoStates.TeleOpt;
+            tempTeleOpt.WriteLog = false;
             return tempTeleOpt;
         }
         return tempStateData;

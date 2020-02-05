@@ -7,9 +7,9 @@ public class  AutoDrive
     public static void Drive()
       {
         AutoControlData q = AutoQueue.currentQueue();
-        if (q.WriteLog) {
+        if (q.WriteLog ) {
             System.out.println(q.toString());
-            q.WriteLog = false;
+            //q.WriteLog = false;
         }
         switch (q.driveState) {
             case DriveStart: {
@@ -31,7 +31,7 @@ public class  AutoDrive
                 double frontRightPos = Devices.frontRight.getPosition();
                 double backRightPos = Devices.backRight.getPosition();
                 
-                if (q.LeftDrivePos>frontLeftPos | q.RightDrivePos >frontRightPos) {
+                if (frontLeftPos!=0 && frontRightPos!=0) {
                     Devices.frontLeft.set(q.LeftDriveSpeed); // set the left speed
                     Devices.frontLeft.setFollower(Devices.backLeft); // set follower speed
                     Devices.frontRight.set(q.RightDriveSpeed); // set the right speed
@@ -51,6 +51,7 @@ public class  AutoDrive
                     AutoQueue.removeCurrent();
                     q = AutoQueue.currentQueue();
                     if (q.autoState != AutoStates.Drive) {
+                        System.out.println("AutoStop");
                         StopAutoDrive();
                     }
                 }
@@ -96,11 +97,11 @@ public class  AutoDrive
         // drive backward for 2ft
         q.autoState = AutoStates.Drive;
         q.driveState = DriveStates.DriveStart;
-        q.gearState = GearStates.HighGearPressed;
-        q.LeftDrivePos=-25;
-        q.LeftDriveSpeed=.5;
-        q.RightDrivePos=25;
-        q.RightDriveSpeed=AutoQueue.CalcSpeed;
+        q.gearState = GearStates.LowGearPressed;
+        q.LeftDrivePos=250;
+        q.LeftDriveSpeed=-.5;
+        q.RightDrivePos=250;
+        q.RightDriveSpeed=-.5;
         AutoQueue.addQueue(q);
       }    
 }       
