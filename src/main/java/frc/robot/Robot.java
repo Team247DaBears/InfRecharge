@@ -48,10 +48,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+  AutoDrive.autonomousModeInit();
   }
 
   @Override
   public void autonomousPeriodic() {
+    AutoDrive.Drive();
   }
 
   @Override

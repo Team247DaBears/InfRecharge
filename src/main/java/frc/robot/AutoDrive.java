@@ -88,5 +88,19 @@ public class  AutoDrive
             Devices.backRight.Position = 0;            
             Devices.frontLeft.Position = 0;            
         }
-    }    
+    }
+    public static void autonomousModeInit(){
+        AutoQueue.clearQueue();
+        AutoControlData q=new AutoControlData();      
+  
+        // drive backward for 2ft
+        q.autoState = AutoStates.Drive;
+        q.driveState = DriveStates.DriveStart;
+        q.gearState = GearStates.HighGearPressed;
+        q.LeftDrivePos=-25;
+        q.LeftDriveSpeed=.5;
+        q.RightDrivePos=25;
+        q.RightDriveSpeed=AutoQueue.CalcSpeed;
+        AutoQueue.addQueue(q);
+      }    
 }       
