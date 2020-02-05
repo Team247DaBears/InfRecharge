@@ -20,23 +20,23 @@ public class testAutoDrive {
       AutoControlData q=new AutoControlData();      
 
       q.autoState = AutoStates.Drive;
-      q.driveState = DriveStates.Drive;
+      q.driveState = DriveStates.DriveStart;
       q.gearState = GearStates.HighGearPressed;
-      q.LeftDriveCount=5;
-      q.LeftDriveSpeed=5.0;
-      q.RightDriveCount=5;
+      q.LeftDrivePos=5;
+      q.LeftDriveSpeed=1.0;
+      q.RightDrivePos=1;
       q.RightDriveSpeed=AutoQueue.CalcSpeed;
 
       Assert.assertEquals(1,AutoQueue.addQueue(q));
+      Assert.assertEquals(1,AutoQueue.currentQueue().LeftDriveSpeed,.01);
+      Assert.assertEquals(.2,AutoQueue.currentQueue().RightDriveSpeed,.01);
       AutoDrive.Drive();
       AutoDrive.Drive();
 //      Assert.assertEquals(5,(int)Devices.leftRollerMotor.get());
 //      Assert.assertEquals(5,(int)Devices.rightRollerMotor.get());
-      Assert.assertEquals(3,AutoQueue.currentQueue().LeftDriveCount);
-      Assert.assertEquals(3,AutoQueue.currentQueue().RightDriveCount);
       AutoDrive.Drive();
       AutoDrive.Drive();
-      Assert.assertEquals(1,AutoQueue.currentQueue().LeftDriveCount);
+      Assert.assertEquals(1,Devices.frontLeft.getPosition(),.1);
       AutoDrive.Drive();
       Assert.assertEquals(0,AutoQueue.getSize());
       Assert.assertEquals(DriveStates.Stop,AutoQueue.currentQueue().driveState);

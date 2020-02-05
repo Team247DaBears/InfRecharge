@@ -14,10 +14,10 @@ public class AutoControlData implements Cloneable {
 
 
     Double LeftDriveSpeed=0.0;
-    int LeftDriveCount=0;
+    double LeftDrivePos=0.0;
 
     Double RightDriveSpeed=0.0;
-    int RightDriveCount=0;
+    double RightDrivePos=0.0;
 
     public AutoControlData() {
 
@@ -30,9 +30,9 @@ public class AutoControlData implements Cloneable {
         this.lifterState = data.lifterState;
         this.targetState = data.targetState;
         this.LeftDriveSpeed = data.LeftDriveSpeed;
-        this.LeftDriveCount = data.LeftDriveCount;
+        this.LeftDrivePos = data.LeftDrivePos;
         this.RightDriveSpeed = data.RightDriveSpeed;
-        this.RightDriveCount = data.RightDriveCount;
+        this.RightDrivePos = data.RightDrivePos;
     }
 
     @Override

@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import frc.robot.Devices;
 public class  AutoDrive
 {
-
     public static void Drive()
       {
         AutoControlData q = AutoQueue.currentQueue();
@@ -13,15 +12,30 @@ public class  AutoDrive
             q.WriteLog = false;
         }
         switch (q.driveState) {
+            case DriveStart: {
+                Devices.frontLeft.set(q.LeftDriveSpeed); // set the left speed
+                Devices.frontLeft.setFollower(Devices.backLeft); // set follower speed
+                Devices.frontRight.set(q.RightDriveSpeed); // set the right speed
+                Devices.frontRight.setFollower(Devices.backRight); // set follower speed
+
+                Devices.frontLeft.setPosition(q.LeftDrivePos); // set the left speed
+                Devices.frontLeft.setFollower(Devices.backLeft); // set follower speed
+                Devices.frontRight.setPosition(q.RightDrivePos); // set the right speed
+                Devices.frontRight.setFollower(Devices.backRight); // set follower speed
+                q.driveState = DriveStates.Drive;
+            }
             case Drive: {
-                q.LeftDriveCount = q.LeftDriveCount - 1; // TODO: replace with calc from sensor
-                q.RightDriveCount = q.RightDriveCount - 1; // TODO: replace with calc from sensor
-                // TODO: Compare to Count to see if it is time to stop
-                if (q.LeftDriveCount>0 | q.RightDriveCount >0) {
-                    Devices.backLeft.set(q.LeftDriveSpeed); // stop wheels
-                    Devices.frontLeft.set(q.LeftDriveSpeed); // stop wheels
-                    Devices.frontRight.set(q.RightDriveSpeed); // stop wheels
-                    Devices.backRight.set(q.RightDriveSpeed); // stop wheels
+                double frontLeftPos = Devices.frontLeft.getPosition();
+                double backLeftPos = Devices.backLeft.getPosition();
+
+                double frontRightPos = Devices.frontRight.getPosition();
+                double backRightPos = Devices.backRight.getPosition();
+                
+                if (q.LeftDrivePos>frontLeftPos | q.RightDrivePos >frontRightPos) {
+                    Devices.frontLeft.set(q.LeftDriveSpeed); // set the left speed
+                    Devices.frontLeft.setFollower(Devices.backLeft); // set follower speed
+                    Devices.frontRight.set(q.RightDriveSpeed); // set the right speed
+                    Devices.frontRight.setFollower(Devices.backRight); // set follower speed
                     switch (q.gearState) {
                         case HighGearOff:
                         case HighGearPressed:{
@@ -47,6 +61,11 @@ public class  AutoDrive
                 break;            
             }
         }
+        // update the position when no encoder used
+        Devices.frontLeft.updatePosition(); // set the left speed
+        Devices.backLeft.updatePosition(); // set follower speed
+        Devices.frontRight.updatePosition(); // set the right speed
+        Devices.backRight.updatePosition(); // set follower speed
       }
 
     public static void StopAutoDrive(boolean force) {
@@ -63,7 +82,11 @@ public class  AutoDrive
             Devices.frontLeft.set(0); // stop wheels
             Devices.frontRight.set(0); // stop wheels
             Devices.backRight.set(0); // stop wheels
-            Devices.gearShift.set(DoubleSolenoid.Value.kReverse); // set low speed               
+            Devices.gearShift.set(DoubleSolenoid.Value.kReverse); // set low speed   
+            Devices.backLeft.Position = 0;            
+            Devices.frontLeft.Position = 0;            
+            Devices.backRight.Position = 0;            
+            Devices.frontLeft.Position = 0;            
         }
     }    
 }       
