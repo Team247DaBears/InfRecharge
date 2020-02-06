@@ -7,11 +7,11 @@ public class DriverStation
     private static final int LEFTPORT=0;
     private static final int RIGHTPORT=1;
     private static final int OPERATORPORT=2;
-private static final double Deadband=2D;
+private static final double Deadband=.2;
     private static final int Y_AXIS=1;
     private static final int X_AXIS=0;
 
-    private static  Joystick leftStick;
+    static  Joystick leftStick;
     private static  Joystick rightStick;
     private static Joystick operatorStick;  //driver two
   
@@ -29,7 +29,8 @@ private static final double Deadband=2D;
     private static final int JSB_POSITION_2=1;
     private static final int JSB_POSITION_3=3;
   
-
+    //private static double[] joyStick1 = {1,2,3,4,5,6,7,8,98,7,6,5,4,3,2,1-1,2,3,4,5,6,7,8} ;
+    //private static int joyStick1idx = 0;
 
 
 public static void Init()
@@ -41,35 +42,35 @@ public static void Init()
 
     public static double  getLeftSpeed()
     
-    {double Joystick_calc=0; double JoystickValue=leftStick.getRawAxis(Y_AXIS);double Joystick_val=0;
-        if(java.lang.Math.abs(JoystickValue) < Deadband ){
-            Joystick_calc = 0;}
-            else{
- 
-			Joystick_calc = (1 / (1 - Deadband)) * (Joystick_val + (-java.lang.Math.signum(Joystick_val) * Deadband));}
-           
-              return -1*Joystick_calc;
+    {
+        return getDeadband(leftStick.getRawAxis(Y_AXIS));
     }
 
-    public static double getRightSpeed()
-     {double Joystick_calc=0; double JoystickValue=leftStick.getRawAxis(X_AXIS);double Joystick_val=0;
-            if(java.lang.Math.abs(JoystickValue) < Deadband ){
-                Joystick_calc = 0;}
-                else{
+    public static double  getRightSpeed(){
+        return getDeadband(rightStick.getRawAxis(Y_AXIS));
+    }
+
+    public static double  getDeadband(double Joystick_val){ 
+        
+    
+          
+    
      
-                Joystick_calc = (1 / (1 - Deadband)) * (Joystick_val + (-java.lang.Math.signum(Joystick_val) * Deadband));}
-               
-                  return -1*Joystick_calc;}
+                if (Math.abs(Joystick_val)<Deadband) return 0;
+
+                return Math.signum(Joystick_val)*(Math.abs(Joystick_val)-Deadband)/(1-Deadband);
+
+}  
 
 public static LifterStates getCommandedPosition()
 {
     if(operatorStick.getRawButton(JSB_POSITION_0)){
-        System.out.println("Button 4 pressed"); 
+       // System.out.println("Button 4 pressed"); 
         return LifterStates.Low;
 
 }
      if (operatorStick.getRawButton(JSB_POSITION_1)){
-         System.out.println("Button 2 pressed");
+        // System.out.println("Button 2 pressed");
         return LifterStates.High;
 }
      else {
