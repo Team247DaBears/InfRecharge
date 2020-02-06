@@ -21,7 +21,8 @@ import edu.wpi.first.wpilibj.Victor;
  * (Replaces IO)
  */
 public class Devices {
-  private static final boolean SparkMax = false;
+  static final boolean UseSparkMax = false;
+  static final boolean UseEncoder = true;
   private static final int GEARFORWARD = 1;
     private static final int GEARREVERSE = 0;
     
@@ -33,15 +34,10 @@ public class Devices {
       private static final int RIGHTROLLER=5;
   
   
-      public static SpeedController frontLeft;
-      public static SpeedController frontRight;
-      public static SpeedController backLeft;
-      public static SpeedController backRight;
-
-      public static EncoderSparkMax frontLeftEncoder;
-      public static EncoderSparkMax frontRightEncoder;
-      public static EncoderSparkMax backLeftEncoder;
-      public static EncoderSparkMax backRightEncoder;
+      public static DaBearsSpeedController frontLeft;
+      public static DaBearsSpeedController frontRight;
+      public static DaBearsSpeedController backLeft;
+      public static DaBearsSpeedController backRight;
 
       public static DoubleSolenoid gearShift;
    
@@ -72,11 +68,11 @@ System.out.println("Devices");
 leftRollerMotor=new Victor(LEFTROLLER);
 rightRollerMotor=new Victor(RIGHTROLLER);
 
-frontLeft=testableSparkMax.Init(FRONTLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,SparkMax);
-frontRight=testableSparkMax.Init(BACKLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,SparkMax);
+frontLeft=new DaBearsSpeedController(FRONTLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax,12,13);
+frontRight=new DaBearsSpeedController(BACKLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax,14,15);
 
-backLeft=testableSparkMax.Init(FRONTRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,SparkMax);
-backRight=testableSparkMax.Init(BACKRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,SparkMax);
+backLeft=new DaBearsSpeedController(FRONTRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax,16,17);
+backRight=new DaBearsSpeedController(BACKRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax,18,19);
 
 
 //frontLeft=new Victor(FRONTLEFTPWM);

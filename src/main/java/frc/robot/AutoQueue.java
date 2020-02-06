@@ -3,7 +3,9 @@ package frc.robot;
 public class AutoQueue {
     public static final int MaxSize = 30;
     public static final int MaxDistance = 300;
-    public static final Double MaxSpeed = 50.0;
+    public static final int MinDistance = 0;
+    public static final Double MaxSpeed = 1.0;
+    public static final Double MinSpeed = -1.0;
     public static final Double CalcSpeed = -99999999.0;
 
     public static final java.util.Queue<AutoControlData> autodata = new java.util.ArrayDeque<>();
@@ -15,22 +17,34 @@ public class AutoQueue {
             throw new ArithmeticException("Can't put -99999999L in both Speeds"); 
         }
         if (q.LeftDriveSpeed == CalcSpeed) {
-            q.LeftDriveSpeed = q.LeftDriveCount / q.RightDriveCount * q.RightDriveSpeed;
+            q.LeftDriveSpeed = q.LeftDrivePos / q.RightDrivePos * q.RightDriveSpeed;
         }
         else if (q.RightDriveSpeed == CalcSpeed) {
-            q.RightDriveSpeed = q.LeftDriveCount / q.RightDriveCount * q.LeftDriveSpeed;
+            q.RightDriveSpeed =  q.RightDrivePos / q.LeftDrivePos * q.LeftDriveSpeed;
         }
-        if (q.LeftDriveCount>MaxDistance) {
-            throw new ArithmeticException("LeftDriveCount exceeded maxdistance of " + MaxDistance); 
+        if (q.LeftDrivePos>MaxDistance) {
+            throw new ArithmeticException("LeftDrivePos exceeded maxdistance of " + MaxDistance); 
         }
-        if (q.RightDriveCount>MaxDistance) {
-            throw new ArithmeticException("RightDriveCount exceeded maxdistance of " + MaxDistance); 
+        if (q.RightDrivePos>MaxDistance) {
+            throw new ArithmeticException("RightDrivePos exceeded maxdistance of " + MaxDistance); 
+        }
+        if (q.LeftDrivePos<MinDistance) {
+            throw new ArithmeticException("LeftDrivePos below mindistance of " + MinDistance); 
+        }
+        if (q.RightDrivePos<MinDistance) {
+            throw new ArithmeticException("RightDrivePos below mindistance of " + MinDistance); 
         }
         if (q.LeftDriveSpeed>MaxSpeed) {
-            throw new ArithmeticException("LeftDriveSpeed exceeded maxdistance of " + MaxSpeed); 
+            throw new ArithmeticException("LeftDriveSpeed " + q.LeftDriveSpeed + " exceeded maxspeed of " + MaxSpeed); 
         }
         if (q.RightDriveSpeed>MaxSpeed) {
-            throw new ArithmeticException("RightDriveSpeed exceeded maxdistance of " + MaxSpeed); 
+            throw new ArithmeticException("RightDriveSpeed " + q.RightDriveSpeed + " exceeded maxspeed of " + MaxSpeed); 
+        }
+        if (q.LeftDriveSpeed<MinSpeed) {
+            throw new ArithmeticException("LeftDriveSpeed "+q.LeftDriveSpeed+" exceeded maxspeed of " + MinSpeed); 
+        }
+        if (q.RightDriveSpeed<MinSpeed) {
+            throw new ArithmeticException("RightDriveSpeed "+q.RightDriveSpeed+" below minspeed of " + MinSpeed); 
         }
         if (autodata.size()>=MaxSize) {
             throw new ArithmeticException("Queue exceeds Max Size of " + MaxSize); 
@@ -49,6 +63,7 @@ public class AutoQueue {
         if (tempStateData == null) {
             AutoControlData tempTeleOpt = new AutoControlData();
             tempTeleOpt.autoState = AutoStates.TeleOpt;
+            tempTeleOpt.WriteLog = false;
             return tempTeleOpt;
         }
         return tempStateData;
@@ -78,6 +93,7 @@ public class AutoQueue {
         if (tempStateData == null) {
             AutoControlData tempTeleOpt = new AutoControlData();
             tempTeleOpt.autoState = AutoStates.TeleOpt;
+            tempTeleOpt.WriteLog = false;
             return tempTeleOpt;
         }
         return tempStateData;
