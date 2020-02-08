@@ -5,10 +5,13 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANEncoder.*;
 
 import edu.wpi.first.wpilibj.Victor;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedController;
+import java.lang.*;
 
-public  class DaBearsSpeedController implements SpeedController {
+public class DaBearsSpeedController implements SpeedController {
+
     SpeedController speedController = null;
     SpeedController followerController = null;
     boolean useSparkMax;
@@ -16,21 +19,52 @@ public  class DaBearsSpeedController implements SpeedController {
     Victor victorMotor = null;
     CANSparkMax sparkMaxMotor = null;
     CANEncoder sparkMaxEncoder = null;
+    CANPIDController sparkMaxPIDController =null;
     Encoder victorEncoder = null;
     double currentPosition = 0;
     double Position = 0;
 
     private Boolean isRunningTest = null;
 
-    public DaBearsSpeedController(int pwm, MotorType type, boolean sparkmax, int encodepwm,int encodetype) {
+    public DaBearsSpeedController(int pwm, MotorType type, boolean sparkmax, int encodepwm, int encodetype) {
         populateController(pwm, type, sparkmax);
         useEncoder = true;
-     //   if (useSparkMax) {
-     //       sparkMaxEncoder = new CANEncoder((CANSparkMax)sparkMaxMotor);    
-     //   }
-     //   else {
-     //       victorEncoder = new Encoder(encodepwm, encodetype);
-     //   }
+        if (useSparkMax) {
+            sparkMaxEncoder = sparkMaxMotor.getEncoder();
+            sparkMaxPIDController = sparkMaxMotor.getPIDController();
+            if (!testEncoder()) {
+                sparkMaxEncoder = null;
+                sparkMaxPIDController = null;
+                Thread thread = Thread.currentThread();
+                DriverStation.reportError("Encoder not working for SparkMax ", thread.getStackTrace());
+            }
+        } else {
+            victorEncoder = new Encoder(encodepwm, encodetype);
+            if (!testEncoder()) {
+                victorEncoder = null;
+                Thread thread = Thread.currentThread();
+                DriverStation.reportError("Encoder not working for Victor ", thread.getStackTrace());
+            }
+
+        }
+    }
+
+    public boolean testEncoder() {
+        speedController.set(1);
+        try {
+            Thread.sleep(250); // wait 1/4 second to allow rotation
+        } catch (InterruptedException e) {
+            // Do nothing
+        } 
+        speedController.set(0);
+        double position=0;
+        if (useSparkMax) {
+            position = sparkMaxEncoder.getPosition();
+        }
+        else {
+            position = victorEncoder.get();
+        }
+        return (position==0);
     }
 
     public DaBearsSpeedController(int pwm, MotorType type, boolean sparkmax) {
@@ -151,4 +185,5 @@ public  class DaBearsSpeedController implements SpeedController {
         }
         return isRunningTest;
     }
+
 }

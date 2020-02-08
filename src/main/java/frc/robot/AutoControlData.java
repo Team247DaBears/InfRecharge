@@ -23,27 +23,26 @@ public class AutoControlData implements Cloneable {
 
     }
     public AutoControlData(AutoControlData data) {
-        this.autoState = data.autoState;
-        this.deviceState = data.deviceState;
-        this.gearState = data.gearState;
-        this.driveState = data.driveState;
-        this.lifterState = data.lifterState;
-        this.targetState = data.targetState;
-        this.LeftDriveSpeed = data.LeftDriveSpeed;
-        this.LeftDrivePos = data.LeftDrivePos;
-        this.RightDriveSpeed = data.RightDriveSpeed;
-        this.RightDrivePos = data.RightDrivePos;
+        try{
+            Field[] fields = this.getClass().getDeclaredFields();
+            for(Field field : fields){
+                field.set(this,field.get(data));
+            }
+        }catch(Exception e){
+            System.out.println(e.getStackTrace());
+        }
     }
 
     @Override
     public  String toString () {
         String sep = "";
         String ret = "";
-        ret = this.getClass().getSimpleName() + "={";
+        ret = "{";
+        // ret = this.getClass().getSimpleName() + "={";
         try{
             Field[] fields = this.getClass().getDeclaredFields();
             for(Field field : fields){
-                ret = ret + sep + field.getName() + ":" + field.get(this);
+                ret = ret + sep + '"' +field.getName() + '"' + ":" + field.get(this);
                 sep = ",";
             }
         }catch(Exception e){
