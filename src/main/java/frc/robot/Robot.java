@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends TimedRobot {
   Drive drive;
   Devices devices;
-  
+  Intake intake;  
        
   Lifter lifter;
   static UserInput userinput;
@@ -37,12 +37,11 @@ public class Robot extends TimedRobot {
     lifter=new Lifter();
     userinput=new UserInput();
     devices=new Devices();
+    intake=new Intake();
+    intake.Init();
     Devices.Init();
     UserInput.Init();
     drive=new Drive();
-    
-   
-
     
   }
 
@@ -68,6 +67,7 @@ public class Robot extends TimedRobot {
         case TeleOpt: {
           lifter.setPosition();   
           drive.drive();
+          intake.operate();
         }
         case Target: {
 

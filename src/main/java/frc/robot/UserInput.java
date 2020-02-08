@@ -29,6 +29,10 @@ public class UserInput
     private static final int JSB_POSITION_2=1;
     private static final int JSB_POSITION_3=3;
   
+    private static final int JSB_INTAKEDOWN=4;
+    private static final int JSB_INTAKEUP=2;
+    private static final int JSB_INTAKERUN=1;
+  
     //private static double[] joyStick1 = {1,2,3,4,5,6,7,8,98,7,6,5,4,3,2,1-1,2,3,4,5,6,7,8} ;
     //private static int joyStick1idx = 0;
 
@@ -51,15 +55,9 @@ public static void Init()
     }
 
     public static double  getDeadband(double Joystick_val){ 
-        
-    
-          
-    
-     
                 if (Math.abs(Joystick_val)<Deadband) return 0;
 
                 return Math.signum(Joystick_val)*(Math.abs(Joystick_val)-Deadband)/(1-Deadband);
-
 }  
 
 public static LifterStates getCommandedPosition()
@@ -103,6 +101,18 @@ public static boolean getGearButton()
     public static boolean rollersReverse()
     {
         return operatorStick.getRawButton(JSB_ROLLERSREVERSE);
+    }
+    public static boolean intakeUp()
+    {
+        return operatorStick.getRawButton(JSB_INTAKEUP);
+    }
+    public static boolean intakeDown()
+    {
+        return operatorStick.getRawButton(JSB_INTAKEDOWN);
+    }
+    public static boolean intakeRun()
+    {
+        return operatorStick.getRawButton(JSB_INTAKERUN);
     }
 }
 
