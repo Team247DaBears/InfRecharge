@@ -82,7 +82,7 @@ backRight=new DaBearsSpeedController(BACKRIGHTPWM, com.revrobotics.CANSparkMaxLo
 //backRight=new Victor(BACKRIGHTPWM);
 
 frontRight.setInverted(true);
-backRight.setInverted(true);
+backRight.setInverted(false);
 
  gearShift = new DoubleSolenoid(GEARFORWARD, GEARREVERSE);
  lowLifter = new DoubleSolenoid(LOWLIFTERFORWARD, LOWLIFTERREVERSE);

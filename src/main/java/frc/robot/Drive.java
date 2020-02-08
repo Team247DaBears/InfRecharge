@@ -14,7 +14,7 @@ public class  Drive
 
           double leftSideMotorSpeed= DriverStation.getLeftSpeed();
           double rightSideMotorSpeed=DriverStation.getRightSpeed();
-
+//System.out.println("Ls"+leftSideMotorSpeed);
          Devices.backLeft.set(leftSideMotorSpeed);
          Devices.frontLeft.set(leftSideMotorSpeed);
          Devices.frontRight.set(rightSideMotorSpeed);
@@ -26,8 +26,8 @@ public class  Drive
     
     public void shiftGears(){
 
-    if (DriverStation.getGearButton()) System.out.println("true");
-    else System.out.println("False");
+   // if (DriverStation.getGearButton()) System.out.println("true");
+  //  else System.out.println("False");
     //System.out.println("Gear button is "+UserCom.getGearButton());
 //System.out.println("Gear state before is "+currentGearState.toString());
     switch(currentGearState)
