@@ -1,6 +1,6 @@
 package frc.robot;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import frc.robot.DriverStation;
+import frc.robot.UserInput;
 import frc.robot.Devices;
 public class  Drive
 {
@@ -12,8 +12,8 @@ public class  Drive
       {
           
 
-          double leftSideMotorSpeed= DriverStation.getLeftSpeed();
-          double rightSideMotorSpeed=DriverStation.getRightSpeed();
+          double leftSideMotorSpeed= UserInput.getLeftSpeed();
+          double rightSideMotorSpeed=UserInput.getRightSpeed();
 //System.out.println("Ls"+leftSideMotorSpeed);
          Devices.backLeft.set(leftSideMotorSpeed);
          Devices.frontLeft.set(leftSideMotorSpeed);
@@ -26,32 +26,32 @@ public class  Drive
     
     public void shiftGears(){
 
-   // if (DriverStation.getGearButton()) System.out.println("true");
+   // if (UserInput.getGearButton()) System.out.println("true");
   //  else System.out.println("False");
     //System.out.println("Gear button is "+UserCom.getGearButton());
 //System.out.println("Gear state before is "+currentGearState.toString());
     switch(currentGearState)
     {
         case HighGearOff:
-            if(DriverStation.getGearButton())
+            if(UserInput.getGearButton())
             {
                 currentGearState=GearStates.LowGearPressed;
             }
             break;
        case HighGearPressed:
-            if (!DriverStation.getGearButton())
+            if (!UserInput.getGearButton())
             {
                 currentGearState=GearStates.HighGearOff;
             }
             break;
       case LowGearOff:
-           if (DriverStation.getGearButton())
+           if (UserInput.getGearButton())
            {
                currentGearState=GearStates.HighGearPressed;
            }
            break;
       case LowGearPressed:
-           if (!DriverStation.getGearButton())
+           if (!UserInput.getGearButton())
            {
                currentGearState=GearStates.HighGearOff;
            }

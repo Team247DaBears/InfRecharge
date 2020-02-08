@@ -2,7 +2,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import java.lang.Math;
 
-public class DriverStation
+public class UserInput
 {
     private static final int LEFTPORT=0;
     private static final int RIGHTPORT=1;

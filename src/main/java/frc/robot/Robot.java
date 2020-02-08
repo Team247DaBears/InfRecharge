@@ -25,7 +25,7 @@ public class Robot extends TimedRobot {
   
        
   Lifter lifter;
-  static DriverStation driverstation;
+  static UserInput userinput;
   
   /**
    * This function is run when the robot is first started up and should be used
@@ -35,10 +35,10 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     System.out.println("Command Position:"); 
     lifter=new Lifter();
-    driverstation=new DriverStation();
+    userinput=new UserInput();
     devices=new Devices();
     Devices.Init();
-    DriverStation.Init();
+    UserInput.Init();
     drive=new Drive();
     
    

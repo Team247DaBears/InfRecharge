@@ -9,7 +9,7 @@ public class Lifter
     public void setPosition()
     {
         
-        LifterStates commandedPosition=DriverStation.getCommandedPosition();
+        LifterStates commandedPosition=UserInput.getCommandedPosition();
         //System.out.println("cOMMANDED position +"+commandedPosition.toString());
         if (commandedPosition==LifterStates.Hold) commandedPosition=heldPosition;
         heldPosition=commandedPosition;
