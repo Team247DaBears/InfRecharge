@@ -86,6 +86,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testInit() {
+    RobotTestModes.testJoysticks(userinput);
+    RobotTestModes.testDevices(devices);
   }
 
   @Override

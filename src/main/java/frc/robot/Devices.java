@@ -6,9 +6,6 @@
 /*----------------------------------------------------------------------------*/
 package frc.robot;
 
-import com.revrobotics.CANEncoder;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.*;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Relay;
@@ -51,6 +48,7 @@ public class Devices {
 
     public static DoubleSolenoid lowLifter;
     public static DoubleSolenoid highLifter;
+    public static DaBearsSpeedController lifterHoist;
 
     // Insert constants
 

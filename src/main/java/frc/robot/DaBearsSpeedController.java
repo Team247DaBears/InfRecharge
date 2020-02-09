@@ -32,20 +32,8 @@ public class DaBearsSpeedController implements SpeedController {
         if (useSparkMax) {
             sparkMaxEncoder = sparkMaxMotor.getEncoder();
             sparkMaxPIDController = sparkMaxMotor.getPIDController();
-            if (!testEncoder()) {
-                sparkMaxEncoder = null;
-                sparkMaxPIDController = null;
-                Thread thread = Thread.currentThread();
-                DriverStation.reportError("Encoder not working for SparkMax ", thread.getStackTrace());
-            }
         } else {
             victorEncoder = new Encoder(encodepwm, encodetype);
-            if (!testEncoder()) {
-                victorEncoder = null;
-                Thread thread = Thread.currentThread();
-                DriverStation.reportError("Encoder not working for Victor ", thread.getStackTrace());
-            }
-
         }
     }
 
@@ -60,11 +48,22 @@ public class DaBearsSpeedController implements SpeedController {
         double position=0;
         if (useSparkMax) {
             position = sparkMaxEncoder.getPosition();
+            if (position==0) {
+                sparkMaxEncoder = null;
+                sparkMaxPIDController = null;
+                Thread thread = Thread.currentThread();
+                DriverStation.reportError("Encoder not working for SparkMax ", thread.getStackTrace());
+            }
         }
         else {
             position = victorEncoder.get();
+            if (position==0) {
+                victorEncoder = null;
+                Thread thread = Thread.currentThread();
+                DriverStation.reportError("Encoder not working for Victor ", thread.getStackTrace());
+            }
         }
-        return (position==0);
+        return (position!=0);
     }
 
     public DaBearsSpeedController(int pwm, MotorType type, boolean sparkmax) {

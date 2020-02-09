@@ -21,21 +21,14 @@ public class UserInput
   
     //buttons on driver stick
     private static final int JSB_GEARSHIFT=1;
-
-
-    //buttons for driver two
-    private static final int JSB_POSITION_0=4;
-    private static final int JSB_POSITION_1=2;
-    private static final int JSB_POSITION_2=1;
-    private static final int JSB_POSITION_3=3;
   
     private static final int JSB_INTAKEDOWN=4;
     private static final int JSB_INTAKEUP=2;
     private static final int JSB_INTAKERUN=1;
   
-    //private static double[] joyStick1 = {1,2,3,4,5,6,7,8,98,7,6,5,4,3,2,1-1,2,3,4,5,6,7,8} ;
-    //private static int joyStick1idx = 0;
-
+    private static final int JSB_LIFTERUP=5;
+    private static final int JSB_LIFTERDOWN=6;
+    private static final int JSB_LIFTERHOIST=7;
 
 public static void Init()
     {
@@ -44,13 +37,12 @@ public static void Init()
         operatorStick=new Joystick(OPERATORPORT);
     }
 
-    public static double  getLeftSpeed()
-    
+    public static double  getLeftStick()    
     {
         return getDeadband(leftStick.getRawAxis(Y_AXIS));
     }
 
-    public static double  getRightSpeed(){
+    public static double  getRightStick(){
         return getDeadband(rightStick.getRawAxis(Y_AXIS));
     }
 
@@ -62,24 +54,20 @@ public static void Init()
 
 public static LifterStates getCommandedPosition()
 {
-    if(operatorStick.getRawButton(JSB_POSITION_0)){
-       // System.out.println("Button 4 pressed"); 
-        return LifterStates.Low;
-
-}
-     if (operatorStick.getRawButton(JSB_POSITION_1)){
-        // System.out.println("Button 2 pressed");
-        return LifterStates.High;
-}
-     else {
-
-        return LifterStates.Hold;
-
-     }
-}
-
-
-
+    if(operatorStick.getRawButton(JSB_LIFTERUP)){
+       // System.out.println("Button LifterUp Pressed"); 
+        return LifterStates.Up;
+    }
+     if (operatorStick.getRawButton(JSB_LIFTERDOWN)){
+        // System.out.println("Button Lifter Down");
+        return LifterStates.Down;
+    }
+    if(operatorStick.getRawButton(JSB_LIFTERHOIST)){
+        // System.out.println("Button 4 pressed"); 
+         return LifterStates.Hoist; 
+    }
+    return LifterStates.Hold;
+ }
 
 public static boolean getGearButton()
     {
