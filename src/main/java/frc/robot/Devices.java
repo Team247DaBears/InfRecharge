@@ -18,37 +18,34 @@ import edu.wpi.first.wpilibj.Victor;
  * (Replaces IO)
  */
 public class Devices {
-  static final boolean UseSparkMax = false;
-  static final boolean UseEncoder = true;
-  private static final int GEARFORWARD = 1;
-    private static final int GEARREVERSE = 0;
-    
+    static final boolean UseSparkMax = false;
+    static final boolean UseEncoder = true;
+      
     private static final int FRONTLEFTPWM = 1;
-      private static final int FRONTRIGHTPWM=2;
-      private static final int BACKLEFTPWM=0;
-      private static final int BACKRIGHTPWM=3;
-      private static final int LEFTROLLER=4;
-      private static final int RIGHTROLLER=5;
-  
-  
-      public static DaBearsSpeedController frontLeft;
-      public static DaBearsSpeedController frontRight;
-      public static DaBearsSpeedController backLeft;
-      public static DaBearsSpeedController backRight;
+    private static final int FRONTRIGHTPWM=8;
+    private static final int BACKLEFTPWM=0;
+    private static final int BACKRIGHTPWM=9;    
 
-      public static DoubleSolenoid gearShift;
-   
-      //So, I'll add another set of controls, and you can comment out whichever is unused.
-      public static SpeedController leftRollerMotor;
-      public static SpeedController rightRollerMotor;
     private final static int LOWLIFTERFORWARD = 2;
     private final static int LOWLIFTERREVERSE = 3;
-   //private final static int HIGHLIFTERFORWARD = 1;
-  //private final static int HIGHLIFTERREVERSE = 1;
+    private final static int HIGHLIFTERFORWARD = 4;
+    private final static int HIGHLIFTERREVERSE = 5;
+    private final static int LIFTERHOIST = 10;
 
-    public static DoubleSolenoid lowLifter;
-    public static DoubleSolenoid highLifter;
-    public static DaBearsSpeedController lifterHoist;
+    private static final int GEARFORWARD = 6;
+    private static final int GEARREVERSE = 7;
+
+    public static DaBearsSpeedController frontLeft = null;
+    public static DaBearsSpeedController frontRight = null;
+    public static DaBearsSpeedController backLeft = null;
+    public static DaBearsSpeedController backRight = null;
+
+    public static DoubleSolenoid gearShift;
+
+    //So, I'll add another set of controls, and you can comment out whichever is unused.    
+      public static DoubleSolenoid lowLifter;
+      public static DoubleSolenoid highLifter;
+      public static DaBearsSpeedController lifterHoist;
 
     // Insert constants
 
@@ -61,34 +58,26 @@ public class Devices {
     // This will be called from robot.init, which executes as soon as the power is
     // applied and the roborio boots up.
     public static void Init() {
-        
-System.out.println("Devices");
-leftRollerMotor=new Victor(LEFTROLLER);
-rightRollerMotor=new Victor(RIGHTROLLER);
+      if (frontLeft==null) {
+        System.out.println("Init Devics:");
+        frontLeft=new DaBearsSpeedController(FRONTLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax,12,13);
+        frontRight=new DaBearsSpeedController(BACKLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax,14,15);
 
-frontLeft=new DaBearsSpeedController(FRONTLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax,12,13);
-frontRight=new DaBearsSpeedController(BACKLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax,14,15);
+        backLeft=new DaBearsSpeedController(FRONTRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax,16,17);
+        backRight=new DaBearsSpeedController(BACKRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax,18,19);
 
-backLeft=new DaBearsSpeedController(FRONTRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax,16,17);
-backRight=new DaBearsSpeedController(BACKRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax,18,19);
+        frontRight.setInverted(true);
+        backRight.setInverted(false);
 
+        lowLifter = new DoubleSolenoid(LOWLIFTERFORWARD, LOWLIFTERREVERSE);
+        highLifter = new DoubleSolenoid(HIGHLIFTERFORWARD, HIGHLIFTERREVERSE);
+        lifterHoist=new DaBearsSpeedController(LIFTERHOIST, null,false);
 
-//frontLeft=new Victor(FRONTLEFTPWM);
-//frontRight=new Victor(FRONTRIGHTPWM);
-
-//backLeft=new Victor(BACKLEFTPWM);
-//backRight=new Victor(BACKRIGHTPWM);
-
-frontRight.setInverted(true);
-backRight.setInverted(false);
-
- gearShift = new DoubleSolenoid(GEARFORWARD, GEARREVERSE);
- lowLifter = new DoubleSolenoid(LOWLIFTERFORWARD, LOWLIFTERREVERSE);
-//highLifter = new DoubleSolenoid(HIGHLIFTERFORWARD, HIGHLIFTERREVERSE);
-}
-
-
-
-
+        gearShift = new DoubleSolenoid(GEARFORWARD, GEARREVERSE);
+      }
+    else {
+      System.out.println("Init entered twice:");
     }
+    }
+  }
 

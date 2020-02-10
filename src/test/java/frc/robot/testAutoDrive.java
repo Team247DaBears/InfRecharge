@@ -10,9 +10,10 @@ import org.junit.runners.JUnit4;
 //
 @RunWith(JUnit4.class)
 public class testAutoDrive {  
+  static Devices devices;
   @Test
   public void test(){
-      Devices devices = new Devices();
+      devices = new Devices();
       Devices.Init();
 
       // The following 3 lines are for desktop usage, assign the Mat image to the camera image when deploying to a robot
@@ -32,8 +33,6 @@ public class testAutoDrive {
       Assert.assertEquals(.2,AutoQueue.currentQueue().RightDriveSpeed,.01);
       AutoDrive.Drive();
       AutoDrive.Drive();
-//      Assert.assertEquals(5,(int)Devices.leftRollerMotor.get());
-//      Assert.assertEquals(5,(int)Devices.rightRollerMotor.get());
       AutoDrive.Drive();
       AutoDrive.Drive();
       Assert.assertEquals(1,Devices.frontLeft.getPosition(),.1);

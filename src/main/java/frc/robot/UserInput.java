@@ -11,9 +11,9 @@ public class UserInput
     private static final int Y_AXIS=1;
     private static final int X_AXIS=0;
 
-    static  Joystick leftStick;
-    private static  Joystick rightStick;
-    private static Joystick operatorStick;  //driver two
+    public static  DaBearsJoystick leftStick;
+    private static  DaBearsJoystick rightStick;
+    private static  DaBearsJoystick operatorStick;  //driver two
   
     private static final int JSB_ROLLERSFORWARD=0;
       private static final int JSB_ROLLERSREVERSE=1;
@@ -32,9 +32,9 @@ public class UserInput
 
 public static void Init()
     {
-        leftStick=new Joystick(LEFTPORT);
-        rightStick=new Joystick(RIGHTPORT);
-        operatorStick=new Joystick(OPERATORPORT);
+        leftStick=new DaBearsJoystick(LEFTPORT);
+        rightStick=new DaBearsJoystick(RIGHTPORT);
+        operatorStick=new DaBearsJoystick(OPERATORPORT);
     }
 
     public static double  getLeftStick()    

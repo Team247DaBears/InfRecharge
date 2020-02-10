@@ -20,11 +20,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
-  Drive drive;
-  Devices devices;
-  Intake intake;  
+  static Drive drive;
+  static Devices devices;
+  static Intake intake;  
        
-  Lifter lifter;
+  static Lifter lifter;
   static UserInput userinput;
   
   /**

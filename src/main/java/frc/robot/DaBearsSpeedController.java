@@ -27,6 +27,7 @@ public class DaBearsSpeedController implements SpeedController {
     private Boolean isRunningTest = null;
 
     public DaBearsSpeedController(int pwm, MotorType type, boolean sparkmax, int encodepwm, int encodetype) {
+        System.out.println("encodepwm:"+encodepwm);
         populateController(pwm, type, sparkmax);
         useEncoder = true;
         if (useSparkMax) {
@@ -71,6 +72,7 @@ public class DaBearsSpeedController implements SpeedController {
     }
 
     public void populateController(int pwm, MotorType type, boolean sparkmax) {
+        System.out.println("pwm:"+pwm);
         useSparkMax = sparkmax; 
         if (useSparkMax) {
             sparkMaxMotor = new CANSparkMax(pwm,type);
