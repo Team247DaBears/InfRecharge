@@ -19,9 +19,6 @@ import org.opencv.imgproc.Imgproc;
 import java.net.URL;
 import java.util.List;
 
-import java.io.File;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 //
 
 public class DetectTarget {

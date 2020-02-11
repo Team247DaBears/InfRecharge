@@ -8,10 +8,6 @@ package frc.robot;
 
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Relay;
-import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.Victor;
 
 /**
  * This class will contain all code for various devices
@@ -26,19 +22,19 @@ public class Devices {
     private static final int CANBACKLEFTPWM=4;
     private static final int CANBACKRIGHTPWM=5;    
 
-    private static final int FRONTLEFTPWM = 1;
-    private static final int FRONTRIGHTPWM=8;
-    private static final int BACKLEFTPWM=0;
+    private static final int FRONTLEFTPWM = 12; // victor
+    private static final int FRONTRIGHTPWM=8; // victor
+    private static final int BACKLEFTPWM=13;
     private static final int BACKRIGHTPWM=9;    
 
-    private final static int LOWLIFTERFORWARD = 2;
-    private final static int LOWLIFTERREVERSE = 3;
-    private final static int HIGHLIFTERFORWARD = 4;
-    private final static int HIGHLIFTERREVERSE = 5;
-    private final static int LIFTERHOIST = 10;
+    private final static int LOWLIFTERFORWARD = 2; // solonoid1 pin0
+    private final static int LOWLIFTERREVERSE = 3; // solonoid1 pin1
+    private final static int HIGHLIFTERFORWARD = 4; // solonoid2 pin0
+    private final static int HIGHLIFTERREVERSE = 5; // solonoid2 pin1
+    private final static int LIFTERHOIST = 10; //victor
 
-    private static final int GEARFORWARD = 6;
-    private static final int GEARREVERSE = 7;
+    private static final int GEARFORWARD = 6; // solonoid3 pin0
+    private static final int GEARREVERSE = 7; // solonoid3 pin1
 
     public static DaBearsSpeedController frontLeft = null;
     public static DaBearsSpeedController frontRight = null;
@@ -66,27 +62,31 @@ public class Devices {
       if (frontLeft==null) {
         System.out.println("Init Devics:");
         if (UseSparkMax) {
-          frontLeft=new DaBearsSpeedController(CANFRONTLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax,12,13);
-          frontRight=new DaBearsSpeedController(CANBACKLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax,14,15);
+          frontLeft=new DaBearsSpeedController(CANFRONTLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax,20,21);
+          frontRight=new DaBearsSpeedController(CANBACKLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax,22,23);
 
           backLeft=new DaBearsSpeedController(CANFRONTRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax,16,17);
           backRight=new DaBearsSpeedController(CANBACKRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax,18,19);
         }
         else {
-          frontLeft=new DaBearsSpeedController(FRONTLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax,12,13);
-          frontRight=new DaBearsSpeedController(BACKLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax,14,15);
+          frontLeft=new DaBearsSpeedController(FRONTLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax);
+          frontRight=new DaBearsSpeedController(BACKLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax);
 
-          backLeft=new DaBearsSpeedController(FRONTRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax,16,17);
-          backRight=new DaBearsSpeedController(BACKRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax,18,19);
+          backLeft=new DaBearsSpeedController(FRONTRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax);
+          backRight=new DaBearsSpeedController(BACKRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax);
         }
         frontRight.setInverted(true);
         backRight.setInverted(false);
 
         lowLifter = new DoubleSolenoid(LOWLIFTERFORWARD, LOWLIFTERREVERSE);
         highLifter = new DoubleSolenoid(HIGHLIFTERFORWARD, HIGHLIFTERREVERSE);
+        Devices.lowLifter.set(DoubleSolenoid.Value.kReverse); // set default as down
+        Devices.highLifter.set(DoubleSolenoid.Value.kReverse); // set default as down
+    
         lifterHoist=new DaBearsSpeedController(LIFTERHOIST, null,false);
 
         gearShift = new DoubleSolenoid(GEARFORWARD, GEARREVERSE);
+        Devices.gearShift.set(DoubleSolenoid.Value.kReverse); // set default as low
       }
     else {
       System.out.println("Init entered twice:");

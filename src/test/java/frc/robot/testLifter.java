@@ -1,10 +1,6 @@
 package frc.robot;
 
-import frc.robot.DetectTarget;
-import com.kylecorry.frc.vision.targeting.Target;
-
-import org.opencv.core.*;
-import org.opencv.imgcodecs.Imgcodecs;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,15 +23,32 @@ public class testLifter {
       UserInput.leftStick.resetIndexes();
 
       Assert.assertEquals(LifterStates.Down,lifter.heldPosition);
+      Assert.assertEquals(0,Devices.lifterHoist.get(),0.1);
+      Assert.assertEquals(DoubleSolenoid.Value.kReverse,Devices.highLifter.get());
+      Assert.assertEquals(DoubleSolenoid.Value.kReverse,Devices.lowLifter.get());
+      lifter.setPosition();
+      Assert.assertEquals(LifterStates.Up,lifter.heldPosition);
+      Assert.assertEquals(0,Devices.lifterHoist.get(),0.1);
+      Assert.assertEquals(DoubleSolenoid.Value.kForward,Devices.highLifter.get());
+      Assert.assertEquals(DoubleSolenoid.Value.kForward,Devices.lowLifter.get());
+
+      lifter.setPosition();
+      Assert.assertEquals(LifterStates.Down,lifter.heldPosition);
+      Assert.assertEquals(0,Devices.lifterHoist.get(),0.1);
+      Assert.assertEquals(DoubleSolenoid.Value.kReverse,Devices.highLifter.get());
+      Assert.assertEquals(DoubleSolenoid.Value.kReverse,Devices.lowLifter.get());
 
       lifter.setPosition();
       Assert.assertEquals(LifterStates.Up,lifter.heldPosition);
-      lifter.setPosition();
-      Assert.assertEquals(LifterStates.Down,lifter.heldPosition);
-      lifter.setPosition();
-      Assert.assertEquals(LifterStates.Up,lifter.heldPosition);
+      Assert.assertEquals(0,Devices.lifterHoist.get(),0.1);
+      Assert.assertEquals(DoubleSolenoid.Value.kForward,Devices.highLifter.get());
+      Assert.assertEquals(DoubleSolenoid.Value.kForward,Devices.lowLifter.get());
+
       lifter.setPosition();
       Assert.assertEquals(LifterStates.Hoist,lifter.heldPosition);
+      Assert.assertEquals(1,Devices.lifterHoist.get(),0.1);
+      Assert.assertEquals(DoubleSolenoid.Value.kForward,Devices.highLifter.get());
+      Assert.assertEquals(DoubleSolenoid.Value.kForward,Devices.lowLifter.get());
      }
 
 }

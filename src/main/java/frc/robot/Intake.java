@@ -24,12 +24,14 @@ public class Intake {
     private final int INTAKE_PORT_FORWARD=0;
     private final int INTAKE_PORT_BACK=1;
 
-    private final int INTAKE_MOTOR_PWM=0;
+    private final int INTAKE_MOTOR_PWM=19;
 
     public void Init()
     {
-        intakeSolenoid=new DoubleSolenoid(INTAKE_PORT_FORWARD,INTAKE_PORT_BACK);
-        intakeMotor=new Talon(INTAKE_MOTOR_PWM);
+        if (intakeSolenoid == null) {
+            intakeSolenoid=new DoubleSolenoid(INTAKE_PORT_FORWARD,INTAKE_PORT_BACK);
+            intakeMotor=new Talon(INTAKE_MOTOR_PWM);
+        }
     }
 
 
@@ -51,6 +53,7 @@ public class Intake {
         else if (UserInput.intakeUp())
         {
             intakeSolenoid.set(DoubleSolenoid.Value.kReverse);
+
         }
         else 
        {

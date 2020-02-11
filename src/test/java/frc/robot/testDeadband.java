@@ -1,10 +1,5 @@
 package frc.robot;
 import frc.robot.UserInput;
-import frc.robot.DetectTarget;
-import com.kylecorry.frc.vision.targeting.Target;
-
-import org.opencv.core.*;
-import org.opencv.imgcodecs.Imgcodecs;
 
 import org.junit.Assert;
 import org.junit.Test;

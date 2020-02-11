@@ -1,7 +1,4 @@
 package frc.robot;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Joystick;
-import java.lang.Math;
 import java.lang.reflect.*;
 import java.util.regex.Pattern;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;

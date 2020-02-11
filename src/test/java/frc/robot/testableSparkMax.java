@@ -1,5 +1,5 @@
 package frc.robot;
-import com.revrobotics.*;
+
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Victor;

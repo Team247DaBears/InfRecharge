@@ -10,7 +10,6 @@ package frc.robot;
 import frc.robot.AutoControlData;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the

@@ -2,13 +2,11 @@ package frc.robot;
 
 import com.revrobotics.*;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.CANEncoder.*;
 
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedController;
-import java.lang.*;
 
 public class DaBearsSpeedController implements SpeedController {
 
@@ -77,6 +75,9 @@ public class DaBearsSpeedController implements SpeedController {
         if (useSparkMax) {
             sparkMaxMotor = new CANSparkMax(pwm,type);
             speedController = sparkMaxMotor;
+            useEncoder = true;
+            sparkMaxEncoder = sparkMaxMotor.getEncoder();
+            sparkMaxPIDController = sparkMaxMotor.getPIDController();
         }
         else {
             victorMotor =  new Victor(pwm);

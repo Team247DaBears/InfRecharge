@@ -5,7 +5,7 @@ import frc.robot.Devices;
 public class  Drive
 {
 
-  private GearStates currentGearState=GearStates.LowGearOff;
+  public GearStates currentGearState=GearStates.LowGearOff;
 
     
     public void drive()
