@@ -1,52 +1,59 @@
-package frc.robot;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
+/*----------------------------------------------------------------------------*/
 
+/* Copyright (c) 2018-2019 FIRST. All Rights Reserved.                        */
+
+/* Open Source Software - may be modified and shared by FRC teams. The code   */
+
+/* must be accompanied by the FIRST BSD license file in the root directory of */
+
+/* the project.                                                               */
+
+/*----------------------------------------------------------------------------*/
+
+
+
+package frc.robot;
+
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.SpeedController;
 
 public class Lifter
 {
-    DoubleSolenoid.Value lastSet;
-    LifterStates heldPosition=LifterStates.Down;
-    
-    public void setPosition()
-    {
-        
-        LifterStates commandedPosition=UserInput.getCommandedPosition();
-        //System.out.println("cOMMANDED position +"+commandedPosition.toString());
-        if (commandedPosition==LifterStates.Hold) commandedPosition=heldPosition;
-        heldPosition=commandedPosition;
+    private DaBearsSpeedController left_winch;
+    private DaBearsSpeedController right_winch;
+    private DoubleSolenoid solenoid;
+    private final double WINCH_SPEED=1.0;
 
-
-switch(commandedPosition)
-{
-    case Up:
-    lastSet =DoubleSolenoid.Value.kForward;
-    Devices.lowLifter.set(DoubleSolenoid.Value.kForward);
-    Devices.highLifter.set(DoubleSolenoid.Value.kForward);
-    break;
-   
-    case Down:
-    lastSet =DoubleSolenoid.Value.kReverse;
-    Devices.lowLifter.set(DoubleSolenoid.Value.kReverse);
-    Devices.highLifter.set(DoubleSolenoid.Value.kReverse);
-    break;
-
-    case Hoist:
-    DoubleSolenoid.Value UpLow = Devices.lowLifter.get();
-    DoubleSolenoid.Value UpHigh = Devices.highLifter.get();
-    // TODO determine if this test should be kOff and track that the last was forward
-    if ((UpLow==DoubleSolenoid.Value.kForward && UpHigh==DoubleSolenoid.Value.kForward) ||
-        (UpLow==DoubleSolenoid.Value.kOff && UpHigh==DoubleSolenoid.Value.kOff && lastSet==DoubleSolenoid.Value.kForward)){
-        Devices.lifterHoist.set(1);
+    public void Init() {
+        left_winch=Devices.lifter_left_motor;  //This isn't very good, but I'm in a hurry
+        right_winch=Devices.lifter_right_motor;
+        solenoid=Devices.lifter_solenoid;
     }
-    break;
 
-    case Hold:
-    break;
+    public void operate(){
 
+        if (UserInput.getLifterUp())
+        {
+            solenoid.set(DoubleSolenoid.Value.kForward);
+        }
+        else if (UserInput.getLifterDown())
+        {
+            solenoid.set(DoubleSolenoid.Value.kReverse);
+        }
+        else
+        {
+            solenoid.set(DoubleSolenoid.Value.kOff);
+        }
+
+        if (UserInput.getLifterClimb())
+        {
+            left_winch.set(WINCH_SPEED);
+            right_winch.set(WINCH_SPEED);
+        }
+        else
+        {
+            left_winch.set(0);
+            right_winch.set(0);
+        }
+    }
 }
-
-}
-}
-
-
-
