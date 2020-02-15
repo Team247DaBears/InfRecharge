@@ -40,6 +40,7 @@ public class Robot extends TimedRobot {
     intake.Init();
     Devices.Init();
     UserInput.Init();
+    lifter.Init();
     drive=new Drive();
     
   }
@@ -64,7 +65,7 @@ public class Robot extends TimedRobot {
     AutoControlData autoControlData = AutoQueue.currentQueue();
       switch (autoControlData.autoState) {
         case TeleOpt: {
-          lifter.setPosition();   
+          lifter.operate();   
           drive.drive();
           intake.operate();
         }

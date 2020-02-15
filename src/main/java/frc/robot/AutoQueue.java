@@ -8,7 +8,7 @@ public class AutoQueue {
     public static final Double MinSpeed = -1.0;
     public static final Double CalcSpeed = -99999999.0;
 
-    public static final java.util.Queue<AutoControlData> autodata = new java.util.ArrayDeque<>();
+    public static java.util.Queue<AutoControlData> autodata = new java.util.ArrayDeque<>();
    
     public static int addQueue(AutoControlData qi)
     {

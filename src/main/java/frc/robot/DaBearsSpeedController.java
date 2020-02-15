@@ -36,6 +36,12 @@ public class DaBearsSpeedController implements SpeedController {
         }
     }
 
+    /* used for Victor no Encoder */
+    public DaBearsSpeedController(int pwm) {
+        populateController(pwm, null, false);
+        useEncoder = false;
+    }
+
     public boolean testEncoder() {
         speedController.set(1);
         try {
@@ -187,5 +193,37 @@ public class DaBearsSpeedController implements SpeedController {
         }
         return isRunningTest;
     }
+    public boolean close() {
+        try {
+            if (this.victorMotor != null) {
+            this.victorMotor.close();
+            this.victorMotor = null;
+            }
+        }
+        catch (Exception e){
+            System.err.println("Error Closing VictorMotor");
+        }
+        try {
+            if (this.victorEncoder != null) {
+                this.victorEncoder.close();
+                this.victorEncoder = null;
+            }
+        }
+        catch (Exception e){
+            System.err.println("Error Closing VictorEncoder");
+        }
+        try {
+            if (this.sparkMaxEncoder != null) {
+                this.sparkMaxMotor.close();
+                this.sparkMaxMotor = null;
+                this.sparkMaxEncoder = null;
+                this.sparkMaxPIDController = null;
+            }
+        }
+        catch (Exception e){
+            System.err.println("Error Closing SparkMax");
+        }
 
+            return true;
+    }
 }

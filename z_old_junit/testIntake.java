@@ -39,6 +39,9 @@ public class testIntake {
       intake.operate();
       Assert.assertEquals(DoubleSolenoid.Value.kReverse,intake.intakeSolenoid.get());
       Assert.assertEquals(0.0,intake.intakeMotor.get(),.01);
+      DaBearsCloseDevices.close(intake);
+      DaBearsCloseDevices.close(devices);
+      DaBearsCloseDevices.close(userinput);
      }
 
 }

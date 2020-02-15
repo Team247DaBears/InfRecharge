@@ -10,6 +10,8 @@ public class AutoControlData implements Cloneable {
     DeviceStates deviceState = DeviceStates.Drive;
     DriveStates driveState = DriveStates.Stop;
     LifterStates lifterState = LifterStates.Down;
+    IntakeStates intakeStateMotor = IntakeStates.intakeStop;
+    IntakeStates intakeStateArms = IntakeStates.intakeStop;
     TargetStates targetState = TargetStates.TargetOff;
 
 
@@ -23,16 +25,20 @@ public class AutoControlData implements Cloneable {
 
     }
     public AutoControlData(AutoControlData data) {
+        Clone(data,this);
+    }
+
+    public void Clone(AutoControlData source, AutoControlData clone) {
         try{
-            Field[] fields = this.getClass().getDeclaredFields();
+            Field[] fields = clone.getClass().getDeclaredFields();
             for(Field field : fields){
-                field.set(this,field.get(data));
+                field.set(clone,field.get(source));
             }
         }catch(Exception e){
             System.out.println(e.getStackTrace());
         }
     }
-
+    
     @Override
     public  String toString () {
         String sep = "";

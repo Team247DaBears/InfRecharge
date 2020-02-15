@@ -39,5 +39,8 @@ public class testAutoDrive {
       AutoDrive.Drive();
       Assert.assertEquals(0,AutoQueue.getSize());
       Assert.assertEquals(DriveStates.Stop,AutoQueue.currentQueue().driveState);
-    }
+      
+      //DaBearsCloseDevices.printPWD(devices);
+      DaBearsCloseDevices.close(devices);
+      }
    }

@@ -49,6 +49,9 @@ public class testLifter {
       Assert.assertEquals(1,Devices.lifterHoist.get(),0.1);
       Assert.assertEquals(DoubleSolenoid.Value.kForward,Devices.highLifter.get());
       Assert.assertEquals(DoubleSolenoid.Value.kForward,Devices.lowLifter.get());
-     }
 
+      DaBearsCloseDevices.close(devices);
+      DaBearsCloseDevices.close(userinput);
+      DaBearsCloseDevices.close(lifter);
+  }
 }

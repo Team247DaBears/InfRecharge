@@ -4,13 +4,6 @@ import edu.wpi.first.wpilibj.Joystick;
 
 public class DaBearsJoystick {
     Joystick joystick;
-    private int buttonI = 0;
-    private int joystickI = 0;
-
-    public void resetIndexes(){
-        this.buttonI = 0;
-        this.joystickI = 0;
-    }
 
     public DaBearsJoystick(int pwd){
         joystick = new Joystick(pwd);
@@ -24,4 +17,7 @@ public class DaBearsJoystick {
         return joystick.getRawButton(button);
     };
 
+    /*this method for junit tests ... Ignore in prod code */
+    public void resetIndexes(){
+    }
 }

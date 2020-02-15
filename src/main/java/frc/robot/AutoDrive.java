@@ -39,11 +39,11 @@ public class  AutoDrive
                     switch (q.gearState) {
                         case HighGearOff:
                         case HighGearPressed:{
-                            Devices.gearShift.set(DoubleSolenoid.Value.kForward); // set High speed           
+                            Devices.gearShift.set(true); // set High speed           
                         }
                         case LowGearOff:
                         case LowGearPressed: {
-                            Devices.gearShift.set(DoubleSolenoid.Value.kReverse); // set low speed           
+                            Devices.gearShift.set(false); // set low speed           
                         }
                     }
                 }
@@ -83,7 +83,7 @@ public class  AutoDrive
             Devices.frontLeft.set(0); // stop wheels
             Devices.frontRight.set(0); // stop wheels
             Devices.backRight.set(0); // stop wheels
-            Devices.gearShift.set(DoubleSolenoid.Value.kReverse); // set low speed   
+            Devices.gearShift.set(false); // set low speed   
             Devices.backLeft.Position = 0;            
             Devices.frontLeft.Position = 0;            
             Devices.backRight.Position = 0;            

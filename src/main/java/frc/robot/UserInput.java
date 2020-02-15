@@ -10,9 +10,9 @@ public class UserInput
     private static final int Y_AXIS=1;
     private static final int X_AXIS=0;
 
-    public static  DaBearsJoystick leftStick;
-    private static  DaBearsJoystick rightStick;
-    private static  DaBearsJoystick operatorStick;  //driver two
+    public static  DaBearsJoystick leftStick = null;
+    private static  DaBearsJoystick rightStick = null;
+    private static  DaBearsJoystick operatorStick = null;  //driver two
   
     private static final int JSB_ROLLERSFORWARD=0;
       private static final int JSB_ROLLERSREVERSE=1;
@@ -28,12 +28,15 @@ public class UserInput
     private static final int JSB_LIFTERUP=5;
     private static final int JSB_LIFTERDOWN=6;
     private static final int JSB_LIFTERHOIST=7;
+    private static final int JSB_WRITERECORDER=8;
 
 public static void Init()
     {
-        leftStick=new DaBearsJoystick(LEFTPORT);
-        rightStick=new DaBearsJoystick(RIGHTPORT);
-        operatorStick=new DaBearsJoystick(OPERATORPORT);
+        if (leftStick==null) {
+            leftStick=new DaBearsJoystick(LEFTPORT);
+            rightStick=new DaBearsJoystick(RIGHTPORT);
+            operatorStick=new DaBearsJoystick(OPERATORPORT);
+        }
     }
 
     public static double  getLeftStick()    
@@ -51,22 +54,20 @@ public static void Init()
                 return Math.signum(Joystick_val)*(Math.abs(Joystick_val)-Deadband)/(1-Deadband);
 }  
 
-public static LifterStates getCommandedPosition()
+public static boolean getLifterUp()
 {
-    if(operatorStick.getRawButton(JSB_LIFTERUP)){
-       // System.out.println("Button LifterUp Pressed"); 
-        return LifterStates.Up;
-    }
-     if (operatorStick.getRawButton(JSB_LIFTERDOWN)){
-        // System.out.println("Button Lifter Down");
-        return LifterStates.Down;
-    }
-    if(operatorStick.getRawButton(JSB_LIFTERHOIST)){
-        // System.out.println("Button 4 pressed"); 
-         return LifterStates.Hoist; 
-    }
-    return LifterStates.Hold;
- }
+    return operatorStick.getRawButton(JSB_LIFTERUP);
+}
+
+public static boolean getLifterDown()
+{
+    return operatorStick.getRawButton(JSB_LIFTERDOWN);
+}
+
+public static boolean getLifterClimb()
+{
+    return operatorStick.getRawButton(JSB_LIFTERHOIST);
+}
 
 public static boolean getGearButton()
     {
@@ -100,6 +101,10 @@ public static boolean getGearButton()
     public static boolean intakeRun()
     {
         return operatorStick.getRawButton(JSB_INTAKERUN);
+    }
+    public static boolean writeRecorder()
+    {
+        return rightStick.getRawButton(JSB_WRITERECORDER) && leftStick.getRawButton(JSB_WRITERECORDER);
     }
 }
 

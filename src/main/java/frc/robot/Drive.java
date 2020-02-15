@@ -5,9 +5,11 @@ import frc.robot.Devices;
 public class  Drive
 {
 
-  public GearStates currentGearState=GearStates.LowGearOff;
+  public GearStates currentGearState;
 
-    
+    public Drive() {
+        currentGearState=GearStates.LowGearOff;
+    }
     public void drive()
       {
           
@@ -62,11 +64,11 @@ public class  Drive
       {
           case HighGearOff:
           case HighGearPressed:
-          Devices.gearShift.set(DoubleSolenoid.Value.kForward);
+          Devices.gearShift.set(true);
               break;
           case LowGearOff:
           case LowGearPressed:
-              Devices.gearShift.set(DoubleSolenoid.Value.kReverse);
+              Devices.gearShift.set(false);
               break;
       }
   }

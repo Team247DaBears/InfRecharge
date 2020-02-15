@@ -77,7 +77,7 @@ dependencies {
     implementation 'gov.nist.math:jama:1.0.3'
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.hamcrest:hamcrest:2.1'
-    testImplementation 'com.github.mockito:mockito:3.2.10'
+    testImplementation 'com.github.mockito:mockito:3.2.11'
     testImplementation(wpilibDesktopJni(wpi.platforms.desktop))
     testImplementation(wpi.deps.vendor.jni(wpi.platforms.desktop))
 

@@ -46,7 +46,9 @@ public class testDrive {
       Assert.assertEquals(-0.124,Devices.frontLeft.get(),0.1);
       Assert.assertEquals(GearStates.HighGearOff,drive.currentGearState);
       Assert.assertEquals(DoubleSolenoid.Value.kForward,Devices.gearShift.get());
-      
+      DaBearsCloseDevices.close(devices);
+      DaBearsCloseDevices.close(userinput);
+      DaBearsCloseDevices.close(drive);
      }
 
 }
