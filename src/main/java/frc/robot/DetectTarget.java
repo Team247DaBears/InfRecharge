@@ -54,8 +54,8 @@ public Boolean targetTopTarget(Mat image) {
     Size size = current.getBoundary().size;
 
         if (true/* Target Size too Big */) {
-            /* move robot */
-            }
+            /* sample call */
+            AutoQueue.addQueue(true,AutoStates.TeleOpt,GearStates.HighGearPressed,DeviceStates.Drive,DriveStates.Stop,LifterStates.Down,IntakeStates.intakeStop,IntakeStates.intakeStop,TargetStates.TargetOff,0.0,0.0,0.0,0.0);        }
         else if (true/* target size too small */) {
 
             }
@@ -123,7 +123,7 @@ public Target detectTopTarget(Mat image){
     for (int i = 0; i < targets.size(); i++) {
         if (targets.get(i).getPercentArea() >= 1){
             if (targets.get(i).getVerticalAngle() <= -20){
-                System.out.println("-->"+targets.get(i).toString());
+                //System.out.println("-->"+targets.get(i).toString());
                 foundTarget = targets.get(i);
                 SaveTargetImage("findTopTarget", foundTarget, image);
                 //return targets.get(i);

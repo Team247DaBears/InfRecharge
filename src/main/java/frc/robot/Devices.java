@@ -81,7 +81,7 @@ public class Devices {
         gearShift = new Solenoid(PCM_GEARFORWARD);
         Devices.gearShift.set(false); // set default as low
 
-        System.out.println("Init Devics:");
+        //System.out.println("Init Devics:");
         if (UseSparkMax) {
           frontLeft=new DaBearsSpeedController(CANFRONTLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax,20,21);
           frontRight=new DaBearsSpeedController(CANBACKLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax,22,23);

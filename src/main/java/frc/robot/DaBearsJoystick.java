@@ -17,7 +17,8 @@ public class DaBearsJoystick {
         return joystick.getRawButton(button);
     };
 
-    /*this method for junit tests ... Ignore in prod code */
-    public void resetIndexes(){
-    }
+    // for debugging only junit tests
+    /**/public void resetIndexes(){
+    /**/}
+    // for debugging only junit tests
 }

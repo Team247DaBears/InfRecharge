@@ -104,7 +104,9 @@ public static boolean getGearButton()
     }
     public static boolean writeRecorder()
     {
-        return rightStick.getRawButton(JSB_WRITERECORDER) && leftStick.getRawButton(JSB_WRITERECORDER);
+        boolean right = rightStick.getRawButton(JSB_WRITERECORDER);
+        boolean left = leftStick.getRawButton(JSB_WRITERECORDER);
+        return right && left;
     }
 }
 

@@ -68,6 +68,7 @@ public class Robot extends TimedRobot {
           lifter.operate();   
           drive.drive();
           intake.operate();
+          AutoRecordJson.AutoRecorder(); // records userinput & writes file Takes two buttons to turn on//
         }
         case Target: {
 

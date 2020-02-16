@@ -33,18 +33,16 @@ public class testRecordJson {
 
       UserInput.leftStick.resetIndexes();
 
-      lifter.operate();   
       drive.drive();
-      intake.operate();
+      drive.drive();
       Assert.assertEquals(false,AutoRecordJson.WriteLog);
 
-      lifter.operate();   
-      drive.drive();
-      intake.operate();
       AutoRecordJson.AutoRecorder();
       Assert.assertEquals(false,AutoRecordJson.WriteLog);
+      drive.drive();
       AutoRecordJson.AutoRecorder();
-      Assert.assertEquals(false,AutoRecordJson.WriteLog);
+      Assert.assertEquals(true,AutoRecordJson.WriteLog);
+      drive.drive();
       AutoRecordJson.AutoRecorder();
       Assert.assertEquals(true,AutoRecordJson.WriteLog);
       drive.drive();
@@ -60,8 +58,6 @@ public class testRecordJson {
       AutoRecordJson.AutoRecorder();
       Assert.assertEquals(true,AutoRecordJson.WriteLog);
       drive.drive();
-      AutoRecordJson.AutoRecorder();
-      Assert.assertEquals(true,AutoRecordJson.WriteLog);
       drive.drive();
       AutoRecordJson.AutoRecorder();
       Assert.assertEquals(true,AutoRecordJson.WriteLog);
@@ -69,7 +65,8 @@ public class testRecordJson {
       AutoRecordJson.AutoRecorder();
       Assert.assertEquals(true,AutoRecordJson.WriteLog);
       drive.drive();
-//      Assert.assertEquals(3, AutoRecordJson.autodata.size());
+      AutoRecordJson.AutoRecorder();
+      //      Assert.assertEquals(3, AutoRecordJson.autodata.size());
       AutoRecordJson.AutoRecorder();
       Assert.assertEquals(false,AutoRecordJson.WriteLog);
 
