@@ -3,7 +3,7 @@ package frc.robot;
 import java.lang.reflect.*;
 
 public class DaBearsCloseDevices {  
- /*  I dodn't like the warnings it was throwing.
+
  
  
  public static void close (Object devices) {
@@ -32,5 +32,5 @@ public class DaBearsCloseDevices {
             }
           }
         }
-      }*/
+      }
     }

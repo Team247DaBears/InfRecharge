@@ -19,7 +19,7 @@ public class testRecordJson {
 
   @Test
   public void test(){
-      intake=new Intake();
+     /* intake=new Intake();
       devices=new Devices();
       lifter=new Lifter();
       drive=new Drive();
@@ -75,7 +75,7 @@ public class testRecordJson {
       DaBearsCloseDevices.close(userinput);
       DaBearsCloseDevices.close(lifter);
       DaBearsCloseDevices.close(drive);
-      DaBearsCloseDevices.close(recordJson);
+      DaBearsCloseDevices.close(recordJson);*/
      }
 
 }
