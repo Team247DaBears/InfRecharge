@@ -8,11 +8,15 @@
 package frc.robot;
 //Includes hopper
 
+import javax.lang.model.util.ElementScanner6;
+
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import com.revrobotics.SparkMax;
+
+import edu.wpi.first.wpilibj.Solenoid;
 
 public class Shooter {
 
@@ -29,19 +33,22 @@ public class Shooter {
     private CANEncoder encoder;
     private CANPIDController controlLoop;
 
+    private Solenoid shooterSolenoid;
+
 
     //Parameteres for velocity control PID on SparkMax
     private final double KP=5e-5;
-    private final double KI=0;
+    private final double KI=2e-6;
     private final double KD=0;
-    private final double MAXOUT=0;
+    private final double MAXOUT=1;
     private final double MINOUT=-1; //Never run backwards
                                 //It would be logical to use setInverted, and just use positive integers.
                                 //As logical as that would be, I'm not going to do it immediately, because
                                 //I have it from others that the encoders are inverted, and that might not work
                                 //with this.  The solution would be to modify DaBearsSpeedController to invert the encoder
                                 //if using setInverted, but that will require some testing.
-    private final double FFVALUE=0.0;  //Will require experimentation to set a better value
+    private final double FFVALUE=-0.22;  //Will require experimentation to set a better value
+    private final double IZONE=200;
     private final double TARGETRPM=-1000;  //Will begin with a single setpoint.  We'll modify that for multiple distance ranges later.
 
 
@@ -50,6 +57,7 @@ public class Shooter {
         feeder =Devices.feeder;
         conveyor=Devices.conveyor;
         shooter=Devices.shooter;
+        shooterSolenoid=Devices.shooterAngleControl;
 
         encoder=shooter.getEncoder();
         controlLoop=shooter.getPIDController();
@@ -60,6 +68,8 @@ public class Shooter {
         controlLoop.setD(KD);
         controlLoop.setI(KI);
         controlLoop.setOutputRange(MINOUT, MAXOUT);
+        controlLoop.setIZone(IZONE);
+        controlLoop.setFF(FFVALUE/TARGETRPM);
         controlLoop.setReference(0, ControlType.kDutyCycle);
 
         currentState=ShootingStates.IDLE;
@@ -67,6 +77,16 @@ public class Shooter {
 
     public void operate()
     {
+
+        if (UserInput.getShooterLowShot())
+        {
+            shooterSolenoid.set(true);
+        }
+        else
+        {
+            shooterSolenoid.set(false);
+        }
+
         calcNextState();
         setOutputs();
     }
@@ -83,32 +103,30 @@ public class Shooter {
         switch(currentState)
         {
             case IDLE:
-            if (UserInput.getFeeding())
+            if (UserInput.getShooting())
             {
                 currentState=ShootingStates.RAMPING_UP;
                 
             }
             break;
             case RAMPING_UP:
-            if (!UserInput.getFeeding())
+            if (!UserInput.getShooting())
             {
                 currentState=ShootingStates.IDLE;
             }
 
             if (Math.abs((encoder.getVelocity()-TARGETRPM)/TARGETRPM)<=.05)
             {
-                currentState=ShootingStates.FEEDING;
+                currentState=ShootingStates.SHOOTING;
             }
             break;
-            case FEEDING:
-            if (!UserInput.getFeeding())
+            case SHOOTING:
+            if (!UserInput.getShooting())
             {
                 currentState=ShootingStates.IDLE;
             }
             break;
 
-
-            
         }
     }
 
@@ -122,15 +140,35 @@ public class Shooter {
                 feeder.set(FEEDER_HOLD_SPEED);
                 break;
                 case RAMPING_UP:
-                controlLoop.setReference(TARGETRPM, ControlType.kVelocity);
+                //controlLoop.setReference(TARGETRPM, ControlType.kVelocity);
+                //controlLoop.setReference(UserInput.getMotorSpeed(),ControlType.kDutyCycle);
+                setPID();
                 conveyor.set(CONVEYORSPEED);
                 feeder.set(FEEDER_HOLD_SPEED);
                 break;
-                case FEEDING:
-                controlLoop.setReference(TARGETRPM, ControlType.kVelocity);
+                case SHOOTING:
+                //controlLoop.setReference(TARGETRPM, ControlType.kVelocity);
+                //controlLoop.setReference(UserInput.getMotorSpeed(), ControlType.kDutyCycle);
+                setPID();
                 conveyor.set(CONVEYORSHOOTSPEED);
                 feeder.set(FEEDER_FEED_SPEED);
                 break;
+            }
+        }
+
+
+        //This is a work in progress
+        public void setPID()
+        {
+            if (encoder.getVelocity()>-900)
+            { 
+                controlLoop.setReference(-1, ControlType.kDutyCycle);
+            }
+            else if (encoder.getVelocity()<-1050)
+            {controlLoop.setReference(+1, ControlType.kDutyCycle);}
+            else
+            {
+                controlLoop.setReference(-1000, ControlType.kVelocity);
             }
         }
     }
