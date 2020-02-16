@@ -25,6 +25,7 @@ public class Robot extends TimedRobot {
        
   static Lifter lifter;
   static UserInput userinput;
+  static Shooter shooter;
   
   /**
    * This function is run when the robot is first started up and should be used
@@ -33,14 +34,18 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     System.out.println("Command Position:"); 
-    lifter=new Lifter();
-    userinput=new UserInput();
-    devices=new Devices();
-    intake=new Intake();
-    intake.Init();
-    Devices.Init();
+
     UserInput.Init();
+    lifter=new Lifter();
+    intake=new Intake();
+    shooter=new Shooter();
+   // userinput=new UserInput();
+    devices=new Devices();
+    Devices.Init();
+    //UserInput.Init();
     lifter.Init();
+    intake.Init();
+    shooter.Init();
     drive=new Drive();
     
   }
@@ -65,9 +70,12 @@ public class Robot extends TimedRobot {
     AutoControlData autoControlData = AutoQueue.currentQueue();
       switch (autoControlData.autoState) {
         case TeleOpt: {
-          lifter.operate();   
+            
           drive.drive();
           intake.operate();
+          lifter.operate();
+          shooter.operate();
+
         }
         case Target: {
 

@@ -1,5 +1,4 @@
 package frc.robot;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import frc.robot.UserInput;
 import frc.robot.Devices;
 public class  Drive

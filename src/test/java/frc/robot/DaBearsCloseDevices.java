@@ -3,7 +3,10 @@ package frc.robot;
 import java.lang.reflect.*;
 
 public class DaBearsCloseDevices {  
-  public static void close (Object devices) {
+ /*  I dodn't like the warnings it was throwing.
+ 
+ 
+ public static void close (Object devices) {
         Field[] fields = devices.getClass().getFields();
         for(Field field : fields){
           Method[] methods=null;
@@ -29,5 +32,5 @@ public class DaBearsCloseDevices {
             }
           }
         }
-      }
+      }*/
     }

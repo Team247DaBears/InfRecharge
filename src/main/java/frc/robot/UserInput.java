@@ -21,7 +21,7 @@ public class UserInput
     //buttons on driver stick
     private static final int JSB_GEARSHIFT=1;
   
-    private static final int JSB_INTAKEDOWN=4;
+    private static final int JSB_INTAKEDOWN=3;
     private static final int JSB_INTAKEUP=2;
     private static final int JSB_INTAKERUN=1;
   
@@ -29,6 +29,9 @@ public class UserInput
     private static final int JSB_LIFTERDOWN=6;
     private static final int JSB_LIFTERHOIST=7;
     private static final int JSB_WRITERECORDER=8;
+
+    private static final int JSB_FEED=99;//Obviously, it isn't 99
+    private static final int JSB_SHOOT=99;
 
 public static void Init()
     {
@@ -41,11 +44,13 @@ public static void Init()
 
     public static double  getLeftStick()    
     {
-        return getDeadband(leftStick.getRawAxis(Y_AXIS));
+      //  return getDeadband(leftStick.getRawAxis(Y_AXIS));
+      return 0;
     }
 
     public static double  getRightStick(){
-        return getDeadband(rightStick.getRawAxis(Y_AXIS));
+       // return getDeadband(rightStick.getRawAxis(Y_AXIS));
+        return 0;
     }
 
     public static double  getDeadband(double Joystick_val){ 
@@ -66,7 +71,8 @@ public static boolean getLifterDown()
 
 public static boolean getLifterClimb()
 {
-    return operatorStick.getRawButton(JSB_LIFTERHOIST);
+   // return operatorStick.getRawButton(JSB_LIFTERHOIST);
+   return operatorStick.getRawAxis(2)>0.5;
 }
 
 public static boolean getGearButton()
@@ -105,6 +111,19 @@ public static boolean getGearButton()
     public static boolean writeRecorder()
     {
         return rightStick.getRawButton(JSB_WRITERECORDER) && leftStick.getRawButton(JSB_WRITERECORDER);
+    }
+
+    public static boolean getFeeding()
+    {
+        //return operatorStick.getRawButton(JSB_FEED);
+        return operatorStick.getRawAxis(3)>.5;
+    }
+
+    public static boolean getShooting()
+    {
+        //return operatorStick.getRawButton(JSB_SHOOT);
+
+        return operatorStick.getRawAxis(3)>.5;
     }
 }
 

@@ -6,23 +6,27 @@
 /*----------------------------------------------------------------------------*/
 package frc.robot;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.Spark;
+
 
 /**
  * This class will contain all code for various devices
  * (Replaces IO)
  */
 public class Devices {
-    static final boolean UseSparkMax = false;
+    static final boolean UseSparkMax = true;
     static final boolean UseEncoder = true;
       
-    private static final int CANFRONTLEFTPWM = 4;
-    private static final int CANFRONTRIGHTPWM=2;
-    private static final int CANBACKLEFTPWM=5;
-    private static final int CANBACKRIGHTPWM=3;    
+    private static final int CANFRONTLEFTPWM = 12;
+    private static final int CANFRONTRIGHTPWM=5;
+    private static final int CANBACKLEFTPWM=3;
+    private static final int CANBACKRIGHTPWM=4;    
+    private static final int CANSHOOTER=13;
 
     private static final int FRONTLEFTPWM = 12; // victor
     private static final int FRONTRIGHTPWM=13; // victor
@@ -35,13 +39,13 @@ public class Devices {
     private static final int PWM_LIFTER_LEFT = 3;
     private static final int PWM_LIFTER_RIGHT= 4;
     private static final int PWM_COLOR_WHEEL = 5;
-    private static final int PWM_SHOOTER_TOPHOPPER = 6;
+
 
     public static final int  PCM_INTAKE_FORWARD=0;
     public static final int  PCM_INTAKE_BACK=1;
     private static final int PCM_GEARFORWARD = 2; // solonoid3 pin0
-    private static final int PCM_COLOR_WHEEL = 3; // solonoid3 pin0
-    private static final int PCM_SHOOTER_ANGLE = 4; // solonoid3 pin0
+    //private static final int PCM_COLOR_WHEEL = 3; 
+    //private static final int PCM_SHOOTER_ANGLE = 4; //
     
     public static final int  PCM_LIFTER_FORWARD=5;
     public static final int  PCM_LIFTER_BACK=6;
@@ -59,10 +63,13 @@ public class Devices {
       public static DaBearsSpeedController lifter_right_motor;
 
       public static DoubleSolenoid intake_solenoid;
+ // public static DaBearsSpeedController intake_motor;
       public static DaBearsSpeedController intake_motor;
-    // Insert constants
 
-    // Insert fields (variables, objects)
+      public static DaBearsSpeedController feeder;
+      public static DaBearsSpeedController conveyor;
+      public static CANSparkMax shooter;
+
 
     // Insert member functions
 
@@ -71,12 +78,17 @@ public class Devices {
     // This will be called from robot.init, which executes as soon as the power is
     // applied and the roborio boots up.
     public static void Init() {
-      if (frontLeft==null) {
+      System.out.println("Strting init");
+
+
+       // intake_motor=new DaBearsSpeedController(PWM_INTAKE_MOTOR);
         intake_motor=new DaBearsSpeedController(PWM_INTAKE_MOTOR);
+        System.out.println("Inited.");
         intake_solenoid=new DoubleSolenoid(PCM_INTAKE_FORWARD, PCM_INTAKE_BACK);
+        
         lifter_solenoid=new DoubleSolenoid(PCM_LIFTER_FORWARD, PCM_LIFTER_BACK);
         lifter_solenoid.set(DoubleSolenoid.Value.kReverse);  //Set default as down
-
+        
 
         gearShift = new Solenoid(PCM_GEARFORWARD);
         Devices.gearShift.set(false); // set default as low
@@ -96,17 +108,24 @@ public class Devices {
           backLeft=new DaBearsSpeedController(FRONTRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax);
           backRight=new DaBearsSpeedController(BACKRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax);
         }
-        frontRight.setInverted(true);
-        backRight.setInverted(false);
+        System.out.println("Made it passed the drive init");
+        frontLeft.setInverted(true);
+        backLeft.setInverted(true);
 
         lifter_left_motor=new DaBearsSpeedController(PWM_LIFTER_LEFT);
         lifter_right_motor=new DaBearsSpeedController(PWM_LIFTER_RIGHT);
-        lifter_right_motor.setInverted(true);
-        lifter_right_motor.setInverted(true);
-      }
-    else {
-      System.out.println("Init entered twice:");
-    }
+        lifter_left_motor.setInverted(true);
+
+
+        feeder =new DaBearsSpeedController(PWM_SHOOTER_FEEDER);
+        conveyor=new DaBearsSpeedController(PWM_SHOOTER_CONVEYOR);
+
+        shooter=new CANSparkMax(CANSHOOTER,MotorType.kBrushless);
+        
+        
+
+      
+
     }
   }
 
