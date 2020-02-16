@@ -69,7 +69,7 @@ public class AutoRecordJson {
                 autodata.add(q);
             }
             else {
-                System.out.println("Unchanged:" + cq.toString());
+                //System.out.println("Unchanged:" + cq.toString());
             }
             cq.Clone(cq, pq);
         }

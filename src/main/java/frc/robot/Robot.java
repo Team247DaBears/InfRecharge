@@ -25,7 +25,8 @@ public class Robot extends TimedRobot {
        
   static Lifter lifter;
   static UserInput userinput;
-  
+  static CameraStream cameraStream;
+  static DetectTarget detecttarget;
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
@@ -41,6 +42,8 @@ public class Robot extends TimedRobot {
     Devices.Init();
     UserInput.Init();
     lifter.Init();
+//    cameraStream.initCamera();
+//    detecttarget.Init(cameraStream);
     drive=new Drive();
     
   }
@@ -71,6 +74,9 @@ public class Robot extends TimedRobot {
           AutoRecordJson.AutoRecorder(); // records userinput & writes file Takes two buttons to turn on//
         }
         case Target: {
+
+        }
+        case Shooter: {
 
         }
         case Lifter: {

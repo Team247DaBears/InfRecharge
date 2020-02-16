@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import org.opencv.core.Mat;
+
 import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.CvSource;
 import edu.wpi.cscore.UsbCamera;
@@ -42,4 +44,12 @@ public class CameraStream {
 
     private long lastSwitch;
     private boolean cam1=true;
+
+    // function to return single image from the above stream
+    public Mat getImage(){
+        Mat image = new Mat();
+        cvSink.grabFrame(image);
+        return image;
+    }
 }
+
