@@ -10,6 +10,34 @@ public class AutoQueue {
 
     public static java.util.Queue<AutoControlData> autodata = new java.util.ArrayDeque<>();
    
+    public static int addQueue(boolean writelog,
+        AutoStates autostate,
+        GearStates gearstate,
+        DeviceStates devicestate,
+        DriveStates drivestate,
+        LifterStates lifterstate,
+        IntakeStates intakestate,
+        IntakeStates intakearmstate,
+        TargetStates targetstate,
+        Double leftdrivespeed,
+        Double leftdrivepos,
+        Double rightdrivespeed,
+        Double rightdrivepos) {
+        AutoControlData q = new AutoControlData();
+        q.autoState = autostate;
+        q.gearState = gearstate;
+        q.deviceState = devicestate;
+        q.driveState = drivestate;
+        q.lifterState = lifterstate;
+        q.intakeStateMotor = intakestate;
+        q.intakeStateArms = intakearmstate;
+        q.targetState = targetstate;
+        q.LeftDriveSpeed = leftdrivespeed;
+        q.LeftDrivePos = leftdrivepos;
+        q.RightDriveSpeed = rightdrivespeed;
+        q.RightDrivePos = rightdrivepos;
+        return addQueue(q);
+        }
     public static int addQueue(AutoControlData qi)
     {
         AutoControlData q = new AutoControlData(qi);

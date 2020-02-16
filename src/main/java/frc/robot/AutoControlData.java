@@ -1,6 +1,8 @@
 package frc.robot;
 
 import java.lang.reflect.*;
+import java.util.regex.Pattern;
+
 
 public class AutoControlData implements Cloneable {
 
@@ -28,6 +30,7 @@ public class AutoControlData implements Cloneable {
         Clone(data,this);
     }
 
+    /* copies values from source to clone */
     public void Clone(AutoControlData source, AutoControlData clone) {
         try{
             Field[] fields = clone.getClass().getDeclaredFields();
@@ -41,6 +44,45 @@ public class AutoControlData implements Cloneable {
     
     @Override
     public  String toString () {
+        String sep = "";
+        String ret = "";
+        ret = "{";
+        // ret = this.getClass().getSimpleName() + "={";
+        try{
+            Field[] fields = this.getClass().getDeclaredFields();
+            for(Field field : fields){
+                ret = ret + sep + field.get(this);
+                sep = ",";
+            }
+        }catch(Exception e){
+            System.out.println(e.getStackTrace());
+        }
+        return ret + "}";
+    }
+
+    public  String toCode () {
+        String pattern = ".*[Ss]tate.*";
+
+        String sep = "";
+        String ret = "";
+        ret = "AutoQueue.addQueue(";
+        // ret = this.getClass().getSimpleName() + "={";
+        try{
+            Field[] fields = this.getClass().getDeclaredFields();
+            for(Field field : fields){
+                ret = ret + sep;
+                if (Pattern.matches(pattern,field.getName())) {
+                    ret = ret + field.getType().toString().replace("class frc.robot.", "") + ".";
+                }
+                ret = ret + field.get(this);
+                sep = ",";
+            }
+        }catch(Exception e){
+            System.out.println(e.getStackTrace());
+        }
+        return ret + ");";
+    }
+    public  String toJson () {
         String sep = "";
         String ret = "";
         ret = "{";

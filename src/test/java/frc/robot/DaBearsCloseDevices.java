@@ -20,7 +20,7 @@ public class DaBearsCloseDevices {
             if (method.getName()=="close") {
                 try {
                   if (field.get(devices)!=null) {
-                    System.out.println("close:"+devices.getClass().getName()+":"+field.getName());
+                    //System.out.println("close:"+devices.getClass().getName()+":"+field.getName());
                     method.invoke(field.get(devices));
                   }                  
                 } 
