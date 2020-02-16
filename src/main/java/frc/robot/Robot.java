@@ -36,14 +36,14 @@ public class Robot extends TimedRobot {
     System.out.println("Command Position:"); 
 
     UserInput.Init();
-    lifter=new Lifter();
+   // lifter=new Lifter();
     intake=new Intake();
     shooter=new Shooter();
    // userinput=new UserInput();
     devices=new Devices();
     Devices.Init();
     //UserInput.Init();
-    lifter.Init();
+    //lifter.Init();
     intake.Init();
     shooter.Init();
     drive=new Drive();
@@ -73,7 +73,7 @@ public class Robot extends TimedRobot {
             
           drive.drive();
           intake.operate();
-          lifter.operate();
+   //       lifter.operate();
           shooter.operate();
 
         }

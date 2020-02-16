@@ -61,6 +61,8 @@ public class Shooter {
         controlLoop.setI(KI);
         controlLoop.setOutputRange(MINOUT, MAXOUT);
         controlLoop.setReference(0, ControlType.kDutyCycle);
+
+        currentState=ShootingStates.IDLE;
     }
 
     public void operate()
@@ -93,7 +95,7 @@ public class Shooter {
                 currentState=ShootingStates.IDLE;
             }
 
-            if (Math.abs((encoder.getVelocity()-TARGETRPM)/TARGETRPM)>=.95)
+            if (Math.abs((encoder.getVelocity()-TARGETRPM)/TARGETRPM)<=.05)
             {
                 currentState=ShootingStates.FEEDING;
             }
@@ -134,4 +136,4 @@ public class Shooter {
     }
 
 
-}
+

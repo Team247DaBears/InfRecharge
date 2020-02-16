@@ -18,32 +18,30 @@ import edu.wpi.first.wpilibj.Spark;
 public class Intake {
     DoubleSolenoid intakeSolenoid;
 
-    Spark intakeMotor;
+    
+    DaBearsSpeedController intakeMotor;
     private final double INTAKE_SPEED=1.0;
 
     public void Init()
     {
         intakeSolenoid=Devices.intake_solenoid;
         intakeMotor=Devices.intake_motor;
-        if (intakeMotor==null)
-            System.out.println("");
-        else
-           System.out.println("Ok.  Here I am");
+        
     }
 
 
-    public void operate()
-    {
+public void operate()
+{
         if (UserInput.intakeRun())
-        {System.out.println("I want to run");
+        {
             intakeMotor.set(INTAKE_SPEED);
-            System.out.println("OK");
-        }
+
+    }   
         else 
         {
-            System.out.println("I'm not running");
+ 
             intakeMotor.set(0);
-            System.out.println("I didn't");
+   
         }
 
         if (UserInput.intakeDown())

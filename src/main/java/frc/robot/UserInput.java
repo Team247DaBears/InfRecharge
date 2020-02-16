@@ -72,7 +72,8 @@ public static boolean getLifterDown()
 public static boolean getLifterClimb()
 {
    // return operatorStick.getRawButton(JSB_LIFTERHOIST);
-   return operatorStick.getRawAxis(2)>0.5;
+   //return operatorStick.getRawAxis(2)>0.5;
+   return false;
 }
 
 public static boolean getGearButton()
