@@ -25,6 +25,9 @@ public class Robot extends TimedRobot {
        
   static Lifter lifter;
   static UserInput userinput;
+
+  static Shooter shooter;
+  
   static CameraStream cameraStream;
   static DetectTarget detecttarget;
   /**
@@ -34,16 +37,21 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     System.out.println("Command Position:"); 
-    lifter=new Lifter();
-    userinput=new UserInput();
-    devices=new Devices();
+
+    UserInput.Init();
+   // lifter=new Lifter();
     intake=new Intake();
-    intake.Init();
+    shooter=new Shooter();
+   // userinput=new UserInput();
+    devices=new Devices();
     Devices.Init();
     UserInput.Init();
-    lifter.Init();
+    //lifter.Init();
+    intake.Init();
+    shooter.Init();
 //    cameraStream.initCamera();
 //    detecttarget.Init(cameraStream);
+
     drive=new Drive();
     
   }
@@ -68,10 +76,15 @@ public class Robot extends TimedRobot {
     AutoControlData autoControlData = AutoQueue.currentQueue();
       switch (autoControlData.autoState) {
         case TeleOpt: {
-          lifter.operate();   
+            
           drive.drive();
           intake.operate();
+   //       lifter.operate();
+          shooter.operate();
+
+
           AutoRecordJson.AutoRecorder(); // records userinput & writes file Takes two buttons to turn on//
+
         }
         case Target: {
 

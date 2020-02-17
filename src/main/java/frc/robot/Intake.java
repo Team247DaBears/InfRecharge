@@ -10,15 +10,15 @@
 
 /*----------------------------------------------------------------------------*/
 
-
-
 package frc.robot;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Spark;
 
 public class Intake {
     DoubleSolenoid intakeSolenoid;
 
+    
     DaBearsSpeedController intakeMotor;
     private final double INTAKE_SPEED=1.0;
 
@@ -26,17 +26,22 @@ public class Intake {
     {
         intakeSolenoid=Devices.intake_solenoid;
         intakeMotor=Devices.intake_motor;
+        
     }
 
-    public void operate()
-    {
+
+public void operate()
+{
         if (UserInput.intakeRun())
         {
             intakeMotor.set(INTAKE_SPEED);
-        }
+
+    }   
         else 
         {
+ 
             intakeMotor.set(0);
+   
         }
 
         if (UserInput.intakeDown())
@@ -50,7 +55,8 @@ public class Intake {
         }
         else 
        {
-           intakeSolenoid.set(DoubleSolenoid.Value.kOff);
+     
+        intakeSolenoid.set(DoubleSolenoid.Value.kOff);
         }
 }
 }

@@ -17,6 +17,11 @@ public class DaBearsJoystick {
         return joystick.getRawButton(button);
     };
 
+    public int getPOV()
+    {
+        return joystick.getPOV();
+    }
+
     // for debugging only junit tests
     /**/public void resetIndexes(){}
     /**/public void setButtonResp(boolean resp1, boolean resp2, boolean resp3){}

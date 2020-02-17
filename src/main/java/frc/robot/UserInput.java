@@ -7,28 +7,36 @@ public class UserInput
     private static final int RIGHTPORT=1;
     private static final int OPERATORPORT=2;
     private static final double Deadband=.2;
-    private static final int Y_AXIS=1;
-    private static final int X_AXIS=0;
+    
+    
 
     public static  DaBearsJoystick leftStick = null;
     public static  DaBearsJoystick rightStick = null;
     public static  DaBearsJoystick operatorStick = null;  //driver two
   
-    private static final int JSB_ROLLERSFORWARD=0;
-      private static final int JSB_ROLLERSREVERSE=1;
-      private static final int AXIS_CLAWOPENCLOSE=2;
-  
-    //buttons on driver stick
+    
+
+    //buttons and controls on driver stick.  (Left and right are same, for now)
+
+    private static final int X_AXIS=0;
+    private static final int Y_AXIS=1;
+    //buttons and controls on operator stick (XBox controller)
     private static final int JSB_GEARSHIFT=1;
   
-    private static final int JSB_INTAKEDOWN=4;
+    private static final int JSB_INTAKEDOWN=3;
     private static final int JSB_INTAKEUP=2;
     private static final int JSB_INTAKERUN=1;
   
     private static final int JSB_LIFTERUP=5;
     private static final int JSB_LIFTERDOWN=6;
-    private static final int JSB_LIFTERHOIST=7;
-    private static final int JSB_WRITERECORDER=8;
+
+    private static final int AXIS_HOIST = 2;
+    private static final int AXIS_SHOOTER = 5;
+    
+    private static final int JSB_WRITERECORDER=8; 
+
+    private static final int JSB_FEED=99;//Obviously, it isn't 99
+    private static final int JSB_SHOOT=99;
 
 public static void Init()
     {
@@ -41,11 +49,13 @@ public static void Init()
 
     public static double  getLeftStick()    
     {
-        return getDeadband(leftStick.getRawAxis(Y_AXIS));
+        return -1*getDeadband(leftStick.getRawAxis(Y_AXIS));
+
     }
 
     public static double  getRightStick(){
-        return getDeadband(rightStick.getRawAxis(Y_AXIS));
+        return -1*getDeadband(rightStick.getRawAxis(Y_AXIS));
+       
     }
 
     public static double  getDeadband(double Joystick_val){ 
@@ -54,6 +64,8 @@ public static void Init()
                 return Math.signum(Joystick_val)*(Math.abs(Joystick_val)-Deadband)/(1-Deadband);
 }  
 
+
+//Lifter up and lifter down are for extending the lifter via the solenoids
 public static boolean getLifterUp()
 {
     return operatorStick.getRawButton(JSB_LIFTERUP);
@@ -66,7 +78,8 @@ public static boolean getLifterDown()
 
 public static boolean getLifterClimb()
 {
-    return operatorStick.getRawButton(JSB_LIFTERHOIST);
+   //return operatorStick.getRawAxis(AXIS_HOIST)>0.5;
+   return false;
 }
 
 public static boolean getGearButton()
@@ -75,21 +88,6 @@ public static boolean getGearButton()
 		return rightStick.getRawButton(JSB_GEARSHIFT);
     }
 
-    public static boolean getClawButton()
-    {
-         if (operatorStick.getRawAxis(AXIS_CLAWOPENCLOSE)>0.5) return true;
-        else return false;
-    }
-
-    public static boolean rollersForward()
-    {
-        return operatorStick.getRawButton(JSB_ROLLERSFORWARD);
-    }
-
-    public static boolean rollersReverse()
-    {
-        return operatorStick.getRawButton(JSB_ROLLERSREVERSE);
-    }
     public static boolean intakeUp()
     {
         return operatorStick.getRawButton(JSB_INTAKEUP);
@@ -107,6 +105,18 @@ public static boolean getGearButton()
         boolean right = rightStick.getRawButton(JSB_WRITERECORDER);
         boolean left = leftStick.getRawButton(JSB_WRITERECORDER);
         return right && left;
+    }
+
+    //Activate the sequence to spin up the motor and to increase conveyor speed
+    public static boolean getShooting()
+    {
+        return operatorStick.getRawAxis(AXIS_SHOOTER)>.5;
+    }
+
+    //Activate solenoid to tilt the shooter    
+    public static boolean getShooterLowShot()
+    {
+        return operatorStick.getPOV()>=135 && operatorStick.getPOV()<=225;
     }
 }
 
