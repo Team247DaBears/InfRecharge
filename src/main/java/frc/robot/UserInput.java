@@ -11,8 +11,8 @@ public class UserInput
     private static final int X_AXIS=0;
 
     public static  DaBearsJoystick leftStick = null;
-    private static  DaBearsJoystick rightStick = null;
-    private static  DaBearsJoystick operatorStick = null;  //driver two
+    public static  DaBearsJoystick rightStick = null;
+    public static  DaBearsJoystick operatorStick = null;  //driver two
   
     private static final int JSB_ROLLERSFORWARD=0;
       private static final int JSB_ROLLERSREVERSE=1;

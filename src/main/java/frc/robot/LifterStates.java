@@ -2,8 +2,9 @@ package frc.robot;
 
 public enum LifterStates implements Cloneable{
 
-Up,
-Down,
-Hold,
-Hoist
+LifterUp,
+LifterDown,
+LifterHoldUp,
+LifterHoldDown,
+LifterHoist
 }

@@ -16,9 +16,6 @@ import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
-import edu.wpi.first.wpilibj.DriverStation;
-
-import java.net.URL;
 import java.util.List;
 
 //
@@ -63,7 +60,7 @@ public Boolean targetTopTarget(Mat image) {
 
         if (true/* Target Size too Big */) {
             /* sample call */
-            AutoQueue.addQueue(true,AutoStates.TeleOpt,GearStates.HighGearPressed,DeviceStates.Drive,DriveStates.Stop,LifterStates.Down,IntakeStates.intakeStop,IntakeStates.intakeStop,TargetStates.TargetOff,0.0,0.0,0.0,0.0);        }
+            AutoQueue.addQueue(true,AutoStates.TeleOpt,GearStates.HighGearPressed,DeviceStates.Drive,DriveStates.Stop,LifterStates.LifterDown,0.0,IntakeStates.intakeStop,IntakeStates.intakeStop,TargetStates.TargetOff,0.0,0.0,0.0,0.0);        }
         else if (true/* target size too small */) {
 
             }

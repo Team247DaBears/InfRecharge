@@ -22,7 +22,7 @@ public class testLifter {
       lifter=new Lifter();
       UserInput.leftStick.resetIndexes();
 
-      Assert.assertEquals(LifterStates.Down,lifter.heldPosition);
+      Assert.assertEquals(LifterStates.LifterDown,lifter.heldPosition);
       Assert.assertEquals(0,Devices.lifterHoist.get(),0.1);
       Assert.assertEquals(DoubleSolenoid.Value.kReverse,Devices.highLifter.get());
       Assert.assertEquals(DoubleSolenoid.Value.kReverse,Devices.lowLifter.get());

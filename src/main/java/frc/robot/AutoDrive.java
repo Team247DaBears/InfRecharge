@@ -1,5 +1,4 @@
 package frc.robot;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 import frc.robot.Devices;
 public class  AutoDrive
@@ -62,11 +61,6 @@ public class  AutoDrive
                 break;            
             }
         }
-        // update the position when no encoder used
-        Devices.frontLeft.updatePosition(); // set the left speed
-        Devices.backLeft.updatePosition(); // set follower speed
-        Devices.frontRight.updatePosition(); // set the right speed
-        Devices.backRight.updatePosition(); // set follower speed
       }
 
     public static void StopAutoDrive(boolean force) {

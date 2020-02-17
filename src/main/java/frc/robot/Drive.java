@@ -1,5 +1,4 @@
 package frc.robot;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import frc.robot.UserInput;
 import frc.robot.Devices;
 public class  Drive
@@ -12,11 +11,11 @@ public class  Drive
     }
     public void drive()
       {
-          
 
           double leftSideMotorSpeed= UserInput.getLeftStick();
           double rightSideMotorSpeed=UserInput.getRightStick();
 //System.out.println("Ls"+leftSideMotorSpeed);
+//System.out.println("Rs"+rightSideMotorSpeed);
          Devices.backLeft.set(leftSideMotorSpeed);
          Devices.frontLeft.set(leftSideMotorSpeed);
          Devices.frontRight.set(rightSideMotorSpeed);
@@ -25,7 +24,6 @@ public class  Drive
       
       }
    
-    
     public void shiftGears(){
 
    // if (UserInput.getGearButton()) System.out.println("true");

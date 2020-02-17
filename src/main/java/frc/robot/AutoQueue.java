@@ -16,6 +16,7 @@ public class AutoQueue {
         DeviceStates devicestate,
         DriveStates drivestate,
         LifterStates lifterstate,
+        double lifterpos,
         IntakeStates intakestate,
         IntakeStates intakearmstate,
         TargetStates targetstate,
@@ -29,6 +30,7 @@ public class AutoQueue {
         q.deviceState = devicestate;
         q.driveState = drivestate;
         q.lifterState = lifterstate;
+        q.lifterPos = lifterpos;
         q.intakeStateMotor = intakestate;
         q.intakeStateArms = intakearmstate;
         q.targetState = targetstate;

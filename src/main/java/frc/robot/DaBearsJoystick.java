@@ -18,7 +18,9 @@ public class DaBearsJoystick {
     };
 
     // for debugging only junit tests
-    /**/public void resetIndexes(){
-    /**/}
+    /**/public void resetIndexes(){}
+    /**/public void setButtonResp(boolean resp1, boolean resp2, boolean resp3){}
+    /**/public void setButtonResp(boolean[] resp){}
+    /**/public void setJoystickResp(double[] resp){}
     // for debugging only junit tests
 }

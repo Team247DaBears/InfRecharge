@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedController;
 
+import java.lang.Math.*;
+
 public class DaBearsSpeedController implements SpeedController {
 
     SpeedController speedController = null;
@@ -119,24 +121,33 @@ public class DaBearsSpeedController implements SpeedController {
         }
     }
     public double getPosition() {
+        updatePosition();
         return currentPosition;
     }
     public void updatePosition() {
+        double sign = java.lang.Math.signum(get());
+        if (sign>=0){
+            sign=1;
+        }
+        if (getInverted()) {
+            sign = sign * -1;
+            System.out.println("inverted:"+sign);
+        } 
         if (useSparkMax) {
             if (sparkMaxEncoder!=null) {
                 currentPosition = Position - sparkMaxEncoder.getPosition();
  //               System.out.println("sparkmax:" + currentPosition);
             }
             else {
-                currentPosition--;
- //               System.out.println("decrementer:" + currentPosition);
+                currentPosition = currentPosition + (1 * sign);
+                //               System.out.println("decrementer:" + currentPosition);
             }
         }
         else {
             if (victorEncoder!=null) {
 //                return Position - victorEncoder.get();
                 if (isRunningTest()) {
-                    currentPosition--;
+                    currentPosition = currentPosition + (1 * sign);
  //                   System.out.println("decrementer:" + currentPosition);
                 }
                 else {
@@ -145,7 +156,7 @@ public class DaBearsSpeedController implements SpeedController {
                 }
             }
             else {
-                currentPosition--;
+                currentPosition = currentPosition + (1 * sign);
  //               System.out.println("decrementer:" + currentPosition);
             }
         }
@@ -200,6 +211,7 @@ public class DaBearsSpeedController implements SpeedController {
             if (this.victorMotor != null) {
             this.victorMotor.close();
             this.victorMotor = null;
+            this.speedController = null;
             }
         }
         catch (Exception e){
@@ -220,6 +232,7 @@ public class DaBearsSpeedController implements SpeedController {
                 this.sparkMaxMotor = null;
                 this.sparkMaxEncoder = null;
                 this.sparkMaxPIDController = null;
+                this.speedController = null;
             }
         }
         catch (Exception e){
