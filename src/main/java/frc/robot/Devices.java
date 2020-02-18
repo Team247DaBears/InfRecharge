@@ -17,8 +17,8 @@ import edu.wpi.first.wpilibj.Solenoid;
  * (Replaces IO)
  */
 public class Devices {
-    static final boolean UseSparkMax = false;
-    static final boolean UseEncoder = false;
+    static  boolean UseSparkMax = true;
+    static  boolean UseEncoder = true;
       
     private static final int CANFRONTLEFTPWM = 12;
     private static final int CANFRONTRIGHTPWM=5;
