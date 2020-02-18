@@ -1,4 +1,9 @@
 package frc.robot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import edu.wpi.cscore.CvSource;
+import edu.wpi.first.cameraserver.CameraServer;
+
 
 import com.kylecorry.frc.vision.Range;
 import com.kylecorry.frc.vision.camera.CameraSettings;
@@ -22,9 +27,14 @@ import java.util.List;
 
 public class DetectTarget {
 CameraStream camerastream;
+CvSource outputStream;
+private Boolean isRunningTest = null;
 
     public void Init(CameraStream camera) {
         camerastream = camera;
+        outputStream = CameraServer.getInstance().putVideo("TargetCam", 320, 240);
+        outputStream.setFPS(12);
+        outputStream.setResolution(320, 240);
     }
 
  /**
@@ -35,17 +45,33 @@ CameraStream camerastream;
 public Boolean shootTopTarget() {
       Mat image;
       image = camerastream.getImage();
-
-    if (image != null) {
-        if (targetTopTarget(image)) {
-        // Shoot the ball by starting autoshoot
-        //AutoQueue.addQueue(true,AutoStates.Shooter,GearStates.HighGearPressed,DeviceStates.Drive,DriveStates.Stop,LifterStates.Down,IntakeStates.intakeStop,IntakeStates.intakeStop,TargetStates.TargetOff,0.0,0.0,0.0,0.0);        
+      
+      if (Devices.frontLeft.get() == 0.0 && Devices.frontRight.get() == 0.0) {
+        if (image != null) {
+        if (image.height()>0 && image.width() >0){
+            if (targetTopTarget(image)) {
+            // Shoot the ball by starting autoshoot
+            //AutoQueue.addQueue(true,AutoStates.Shooter,GearStates.HighGearPressed,DeviceStates.Drive,DriveStates.Stop,LifterStates.Down,IntakeStates.intakeStop,IntakeStates.intakeStop,TargetStates.TargetOff,0.0,0.0,0.0,0.0);        
+            return true;
+            }
+            else {
+                SmartDashboard.putString("Targetting","No Target Found. You must see it to push the button.");
+                return false;
+            }
         }
-        return true;
-
+        else {
+            SmartDashboard.putString("Targetting","Image Capture Failed. Try again ... press the button?");
+            return false;
+        }
     }
     else {
-       return false;
+        SmartDashboard.putString("Targetting","Image Capture Failed. Try again ... press the button?");
+        return false;
+    }
+  }
+    else {
+        SmartDashboard.putString("Targetting","Don't move robot while trying to target.");
+        return false;
     }
 }
 /**
@@ -58,6 +84,7 @@ public Boolean targetTopTarget(Mat image) {
     Target current = detectTopTarget(image);
     Size size = current.getBoundary().size;
 
+        System.out.println("target:"+current.toString());
         if (true/* Target Size too Big */) {
             /* sample call */
             AutoQueue.addQueue(true,AutoStates.TeleOpt,GearStates.HighGearPressed,DeviceStates.Drive,DriveStates.Stop,LifterStates.LifterDown,0.0,IntakeStates.intakeStop,IntakeStates.intakeStop,TargetStates.TargetOff,0.0,0.0,0.0,0.0);        }
@@ -151,7 +178,25 @@ public Target detectTopTarget(Mat image){
     Imgproc.drawMarker(image, new Point(boundary.center.x, centerY), new Scalar(255, 0, 255), Core.TYPE_GENERAL, 30, 2);    
 
     // The following line is for desktop testing, use the CameraServer to display the image on a robot
-    Imgcodecs.imwrite("snap_" + name + System.currentTimeMillis() + ".jpg", image);
-  }
+
+    if (isRunningTest()) {
+        Imgcodecs.imwrite("snap_" + name + ".jpg", image);
+    }
+    else {
+        outputStream.putFrame(image);
+    }
+}
+
+private boolean isRunningTest() {
+    if (isRunningTest == null) {
+        isRunningTest = true;
+        try {
+            Class.forName("org.junit.Test");
+        } catch (ClassNotFoundException e) {
+            isRunningTest = false;
+        }
+    }
+    return isRunningTest;
+}
 
 }

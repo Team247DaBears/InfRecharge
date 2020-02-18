@@ -34,6 +34,7 @@ public class UserInput
     private static final int AXIS_SHOOTER = 5;
     
     private static final int JSB_WRITERECORDER=8; 
+    private static final int JSB_GETTARGET=9;
 
     private static final int JSB_FEED=99;//Obviously, it isn't 99
     private static final int JSB_SHOOT=99;
@@ -107,6 +108,10 @@ public static boolean getGearButton()
         return right && left;
     }
 
+    public static boolean getTarget()
+    {
+        return rightStick.getRawButton(JSB_GETTARGET);
+    }
     //Activate the sequence to spin up the motor and to increase conveyor speed
     public static boolean getShooting()
     {

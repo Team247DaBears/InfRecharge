@@ -13,6 +13,7 @@ import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.CvSource;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Add your docs here.
@@ -39,7 +40,7 @@ public class CameraStream {
         outputStream = CameraServer.getInstance().putVideo("DriverCam", 320, 240);
         outputStream.setFPS(12);
         outputStream.setResolution(320, 240);
-        cvSink.setSource(camera1);
+        //cvSink.setSource(camera1);
     }
 
     private long lastSwitch;
@@ -48,7 +49,16 @@ public class CameraStream {
     // function to return single image from the above stream
     public Mat getImage(){
         Mat image = new Mat();
-        cvSink.grabFrame(image);
+        //cvSink.grabFrameNoTimeout(image);
+        int curBright = camera1.getBrightness();
+        camera1.setExposureManual(10);
+        cvSink.grabFrame(image, 200);
+        camera1.setExposureManual(curBright);
+        //SmartDashboard.putBoolean("targetImage",(image != null));
+        //SmartDashboard.putNumber("image width:",(double)image.width());
+        //SmartDashboard.putNumber("image height:",(double)image.height());
+        
+        //cvSink.grabFrame(image);
         return image;
     }
 }
