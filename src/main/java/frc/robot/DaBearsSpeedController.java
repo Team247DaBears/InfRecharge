@@ -1,6 +1,7 @@
 package frc.robot;
 
 import com.revrobotics.*;
+import com.revrobotics.CANPIDController.ArbFFUnits;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Victor;
@@ -240,5 +241,61 @@ public class DaBearsSpeedController implements SpeedController {
         }
 
             return true;
+    }
+    public void setP(double kp) {
+        if (useSparkMax && useEncoder) {
+            sparkMaxPIDController.setP(kp);
+        } 
+    }
+    public void setD(double kd) {
+        if (useSparkMax && useEncoder) {
+            sparkMaxPIDController.setD(kd);
+        } 
+    }
+    public void setI(double ki) {
+        if (useSparkMax && useEncoder) {
+            sparkMaxPIDController.setI(ki);
+        } 
+    }
+    public void setOutputRange(double mino, double maxo) {
+        if (useSparkMax && useEncoder) {
+            sparkMaxPIDController.setOutputRange(mino,maxo);
+        } 
+    }
+    public void setIZone(double izone) {
+        if (useSparkMax && useEncoder) {
+            sparkMaxPIDController.setIZone(izone);
+        } 
+    }
+    public void setFF(double ff) {
+        if (useSparkMax && useEncoder) {
+            sparkMaxPIDController.setFF(ff);
+        } 
+    }
+    public void setReference(double val,ControlType ct) {
+        if (useSparkMax && useEncoder) {
+            sparkMaxPIDController.setReference(val, ct);
+        } 
+    }
+    public void setReference(double val,ControlType ct, int pidslot) {
+        if (useSparkMax && useEncoder) {
+            sparkMaxPIDController.setReference(val, ct, pidslot);
+        } 
+    }
+    public void setReference(double val,ControlType ct, int pidslot, int arb) {
+        if (useSparkMax && useEncoder) {
+            sparkMaxPIDController.setReference(val, ct, pidslot, arb );
+        } 
+    }
+    public void setReference(double val,ControlType ct, int pidslot, double arbfeed, ArbFFUnits arbff) {
+        if (useSparkMax && useEncoder) {
+            sparkMaxPIDController.setReference(val, ct, pidslot, arbfeed, arbff );
+        } 
+    }
+    public double getVelocity() {
+        if (useSparkMax && useEncoder) {
+            return sparkMaxEncoder.getVelocity();
+        } 
+        return this.get(); // otherwise return speed
     }
 }
