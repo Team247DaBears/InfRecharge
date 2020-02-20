@@ -5,6 +5,15 @@ import com.revrobotics.ControlType;
 import frc.robot.Devices;
 public class  AutoDrive
 {
+    private static final double KP=5e-5;
+    private static final double KI=2e-6;
+    private static final double KD=0;
+    private static final double MAXOUT=.3;
+    private static final double MINOUT=-.3;
+    private static final double FFVALUE=-0.22;  //Will require experimentation to set a better value
+    private static final double IZONE=200;
+    private static final double TARGETRPM=-1000;  //Will begin with a single setpoint.  We'll modify that for multiple distance ranges later.
+
     public static void Drive()
       {
         AutoControlData q = AutoQueue.currentQueue();
@@ -95,6 +104,11 @@ public class  AutoDrive
     public static void autonomousModeInit(){
         Devices.backLeft.setFollower(Devices.frontLeft); // set follower speed
         Devices.backRight.setFollower(Devices.frontRight); // set follower speed
+        InitEncoderController(Devices.frontLeft);
+        InitEncoderController(Devices.frontRight);
+        InitEncoderController(Devices.backLeft);
+        InitEncoderController(Devices.backRight);
+
         AutoQueue.clearQueue();  
         // drive forward for 2ft
         AutoQueue.addDriveQueue(AutoStates.Drive,
@@ -108,5 +122,15 @@ public class  AutoDrive
             -.3,10.0, /*LeftDrivePos,LeftDriveSpeed*/
             -.1,10.0 /*RightDrivePos,RightDriveSpeed*/);
 //        AutoQueue.addTargetQueue(AutoStates.Target,TargetStates.TargetStart,2);
-      }    
+      }
+      public static void InitEncoderController(DaBearsSpeedController motor) {
+        motor.set(0);
+        motor.setP(KP);
+        motor.setD(KD);
+        motor.setI(KI);
+        motor.setOutputRange(MINOUT, MAXOUT);
+        motor.setIZone(IZONE);
+        motor.setFF(FFVALUE/TARGETRPM);
+        motor.setReference(0, ControlType.kPosition);
+    }
 }       
