@@ -16,6 +16,7 @@ public class testRecordJson_Lifter {
   static UserInput userinput;
   static Lifter lifter;
   static Intake intake;
+  static Shooter shooter;
   static AutoRecordJson recordJson;
 
   @Test
@@ -25,12 +26,14 @@ public class testRecordJson_Lifter {
       lifter=new Lifter();
       drive=new Drive();
       userinput=new UserInput();
-      recordJson = new AutoRecordJson(devices,intake,lifter,drive,userinput);
+      shooter=new Shooter();
+      recordJson = new AutoRecordJson(devices,intake,lifter,drive,userinput,shooter);
 
       Devices.Init();
       intake.Init();
       lifter.Init();
       UserInput.Init();
+      shooter.Init();
       UserInput.leftStick.setButtonResp(false,false, false);
       UserInput.rightStick.setButtonResp(false,false, false);
       drive.drive(); 
@@ -99,6 +102,7 @@ public class testRecordJson_Lifter {
       AutoRecordJson.AutoRecorder(); // true,false
       Assert.assertEquals(false,AutoRecordJson.WriteLog);
 
+      DaBearsCloseDevices.close(shooter);
       DaBearsCloseDevices.close(intake);
       DaBearsCloseDevices.close(devices);
       DaBearsCloseDevices.close(userinput);

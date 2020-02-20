@@ -26,6 +26,11 @@ public class DaBearsJoystick  {
         return buttonResponse[buttonI++];
     };
 
+    public int getPOV(){
+        System.out.println("junit.RawButton:"+buttonResponse[buttonI]);
+        return (int)joystickResponse[joystickI++];
+    }
+
     // for debugging only junit tests
     /**/public void resetIndexes(){
     /**/    buttonI = 0;

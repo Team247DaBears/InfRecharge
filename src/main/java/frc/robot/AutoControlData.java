@@ -12,10 +12,14 @@ public class AutoControlData implements Cloneable {
     DeviceStates deviceState = DeviceStates.Drive;
     DriveStates driveState = DriveStates.Stop;
     LifterStates lifterState = LifterStates.LifterDown;
-    double lifterPos = 0;
+    double lifterLeftPos = 0;
+    double lifterRightPos = 0;
+    ShootingStates shootingState = ShootingStates.IDLE;
+    double shootingRamp = 0;
     IntakeStates intakeStateMotor = IntakeStates.intakeStop;
     IntakeStates intakeStateArms = IntakeStates.intakeStop;
     TargetStates targetState = TargetStates.TargetOff;
+    double targetLoop = 0;
 
 
     Double LeftDriveSpeed=0.0;

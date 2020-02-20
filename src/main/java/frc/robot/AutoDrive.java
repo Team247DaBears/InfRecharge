@@ -1,5 +1,7 @@
 package frc.robot;
 
+import com.revrobotics.ControlType;
+
 import frc.robot.Devices;
 public class  AutoDrive
 {
@@ -22,19 +24,25 @@ public class  AutoDrive
                 Devices.frontRight.setPosition(q.RightDrivePos); // set the right speed
                 Devices.frontRight.setFollower(Devices.backRight); // set follower speed
                 q.driveState = DriveStates.Drive;
+                Devices.frontLeft.setPosition(0);
+                Devices.frontRight.setPosition(0);
             }
             case Drive: {
                 double frontLeftPos = Devices.frontLeft.getPosition();
-                double backLeftPos = Devices.backLeft.getPosition();
+                //double backLeftPos = Devices.backLeft.getPosition();
 
                 double frontRightPos = Devices.frontRight.getPosition();
-                double backRightPos = Devices.backRight.getPosition();
-                
-                if (frontLeftPos!=0 && frontRightPos!=0) {
+                //double backRightPos = Devices.backRight.getPosition();
+
+                double leftDiff = q.LeftDrivePos - frontLeftPos;
+                double rightDiff = q.RightDrivePos - frontRightPos;
+                if (leftDiff > .2 || rightDiff > .2) {
+                    Devices.frontLeft.setReference(q.LeftDrivePos, ControlType.kPosition);
+                    Devices.frontRight.setReference(q.RightDrivePos, ControlType.kPosition);
+
+                    // not sure the following are needed with PID SparkMax Example doesn't have
                     Devices.frontLeft.set(q.LeftDriveSpeed); // set the left speed
-                    Devices.frontLeft.setFollower(Devices.backLeft); // set follower speed
                     Devices.frontRight.set(q.RightDriveSpeed); // set the right speed
-                    Devices.frontRight.setFollower(Devices.backRight); // set follower speed
                     switch (q.gearState) {
                         case HighGearOff:
                         case HighGearPressed:{
@@ -85,17 +93,20 @@ public class  AutoDrive
         }
     }
     public static void autonomousModeInit(){
-        AutoQueue.clearQueue();
-        AutoControlData q=new AutoControlData();      
-  
-        // drive backward for 2ft
-        q.autoState = AutoStates.Drive;
-        q.driveState = DriveStates.DriveStart;
-        q.gearState = GearStates.LowGearPressed;
-        q.LeftDrivePos=250;
-        q.LeftDriveSpeed=-.5;
-        q.RightDrivePos=250;
-        q.RightDriveSpeed=-.5;
-        AutoQueue.addQueue(q);
+        Devices.backLeft.setFollower(Devices.frontLeft); // set follower speed
+        Devices.backRight.setFollower(Devices.frontRight); // set follower speed
+        AutoQueue.clearQueue();  
+        // drive forward for 2ft
+        AutoQueue.addDriveQueue(AutoStates.Drive,
+            DriveStates.DriveStart,
+            GearStates.LowGearOff,
+            .1,10.0, /*LeftDrivePos,LeftDriveSpeed*/
+            .1,10.0 /*RightDrivePos,RightDriveSpeed*/);
+        AutoQueue.addDriveQueue(AutoStates.Drive,
+            DriveStates.DriveStart,
+            GearStates.LowGearOff,
+            -.3,10.0, /*LeftDrivePos,LeftDriveSpeed*/
+            -.1,10.0 /*RightDrivePos,RightDriveSpeed*/);
+//        AutoQueue.addTargetQueue(AutoStates.Target,TargetStates.TargetStart,2);
       }    
 }       

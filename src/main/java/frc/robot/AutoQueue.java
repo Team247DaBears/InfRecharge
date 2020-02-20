@@ -10,13 +10,76 @@ public class AutoQueue {
 
     public static java.util.Queue<AutoControlData> autodata = new java.util.ArrayDeque<>();
    
-    public static int addQueue(boolean writelog,
-        AutoStates autostate,
+    /**
+   * Queue AutoShoot States. 
+   * @param autoState Automous Shooter state
+   * @param ShootingStates State of the Shooter
+   * @param ShootingRamp Number of cycles before changing state
+   * @return int number of entries in the queue
+   */
+    public static int addShooterQueue(AutoStates autostate,
+        ShootingStates shootingstates,
+        Double shootingramp) {
+        AutoControlData q = new AutoControlData();
+        q.autoState = autostate;
+        q.shootingState = shootingstates;
+        q.shootingRamp = shootingramp;
+        return addQueue(q);
+        }
+    /**
+   * Queue AutoShoot States. 
+   * @param autoState Automous Drive state
+   * @param DriveState State of the Drive
+   * @param GearState State of the Gear
+   * @param LeftSpeed speed (double) of left track
+   * @param LeftPos PID position (double)
+   * @param RightSpeed speed (double) of left track
+   * @param RightPos PID Position (double) 
+   * @return int number of entries in the queue
+   */
+    public static int addDriveQueue(AutoStates autostate,
+        DriveStates drivestate,
         GearStates gearstate,
-        DeviceStates devicestate,
+        Double leftdrivespeed,
+        Double leftdrivepos,
+        Double rightdrivespeed,
+        Double rightdrivepos) {
+        AutoControlData q = new AutoControlData();
+        q.autoState = autostate;
+        q.gearState = gearstate;
+        q.driveState = drivestate;
+        q.LeftDriveSpeed = leftdrivespeed;
+        q.LeftDrivePos = leftdrivepos;
+        q.RightDriveSpeed = rightdrivespeed;
+        q.RightDrivePos = rightdrivepos;
+        return addQueue(q);
+        }
+    /**
+   * Queue AutoTarget States. 
+   * @param targetState Automous targeting
+   * @return int number of entries in the queue
+   */
+  public static int addTargetQueue(AutoStates autostate,
+        TargetStates targetstate,
+        double targetloop) {
+        AutoControlData q = new AutoControlData();
+        q.autoState = autostate;
+        q.targetState = targetstate;
+        q.targetLoop = targetloop;
+        return addQueue(q);
+        }
+    /**
+   * Queue ALL AUTOSTATES States. 
+   * @param autoState Automous Shooter state
+   * @param lots below....
+   * @return int number of entries in the queue
+   */
+  public static int addQueue(AutoStates autostate,
+        GearStates gearstate,
         DriveStates drivestate,
         LifterStates lifterstate,
-        double lifterpos,
+        double lifterleftpos,
+        double lifterrightpos,
         IntakeStates intakestate,
         IntakeStates intakearmstate,
         TargetStates targetstate,
@@ -27,10 +90,10 @@ public class AutoQueue {
         AutoControlData q = new AutoControlData();
         q.autoState = autostate;
         q.gearState = gearstate;
-        q.deviceState = devicestate;
         q.driveState = drivestate;
         q.lifterState = lifterstate;
-        q.lifterPos = lifterpos;
+        q.lifterLeftPos = lifterleftpos;
+        q.lifterRightPos = lifterrightpos;
         q.intakeStateMotor = intakestate;
         q.intakeStateArms = intakearmstate;
         q.targetState = targetstate;
@@ -138,5 +201,11 @@ public class AutoQueue {
     {
         return autodata.size();
     }
-
+    public static int moveFirst() {
+        java.util.ArrayDeque<AutoControlData> t;
+        t = (java.util.ArrayDeque<AutoControlData>)autodata;
+        t.addFirst(t.getLast());
+        t.removeLast();
+        return autodata.size();
+    }
 }

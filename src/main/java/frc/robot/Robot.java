@@ -38,18 +38,19 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     System.out.println("Command Position:"); 
 
-    UserInput.Init();
    // lifter=new Lifter();
     intake=new Intake();
     shooter=new Shooter();
-   // userinput=new UserInput();
+    userinput=new UserInput();
     devices=new Devices();
     Devices.Init();
     UserInput.Init();
     //lifter.Init();
-    intake.Init();
-    shooter.Init();
+//    intake.Init();
+//    shooter.Init();
+    cameraStream = new CameraStream();
     cameraStream.initCamera();
+    detecttarget = new DetectTarget();
     detecttarget.Init(cameraStream);
 
     drive=new Drive();
@@ -63,7 +64,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-  //  AutoDrive.Drive(); 
+  AutoDrive.Drive(); 
 }
 
   @Override
@@ -78,19 +79,19 @@ public class Robot extends TimedRobot {
         case TeleOpt: {
 
           drive.drive(); 
-          intake.operate(); 
+  //        intake.operate(); 
    //       lifter.operate();
-          shooter.operate();
+  //        shooter.operate();
           detecttarget.shootTopTarget(); // when implemented it will switch to autonomous mode
 
-          AutoRecordJson.AutoRecorder(); // records userinput & writes file Takes two buttons to turn on//
+//          AutoRecordJson.AutoRecorder(); // records userinput & writes file Takes two buttons to turn on//
 
         }
         case Target: {
-
+          detecttarget.AutoTarget();
         }
         case Shooter: {
-
+          shooter.AutoShoot();
         }
         case Lifter: {
           
@@ -99,7 +100,7 @@ public class Robot extends TimedRobot {
           
         }
         case Drive: {
-          
+          AutoDrive.Drive();
         }
       }
     }  

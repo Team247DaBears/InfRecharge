@@ -92,15 +92,13 @@ public class DaBearsSpeedController implements SpeedController {
             speedController =  victorMotor;
         }
     }
-    public void setFollower(DaBearsSpeedController follower) {
+    public void setFollower(DaBearsSpeedController lead) {
         if (useSparkMax) {
-            follower.sparkMaxMotor.follow(follower.sparkMaxMotor);
+            this.sparkMaxMotor.follow(lead.sparkMaxMotor);
         }
         else {
-            follower.speedController.set(speedController.get());
+            lead.followerController = this.speedController;
         }    
-        follower.currentPosition = currentPosition;
-        follower.Position = Position;
     }
 
     public void set(double speed) {
@@ -113,11 +111,13 @@ public class DaBearsSpeedController implements SpeedController {
             }
             else { // Victor Set Speed
                 speedController.set(speed);
+                if (followerController != null) {followerController.set(speed);}                
                 driveSpeed = speed;
             }
         }
         else { // no encoder set speed
             speedController.set(speed);
+            if (followerController != null) {followerController.set(speed);}
             driveSpeed = speed;
         }
     }
@@ -136,8 +136,8 @@ public class DaBearsSpeedController implements SpeedController {
         } 
         if (useSparkMax) {
             if (sparkMaxEncoder!=null) {
-                currentPosition = Position - sparkMaxEncoder.getPosition();
- //               System.out.println("sparkmax:" + currentPosition);
+                currentPosition = sparkMaxEncoder.getPosition();
+                System.out.println("sparkmax:" + currentPosition);
             }
             else {
                 currentPosition = currentPosition + (1 * sign);
