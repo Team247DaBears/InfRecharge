@@ -14,8 +14,8 @@ public class  Drive
 
           double leftSideMotorSpeed= UserInput.getLeftStick();
           double rightSideMotorSpeed=UserInput.getRightStick();
-//System.out.println("Ls"+leftSideMotorSpeed);
-//System.out.println("Rs"+rightSideMotorSpeed);
+System.out.println("Ls  "+leftSideMotorSpeed);
+System.out.println("Rs  "+rightSideMotorSpeed);
          Devices.backLeft.set(leftSideMotorSpeed);
          Devices.frontLeft.set(leftSideMotorSpeed);
          Devices.frontRight.set(rightSideMotorSpeed);

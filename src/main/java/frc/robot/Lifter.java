@@ -22,7 +22,7 @@ public class Lifter
     private DaBearsSpeedController left_winch;
     private DaBearsSpeedController right_winch;
     private DoubleSolenoid solenoid;
-    private final double WINCH_SPEED=1.0;
+    private final double WINCH_SPEED=0.5;
 
     public void Init() {
         left_winch=Devices.lifter_left_motor;  //This isn't very good, but I'm in a hurry
@@ -30,7 +30,36 @@ public class Lifter
         solenoid=Devices.lifter_solenoid;
     }
 
-    public void operate(){
+
+    public void operate()
+    {
+
+        boolean up = UserInput.getLifterUp();
+        boolean down = UserInput.getLifterDown();
+        boolean climb = UserInput.getLifterClimb();
+
+        if (up)/* added to protect against user error */
+        {
+            solenoid.set(DoubleSolenoid.Value.kForward);
+            lifterState = LifterStates.LifterUp; // state captured for recording of manual actions to automate
+        }
+        else if (down)
+        {
+            solenoid.set(DoubleSolenoid.Value.kReverse);
+            lifterState = LifterStates.LifterDown;   // state captured for recording of manual actions to automate
+        }
+
+
+        if (climb)
+        {
+            left_winch.set(WINCH_SPEED);
+            right_winch.set(WINCH_SPEED);
+        }
+        
+
+    }
+
+    public void operate_Production(){
 
         boolean up = UserInput.getLifterUp();
         boolean down = UserInput.getLifterDown();

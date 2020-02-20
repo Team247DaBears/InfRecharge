@@ -13,5 +13,6 @@ package frc.robot;
 public enum ShootingStates {
     IDLE,
     RAMPING_UP,
-    SHOOTING
+    SHOOTING,
+    FINISHED
 }
