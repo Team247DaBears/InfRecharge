@@ -7,14 +7,17 @@
 
 package frc.robot;
 
+
+
+
 /**
- * States for the shooter state machine.  Begin with ramp up, then start feeding
+ * Add your docs here.
  */
-public enum ShootingStates {
-    IDLE,
-    LOWSHOT,
-    HIGHSHOT,
-    RAMPING_UP,
-    SHOOTING,
-    FINISHED
+public class Localizer {
+
+    public final double TargetX=1.0;//Obviously not 1.0
+    public final double TargetY=1.0;
+
+
+    
 }

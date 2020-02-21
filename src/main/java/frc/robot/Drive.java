@@ -40,13 +40,32 @@ public class  Drive
 
           double leftSideMotorSpeed= UserInput.getLeftStick();
           double rightSideMotorSpeed=UserInput.getRightStick();
-//System.out.println("Ls"+leftSideMotorSpeed);
-//System.out.println("Rs"+rightSideMotorSpeed);
+System.out.println("Ls  "+leftSideMotorSpeed);
+System.out.println("Rs  "+rightSideMotorSpeed);
          Devices.backLeft.set(leftSideMotorSpeed);
          Devices.frontLeft.set(leftSideMotorSpeed);
          Devices.frontRight.set(rightSideMotorSpeed);
           Devices.backRight.set(rightSideMotorSpeed);
              shiftGears();// This could go in robot.java
+             
+      }
+
+      public void motorTest()
+      {
+             Devices.frontLeft.set(0);
+             Devices.frontRight.set(0);
+             Devices.backLeft.set(0);
+             Devices.backRight.set(0);
+
+             double speed=-1*UserInput.rightStick.getRawAxis(1);
+             if (UserInput.rightStick.getRawButton(1))
+                 Devices.frontLeft.set(speed);
+             if (UserInput.rightStick.getRawButton(2))
+                Devices.frontRight.set(speed);
+             if (UserInput.rightStick.getRawButton(3))
+                Devices.backLeft.set(speed);
+             if (UserInput.rightStick.getRawButton(4))
+                Devices.backRight.set(speed);
       
       }
    

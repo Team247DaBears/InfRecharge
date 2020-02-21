@@ -8,6 +8,7 @@ package frc.robot;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -110,8 +111,24 @@ public class Devices {
           backLeft=new DaBearsSpeedController(FRONTRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax);
           backRight=new DaBearsSpeedController(BACKRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax);
         }
+
+        frontLeft.restoreFactoryDefaults();
+        frontRight.restoreFactoryDefaults();
+        backLeft.restoreFactoryDefaults();
+        backRight.restoreFactoryDefaults();
+        
         frontRight.setInverted(true);
         backRight.setInverted(true);
+        frontLeft.setInverted(false);
+        backLeft.setInverted(false);
+
+        frontRight.setIdleMode(IdleMode.kCoast);//Temporary, for testing.  For permanent value they should be brake
+        frontLeft.setIdleMode(IdleMode.kCoast);
+        backRight.setIdleMode(IdleMode.kCoast);
+        backLeft.setIdleMode(IdleMode.kCoast);
+
+      
+
 
         lifter_left_motor=new DaBearsSpeedController(PWM_LIFTER_LEFT);
         lifter_right_motor=new DaBearsSpeedController(PWM_LIFTER_RIGHT);
