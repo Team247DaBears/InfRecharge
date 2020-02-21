@@ -298,4 +298,11 @@ public class DaBearsSpeedController implements SpeedController {
         } 
         return this.get(); // otherwise return speed
     }
+
+    public double restoreFactoryDefaults() {
+        if (useSparkMax && useEncoder) {
+            sparkMaxMotor.restoreFactoryDefaults();
+        } 
+        return this.get(); // otherwise return speed
+    }
 }

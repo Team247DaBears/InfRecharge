@@ -105,8 +105,18 @@ public class Devices {
           backLeft=new DaBearsSpeedController(FRONTRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax);
           backRight=new DaBearsSpeedController(BACKRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax);
         }
-        frontLeft.setInverted(true);
-        backLeft.setInverted(true);
+
+        frontLeft.restoreFactoryDefaults();
+        frontRight.restoreFactoryDefaults();
+        backLeft.restoreFactoryDefaults();
+        backRight.restoreFactoryDefaults();
+        
+        frontRight.setInverted(true);
+        backRight.setInverted(true);
+        frontLeft.setInverted(false);
+        backLeft.setInverted(false);
+      
+
 
         lifter_left_motor=new DaBearsSpeedController(PWM_LIFTER_LEFT);
         lifter_right_motor=new DaBearsSpeedController(PWM_LIFTER_RIGHT);

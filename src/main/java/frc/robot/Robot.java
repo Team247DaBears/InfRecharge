@@ -42,7 +42,6 @@ public class Robot extends TimedRobot {
     lifter=new Lifter();
     intake=new Intake();
     shooter=new Shooter();
-   // userinput=new UserInput();
     devices=new Devices();
     Devices.Init();
     UserInput.Init();
@@ -78,9 +77,9 @@ public class Robot extends TimedRobot {
         case TeleOpt: {
 
           drive.drive(); 
-   //       intake.operate(); 
+          intake.operate(); 
    //       lifter.operate();
-   //       shooter.operate();
+          shooter.operate();
    //       detecttarget.shootTopTarget(); // when implemented it will switch to autonomous mode
 
      //     AutoRecordJson.AutoRecorder(); // records userinput & writes file Takes two buttons to turn on//

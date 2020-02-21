@@ -49,7 +49,8 @@ public class Shooter {
                                 //if using setInverted, but that will require some testing.
     private final double FFVALUE=-0.22;  //Will require experimentation to set a better value
     private final double IZONE=200;
-    private final double TARGETRPM=-1000;  //Will begin with a single setpoint.  We'll modify that for multiple distance ranges later.
+    private final double TARGETRPM=-1100;  //Will begin with a single setpoint.  We'll modify that for multiple distance ranges later.
+    private final double CUTOFFRPM=-1090;
     private final double FIRINGTHRESHOLD=-950; //Begin feeding balls when this threshold is reached
 
 
@@ -130,7 +131,11 @@ public class Shooter {
                 currentState=ShootingStates.IDLE;
             }
 
-            if (Math.abs((encoder.getVelocity()-TARGETRPM)/TARGETRPM)<=.05)
+ //if (Math.abs((encoder.getVelocity()-TARGETRPM)/TARGETRPM)<=.05)
+ //           {
+ //               currentState=ShootingStates.SHOOTING;
+ //           }
+            if (encoder.getVelocity()<CUTOFFRPM)
             {
                 currentState=ShootingStates.SHOOTING;
             }
@@ -185,7 +190,7 @@ public class Shooter {
         //This is a work in progress
         public void setPID()
         {
-            if (encoder.getVelocity()>-950)
+            if (encoder.getVelocity()>CUTOFFRPM)
             { 
                 controlLoop.setReference(-1, ControlType.kDutyCycle);
             }
