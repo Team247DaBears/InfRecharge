@@ -10,6 +10,8 @@ package frc.robot;
 import frc.robot.AutoControlData;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -19,6 +21,11 @@ import edu.wpi.first.wpilibj.TimedRobot;
  * project.
  */
 public class Robot extends TimedRobot {
+  private static final String kDefaultAuto = "Default";
+  private static final String kCustomAuto = "Auto Mode";
+  private String m_autoSelected;
+  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+
   static Drive drive;
   static Devices devices;
   static Intake intake;  
@@ -36,7 +43,13 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    System.out.println("Command Position:"); 
+    m_chooser.setDefaultOption("Auto Mode?", kDefaultAuto);
+    m_chooser.addOption("Center High Shooter", kCustomAuto);
+    m_chooser.addOption("Center Low Shooter", kCustomAuto);
+    m_chooser.addOption("Left High Shooter", kCustomAuto);
+    m_chooser.addOption("Left Low Shooter", kCustomAuto);
+    SmartDashboard.putData("Auto choices", m_chooser);
+    m_autoSelected = m_chooser.getSelected();
 
    // lifter=new Lifter();
     intake=new Intake();
@@ -59,6 +72,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
+    System.out.println("Auto selected: " + m_autoSelected);
+
   AutoDrive.autonomousModeInit();
   }
 

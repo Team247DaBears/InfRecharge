@@ -17,7 +17,7 @@ public class testAutoData {
       AutoControlData q=new AutoControlData();      
 
       q.autoState = AutoStates.Drive;
-      q.targetState = TargetStates.TargetDrive;
+      q.targetState = null;
       q.gearState = GearStates.LowGearPressed;
       q.LeftDrivePos=5;
       q.LeftDriveSpeed=1.0;
@@ -41,7 +41,7 @@ public class testAutoData {
       Assert.assertEquals(3,AutoQueue.addQueue(q));
 
       q.autoState = AutoStates.Target;
-      q.targetState = TargetStates.TargetCollect;
+      q.targetState = null;
       q.gearState = GearStates.LowGearPressed;
       q.LeftDrivePos=0;
       q.LeftDriveSpeed=0.0;

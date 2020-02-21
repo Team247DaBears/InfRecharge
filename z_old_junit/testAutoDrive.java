@@ -35,7 +35,7 @@ public class testAutoDrive {
       AutoDrive.Drive();
       AutoDrive.Drive();
       AutoDrive.Drive();
-      Assert.assertEquals(10,Devices.frontLeft.getPosition(),.1);
+      Assert.assertEquals(5,Devices.frontLeft.getPosition(),.1);
       AutoDrive.Drive();
       Assert.assertEquals(1,AutoQueue.getSize());
       AutoDrive.Drive();

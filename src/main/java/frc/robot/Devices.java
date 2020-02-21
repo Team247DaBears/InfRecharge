@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.Solenoid;
  * (Replaces IO)
  */
 public class Devices {
+    static Boolean isRunningTest = null;
     static  boolean UseSparkMax = true;
     static  boolean UseEncoder = true;
 
@@ -80,7 +81,11 @@ public class Devices {
     // This will be called from robot.init, which executes as soon as the power is
     // applied and the roborio boots up.
     public static void Init() {
-       // intake_motor=new DaBearsSpeedController(PWM_INTAKE_MOTOR);
+      if (isRunningTest()) { // if running junit tests... set to test mode
+        UseSparkMax = false;  // use victors if junits
+        UseEncoder = false; // don't use encoder if junits
+      }
+            // intake_motor=new DaBearsSpeedController(PWM_INTAKE_MOTOR);
         intake_motor=new DaBearsSpeedController(PWM_INTAKE_MOTOR);
         System.out.println("Inited.");
         intake_solenoid=new DoubleSolenoid(PCM_INTAKE_FORWARD, PCM_INTAKE_BACK);
@@ -130,5 +135,17 @@ public class Devices {
       
 
     }
+    private static Boolean isRunningTest() {
+      if (isRunningTest == null) {
+          isRunningTest = true;
+          try {
+              Class.forName("org.junit.Test");
+          } catch (ClassNotFoundException e) {
+              isRunningTest = false;
+          }
+      }
+      return isRunningTest;
+  }
+  
   }
 

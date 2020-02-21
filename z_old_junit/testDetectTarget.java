@@ -24,20 +24,21 @@ public class testDetectTarget {
       //System.out.println(Imgcodecs.haveImageReader​(getClass().getResource("frontview2019.png").getFile()));
       
       //Mat image = Imgcodecs.imread(getClass().getResource("frontview2019.png").getFile());
-      Mat image = Imgcodecs.imread("fronttarget4.jpg");
+      Mat image = Imgcodecs.imread("2020target.jpg");
         System.out.println("image width:"+image.width());
         System.out.println("image height:"+image.height());
 
       System.out.println("image width:"+image.toString());
       Target target = detectTarget.detectTopTarget(image);
+      System.out.println("target:"+target.toString());
 
         Assert.assertEquals(true,(target!=null));
 
         detectTarget.SaveTargetImage("findTopTarget", target, image);
 
-        Assert.assertEquals(37,(int)target.getHorizontalAngle());
-        Assert.assertEquals(-31,(int)target.getVerticalAngle());
-        Assert.assertEquals(68,(int)target.getPercentArea());
+        Assert.assertEquals(6,(int)target.getHorizontalAngle());
+        Assert.assertEquals(11,(int)target.getVerticalAngle());
+        Assert.assertEquals(6,(int)target.getPercentArea());
       }
 
 }

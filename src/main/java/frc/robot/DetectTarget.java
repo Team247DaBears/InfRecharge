@@ -1,9 +1,9 @@
 package frc.robot;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import edu.wpi.cscore.CvSource;
 import edu.wpi.first.cameraserver.CameraServer;
-
 
 import com.kylecorry.frc.vision.Range;
 import com.kylecorry.frc.vision.camera.CameraSettings;
@@ -11,11 +11,13 @@ import com.kylecorry.frc.vision.camera.FOV;
 import com.kylecorry.frc.vision.camera.Resolution;
 import com.kylecorry.frc.vision.contourFilters.ContourFilter;
 import com.kylecorry.frc.vision.contourFilters.StandardContourFilter;
+import com.kylecorry.frc.vision.distance.AreaCameraDistanceEstimator;
 import com.kylecorry.frc.vision.filters.HSVFilter;
 import com.kylecorry.frc.vision.filters.TargetFilter;
 import com.kylecorry.frc.vision.targetConverters.TargetGrouping;
 import com.kylecorry.frc.vision.targeting.Target;
 import com.kylecorry.frc.vision.targeting.TargetFinder;
+import com.kylecorry.frc.vision.targetConverters.TargetUtils;
 
 import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
@@ -26,9 +28,9 @@ import java.util.List;
 //
 
 public class DetectTarget {
-CameraStream camerastream;
-CvSource outputStream;
-private Boolean isRunningTest = null;
+    CameraStream camerastream;
+    CvSource outputStream;
+    private Boolean isRunningTest = null;
 
     public void Init(CameraStream camera) {
         SmartDashboard.putNumber("camExp:", 4);
@@ -52,10 +54,10 @@ public Boolean shootTopTarget() {
         if (Devices.frontLeft.get() == 0.0 && Devices.frontRight.get() == 0.0) {
             if (image != null) {
             if (image.height()>0 && image.width() >0){
-                AutoQueue.addTargetQueue(AutoStates.Target,TargetStates.TargetStart,1);    
-                AutoQueue.moveFirst();
                 if (targetTopTarget(image)) {
-                // Shoot the ball by starting autoshoot            AutoQueue.addQueue(AutoStates.Shooter,GearStates.HighGearPressed,DeviceStates.Drive,DriveStates.Stop,LifterStates.Down,IntakeStates.intakeStop,IntakeStates.intakeStop,TargetStates.TargetOff,0.0,0.0,0.0,0.0);        
+                // Shoot the ball by starting autoshoot            
+                AutoQueue.addShooterQueue(AutoStates.Target,ShootingStates.IDLE,10.0);        
+                AutoQueue.moveFirst(); /* move shooter to first */
                 return true;
                 }
                 else {
@@ -87,11 +89,21 @@ public Boolean shootTopTarget() {
  */
 public Boolean targetTopTarget(Mat image) {
 
-    Target current = detectTopTarget(image);
-    Size size = current.getBoundary().size;
+    if (image==null){System.err.println("no image provided (null)");return false;} // image null (not set)
+    if (image.height()==0){System.err.println("image invalid");return false;} // image empty
 
-        //System.out.println("target:"+current.toString());
-        if (size.width > 1 && size.height > 1 /* Target Size too Big */) {
+    Target current = detectTopTarget(image);
+    System.out.println("target:"+current.toString());
+    if (current==null) {System.err.println("no target found"); return false;} // no target found
+
+    Size size = current.getBoundary().size;
+    AreaCameraDistanceEstimator distanceEstimator = 
+        new AreaCameraDistanceEstimator(
+            new AreaCameraDistanceEstimator.AreaDistancePair(100, 0), 
+            new AreaCameraDistanceEstimator.AreaDistancePair(50, 10));
+    Double distance = distanceEstimator.getDistance(current);
+    System.out.println("distance:"+distance);
+    if (size.width > 1 && size.height > 1 /* Target Size too Big */) {
             /* sample call */
 //            AutoQueue.addDriveQueue(AutoStates.Drive,DriveStates.DriveStart,GearStates.LowGearPressed,5.0,-.1,5.0,-.1);
 //                AutoQueue.moveFirst();
@@ -128,10 +140,13 @@ public Target detectTopTarget(Mat image){
     // Adjust these parameters for your team's needs
     Target foundTarget;
 
+    if (image==null){System.err.println("image null");return null;}
+    if (image.height()==0){System.err.println("image invalid");return null;}
+
     // Hue/Sat/Value filter parameters
-    Range hsvHue = new Range(13, 132);
-    Range hsvSaturation = new Range(162, 255);
-    Range hsvValue = new Range(0, 255);
+    Range hsvHue = new Range(56, 119);
+    Range hsvSaturation = new Range(144, 255);
+    Range hsvValue = new Range(37, 130);
     
     // Contour filter parameters
     Range area = new Range(10, 100);
@@ -161,20 +176,23 @@ public Target detectTopTarget(Mat image){
 
     // Find targets
     List<Target> targets = targetFinder.findTargets(image);
+    if (targets==null){System.err.println("no targets found");return null;}
+    if (targets.size()==0){System.err.println("no targets found");return null;}
     
     // If the current target is a left and the next is a right, make it a pair
     for (int i = 0; i < targets.size(); i++) {
+        System.out.println(":"+targets.get(i).toString());
         if (targets.get(i).getPercentArea() >= 1){
-            if (targets.get(i).getVerticalAngle() <= -20){
-                //System.out.println("-->"+targets.get(i).toString());
+            if (targets.get(i).getVerticalAngle() >= 10){
+                System.out.println("-->"+targets.get(i).toString());
                 foundTarget = targets.get(i);
                 SaveTargetImage("findTopTarget", foundTarget, image);
-                //return targets.get(i);
+                return targets.get(i);
             }
         }
     }
-
-    return targets.get(0);
+    
+    return null;
   }
 
   public void SaveTargetImage(String name, Target target, Mat image) {
@@ -200,14 +218,28 @@ public Target detectTopTarget(Mat image){
 
 public void AutoTarget() {
     AutoControlData q = AutoQueue.currentQueue();
-    if (q.targetState == TargetStates.TargetStart) {
-        q.targetLoop--;
-    }
-    if (q.targetLoop <0) {
-        AutoQueue.removeCurrent();
-    }
-    else {
-        shootTopTarget();
+    switch(q.targetState){
+        case TargetStart1:
+            q.targetState = TargetStates.TargetOff;
+            if (shootTopTarget()) {
+                q.targetState = TargetStates.TargetOff;
+            }
+            break;
+        case TargetStart2:
+           q.targetState = TargetStates.TargetStart1;
+           if (shootTopTarget()) {
+            q.targetState = TargetStates.TargetOff;
+            }
+            break;
+        case TargetStart3:
+            q.targetState = TargetStates.TargetStart2;
+            if (shootTopTarget()) {
+                q.targetState = TargetStates.TargetOff;
+            }
+            break;
+        case TargetOff:
+            AutoQueue.removeCurrent();
+            break;
     }
 }
 

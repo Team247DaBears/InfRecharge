@@ -51,7 +51,7 @@ public class CameraStream {
         Mat image = new Mat();
         //cvSink.grabFrameNoTimeout(image);
         int curBright = camera1.getBrightness();
-        camera1.setResolution(720, 478);
+        //outputStream.setResolution(320, 240);
         camera1.setExposureManual(3);
         //camera1.setWhiteBalanceManual(50);
         camera1.setBrightness(200);
