@@ -137,7 +137,7 @@ public class Shooter {
  //           {
  //               currentState=ShootingStates.SHOOTING;
  //           }
-            if (encoder.getVelocity()<CUTOFFRPM)
+            if (shooter.getVelocity()<CUTOFFRPM)
             {
                 currentState=ShootingStates.SHOOTING;
             }
@@ -183,7 +183,7 @@ public class Shooter {
                 feeder.set(FEEDER_FEED_SPEED);
                 break;
                 case FINISHED:
-                controlLoop.setReference(0, ControlType.kDutyCycle);
+                shooter.setReference(0, ControlType.kDutyCycle);
                 conveyor.set(0);  //Will be changed if we move to something fancier
                 feeder.set(0);
                 break;
@@ -194,22 +194,20 @@ public class Shooter {
         //This is a work in progress
         public void setPID()
         {
-            if (encoder.getVelocity()>CUTOFFRPM)
+            if (shooter.getVelocity()>CUTOFFRPM)
             { 
                 shooter.setReference(-1, ControlType.kDutyCycle);
             }
             else
             {
-                controlLoop.setReference(0, ControlType.kDutyCycle);
+                shooter.setReference(0, ControlType.kDutyCycle);
             }
-            /*
-            else if (encoder.getVelocity()<-1050)
-            {controlLoop.setReference(+1, ControlType.kDutyCycle);}
-            else
-            {
-                controlLoop.setReference(-1000, ControlType.kVelocity);
-            }*/
+
         }
+
+
+
+/*Simple autonomous.....for use in build room and until there is something better */
 
         public boolean isAutoShootComplete()
         {
@@ -231,7 +229,7 @@ public class Shooter {
                         elapsed=System.currentTimeMillis()-autoBeginTime;
                       if (elapsed>AUTO_SHOOT_TIME_MS)
                         currentState=ShootingStates.FINISHED;
-                      else if (encoder.getVelocity()<FIRINGTHRESHOLD)
+                      else if (shooter.getVelocity()<FIRINGTHRESHOLD)
                       {
                           currentState=ShootingStates.SHOOTING;
                       }
@@ -249,11 +247,14 @@ public class Shooter {
             }
         }
 
+
+
+
         public boolean isIntakeRunning()
         {
             return false;  //Needs some experimentation, but the idea is that during intake running, the conveyor might move faster.
         }
-    }
+    
 
 
     public void AutoShoot() {

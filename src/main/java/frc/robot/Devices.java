@@ -8,6 +8,7 @@ package frc.robot;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -115,6 +116,12 @@ public class Devices {
         backRight.setInverted(true);
         frontLeft.setInverted(false);
         backLeft.setInverted(false);
+
+        frontRight.setIdleMode(IdleMode.kCoast);//Temporary, for testing.  For permanent value they should be brake
+        frontLeft.setIdleMode(IdleMode.kCoast);
+        backRight.setIdleMode(IdleMode.kCoast);
+        backLeft.setIdleMode(IdleMode.kCoast);
+
       
 
 
