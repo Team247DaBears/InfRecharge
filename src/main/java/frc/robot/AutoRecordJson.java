@@ -7,6 +7,7 @@ import java.lang.Math;
 public class AutoRecordJson {
     public static java.util.Queue<AutoControlData> autodata;
     static Drive drive;
+    static Shooter shooter;
     static Devices devices;
     static Intake intake;
 
@@ -23,7 +24,8 @@ public class AutoRecordJson {
     static File textFile = null;
     static FileWriter textWriter;
 
-    public AutoRecordJson(Devices devices2, Intake intake2, Lifter lifter2, Drive drive2, UserInput userinput2) {
+    public AutoRecordJson(Devices devices2, Intake intake2, Lifter lifter2, Drive drive2, UserInput userinput2,Shooter shooter2) {
+        shooter = shooter2;
         devices = devices2;
         intake = intake2;
         lifter = lifter2;
@@ -41,18 +43,11 @@ public class AutoRecordJson {
     public static int AutoRecorder() {
         AutoControlData q;
         boolean currentWriteLog = UserInput.writeRecorder();
-        System.out.println("currentWriteLog:"+currentWriteLog);
-        System.out.println("previousWriteLog:"+previousWriteLog);
-        System.out.println("WriteLog:"+WriteLog);
         if (currentWriteLog && (previousWriteLog == true)) {
             previousWriteLog = false;
         }
         else if (WriteLog && currentWriteLog) {
-            updateRecord();
-            q = new AutoControlData(pq);
-            autodata.add(q);
-            q = new AutoControlData(cq);
-            autodata.add(q);
+            updateRecord(true);
             WriteJson();
             previousWriteLog = true;
             WriteLog = false;
@@ -62,7 +57,7 @@ public class AutoRecordJson {
         }
         if (WriteLog) {
             // TODO write recording logic
-                updateRecord();
+                updateRecord(false);
                 q = new AutoControlData(pq);
                 autodata.add(q);
             }
@@ -72,7 +67,7 @@ public class AutoRecordJson {
         return autodata.size();
     }
 
-    public static void updateRecord(){
+    public static void updateRecord(boolean lastQueue){
         System.out.println(cq.toString());
         cq.gearState = drive.currentGearState;
         cq.LeftDriveSpeed = Devices.frontLeft.driveSpeed;
@@ -82,29 +77,46 @@ public class AutoRecordJson {
         cq.intakeStateMotor = null; //intake.intakeStateMotor;
         cq.intakeStateArms = null; //intake.intakeStateArms;
         cq.lifterState = lifter.lifterState;
-        if (cq.gearState != pq.gearState || java.lang.Math.abs(cq.LeftDriveSpeed - pq.LeftDriveSpeed) > .2
-                || java.lang.Math.abs(cq.RightDriveSpeed - pq.LeftDriveSpeed) > .2
-                || cq.lifterState != pq.lifterState || cq.gearState != pq.gearState || cq.autoState != pq.autoState
-                || cq.intakeStateMotor != pq.intakeStateMotor || cq.intakeStateArms != pq.intakeStateArms) {
-            if (cq.lifterState != pq.lifterState) {
-                pq.lifterPos = Devices.lifter_left_motor.getPosition();
-                cq.lifterPos = Devices.lifter_left_motor.getPosition();
-            }
-            if (cq.gearState != pq.gearState || java.lang.Math.abs(cq.RightDriveSpeed - pq.LeftDriveSpeed) > .2) {
-                pq.LeftDrivePos = Devices.frontLeft.getPosition();
-                pq.RightDrivePos = Devices.frontRight.getPosition();
-                pq.LeftDriveSpeed = Devices.frontLeft.get();
-                pq.RightDriveSpeed = Devices.frontRight.get();
+        cq.shootingState = shooter.currentState;
+        pq.shootingRamp++;
+        //******************************* */
+        // Time to write Drive data?
+        //****************************** */
+        if (cq.gearState != pq.gearState || 
+            java.lang.Math.abs(cq.RightDriveSpeed - pq.LeftDriveSpeed) > .2) {
+            AutoControlData wq = new AutoControlData();
+            wq.LeftDrivePos = Devices.frontLeft.getPosition();
+            wq.RightDrivePos = Devices.frontRight.getPosition();
+            wq.LeftDriveSpeed = Devices.frontLeft.get();
+            wq.RightDriveSpeed = Devices.frontRight.get();
 
-                cq.LeftDrivePos = Devices.frontLeft.getPosition();
-                cq.RightDrivePos = Devices.frontRight.getPosition();
-                cq.LeftDriveSpeed = Devices.frontLeft.get();
-                cq.RightDriveSpeed = Devices.frontRight.get();
-            }
+            wq.LeftDrivePos = Devices.frontLeft.getPosition();
+            wq.RightDrivePos = Devices.frontRight.getPosition();
+            wq.LeftDriveSpeed = Devices.frontLeft.get();
+            wq.RightDriveSpeed = Devices.frontRight.get();
+            autodata.add(wq);
         }
-        System.out.println(cq.toString());
+        //******************************* */
+        // Time to write Shooter data?
+        //****************************** */
+        if (cq.shootingState != pq.shootingState) {
+            AutoControlData wq = new AutoControlData();
+            wq.shootingState = cq.shootingState;
+            wq.shootingRamp = cq.shootingRamp;
+            pq.shootingRamp = 0;
+            autodata.add(wq);
+        }
+        //******************************* */
+        // Time to write Lifter data?
+        //****************************** */
+        if (cq.lifterState != pq.lifterState) {
+            AutoControlData wq = new AutoControlData();
+            wq.lifterState = pq.lifterState;
+            wq.lifterLeftPos = Devices.lifter_left_motor.getPosition();
+            wq.lifterRightPos = Devices.lifter_right_motor.getPosition();
+            autodata.add(wq);
+        }
         cq.Clone(cq, pq);
-        System.out.println(pq.toString());
     }
 
     public static void WriteJson() {

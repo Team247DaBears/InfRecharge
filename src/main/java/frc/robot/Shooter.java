@@ -29,9 +29,9 @@ public class Shooter {
     private DaBearsSpeedController conveyor;
 
 
-    private CANSparkMax shooter;
-    private CANEncoder encoder;
-    private CANPIDController controlLoop;
+    private DaBearsSpeedController shooter;
+    //private CANEncoder encoder;
+    //private CANPIDController controlLoop;
 
     private Solenoid shooterSolenoid;
 
@@ -68,8 +68,8 @@ public class Shooter {
         shooter=Devices.shooter;
         shooterSolenoid=Devices.shooterAngleControl;
 
-        encoder=shooter.getEncoder();
-        controlLoop=shooter.getPIDController();
+        //encoder=shooter.getEncoder();
+        //controlLoop=shooter.getPIDController();
 
         
 
@@ -78,13 +78,13 @@ public class Shooter {
 
 
         conveyor.set(CONVEYORSPEED);
-        controlLoop.setP(KP);
-        controlLoop.setD(KD);
-        controlLoop.setI(KI);
-        controlLoop.setOutputRange(MINOUT, MAXOUT);
-        controlLoop.setIZone(IZONE);
-        controlLoop.setFF(FFVALUE/TARGETRPM);
-        controlLoop.setReference(0, ControlType.kDutyCycle);
+        shooter.setP(KP);
+        shooter.setD(KD);
+        shooter.setI(KI);
+        shooter.setOutputRange(MINOUT, MAXOUT);
+        shooter.setIZone(IZONE);
+        shooter.setFF(FFVALUE/TARGETRPM);
+        shooter.setReference(0, ControlType.kDutyCycle);
 
         currentState=ShootingStates.IDLE;
     }
@@ -114,10 +114,12 @@ public class Shooter {
     {
         if (currentState!=ShootingStates.IDLE)
         {
-            System.out.println("Current velocity: "+encoder.getVelocity());
+            System.out.println("Current velocity: "+shooter.getVelocity());
         }
         switch(currentState)
         {
+            case HIGHSHOT:
+            case LOWSHOT:
             case IDLE:
             if (UserInput.getShooting())
             {
@@ -159,8 +161,10 @@ public class Shooter {
         {
             switch(currentState)
             {
+                case HIGHSHOT:
+                case LOWSHOT:
                 case IDLE:
-                controlLoop.setReference(0, ControlType.kDutyCycle);
+                shooter.setReference(0, ControlType.kDutyCycle);
                 conveyor.set(CONVEYORSPEED);
                 feeder.set(FEEDER_HOLD_SPEED);
                 break;
@@ -192,7 +196,7 @@ public class Shooter {
         {
             if (encoder.getVelocity()>CUTOFFRPM)
             { 
-                controlLoop.setReference(-1, ControlType.kDutyCycle);
+                shooter.setReference(-1, ControlType.kDutyCycle);
             }
             else
             {
@@ -252,4 +256,36 @@ public class Shooter {
     }
 
 
+    public void AutoShoot() {
+        AutoControlData q = AutoQueue.currentQueue();
+        switch (q.shootingState) {
+            case HIGHSHOT:
+                q.shootingState=ShootingStates.RAMPING_UP;
+                shooterSolenoid.set(true);
+                break;
+            case LOWSHOT:
+                q.shootingState=ShootingStates.RAMPING_UP;
+                shooterSolenoid.set(false);
+                break;
+            case IDLE:
+                AutoQueue.removeCurrent();
+                break;
+            case RAMPING_UP:
+                if (Math.abs((shooter.getVelocity()-TARGETRPM)/TARGETRPM)<=.05)
+                {
+                    q.shootingState=ShootingStates.SHOOTING;
+                }
+                break;
+            case SHOOTING:
+                if (q.shootingRamp <= 0.0)
+                {
+                    AutoQueue.removeCurrent();
+                }
+                break;
+            }
+        currentState = q.shootingState;
+        q.shootingRamp--;
+        setOutputs();
+    }
 
+}

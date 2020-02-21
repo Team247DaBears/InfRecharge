@@ -7,6 +7,7 @@
 package frc.robot;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -19,7 +20,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 public class Devices {
     static  boolean UseSparkMax = true;
     static  boolean UseEncoder = true;
-      
+
     private static final int CANFRONTLEFTPWM = 12;
     private static final int CANFRONTRIGHTPWM=5;
     private static final int CANBACKLEFTPWM=3;
@@ -30,6 +31,7 @@ public class Devices {
     private static final int FRONTRIGHTPWM=13; // victor
     private static final int BACKLEFTPWM=14;
     private static final int BACKRIGHTPWM=15;    
+    private static final int SHOOTERPWM=16;
 
     private static final int PWM_INTAKE_MOTOR=0;
     private static final int PWM_SHOOTER_CONVEYOR = 1;
@@ -66,7 +68,8 @@ public class Devices {
 
       public static DaBearsSpeedController feeder;
       public static DaBearsSpeedController conveyor;
-      public static CANSparkMax shooter;
+      //public static CANSparkMax shooter;
+      public static DaBearsSpeedController shooter;
       public static Solenoid shooterAngleControl;
 
 
@@ -77,26 +80,23 @@ public class Devices {
     // This will be called from robot.init, which executes as soon as the power is
     // applied and the roborio boots up.
     public static void Init() {
-
-
        // intake_motor=new DaBearsSpeedController(PWM_INTAKE_MOTOR);
         intake_motor=new DaBearsSpeedController(PWM_INTAKE_MOTOR);
         System.out.println("Inited.");
         intake_solenoid=new DoubleSolenoid(PCM_INTAKE_FORWARD, PCM_INTAKE_BACK);
         
         lifter_solenoid=new DoubleSolenoid(PCM_LIFTER_FORWARD, PCM_LIFTER_BACK);
-        lifter_solenoid.set(DoubleSolenoid.Value.kReverse);  //Set default as down
-        
+        lifter_solenoid.set(DoubleSolenoid.Value.kReverse);  //Set default as down        
 
         gearShift = new Solenoid(PCM_GEARFORWARD);
         Devices.gearShift.set(false); // set default as low
 
         if (UseSparkMax) {
-          frontLeft=new DaBearsSpeedController(CANFRONTLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax,20,21);
-          frontRight=new DaBearsSpeedController(CANFRONTRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax,22,23);
+          frontLeft=new DaBearsSpeedController(CANFRONTLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax);
+          frontRight=new DaBearsSpeedController(CANFRONTRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax);
 
-          backLeft=new DaBearsSpeedController(CANBACKLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax,16,17);
-          backRight=new DaBearsSpeedController(CANBACKRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax,18,19);
+          backLeft=new DaBearsSpeedController(CANBACKLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax);
+          backRight=new DaBearsSpeedController(CANBACKRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax);
         }
         else {
           frontLeft=new DaBearsSpeedController(FRONTLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax);
@@ -126,8 +126,13 @@ public class Devices {
         feeder =new DaBearsSpeedController(PWM_SHOOTER_FEEDER);
         conveyor=new DaBearsSpeedController(PWM_SHOOTER_CONVEYOR);
 
-        shooter=new CANSparkMax(CANSHOOTER,MotorType.kBrushless);
-
+        if (UseSparkMax) {
+          //shooter=new CANSparkMax(CANSHOOTER,MotorType.kBrushless);
+        shooter=new DaBearsSpeedController(CANSHOOTER,MotorType.kBrushless,UseSparkMax);
+        }
+        else {
+          shooter=new DaBearsSpeedController(SHOOTERPWM,MotorType.kBrushless,UseSparkMax);
+        }
         shooterAngleControl=new Solenoid(PCM_SHOOTER_ANGLE);
         
         

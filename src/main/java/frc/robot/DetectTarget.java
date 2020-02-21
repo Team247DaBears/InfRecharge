@@ -31,6 +31,8 @@ CvSource outputStream;
 private Boolean isRunningTest = null;
 
     public void Init(CameraStream camera) {
+        SmartDashboard.putNumber("camExp:", 4);
+        SmartDashboard.putNumber("camBal:", 100);
         camerastream = camera;
         outputStream = CameraServer.getInstance().putVideo("TargetCam", 320, 240);
         outputStream.setFPS(12);
@@ -44,18 +46,25 @@ private Boolean isRunningTest = null;
  */
 public Boolean shootTopTarget() {
       Mat image;
-      image = camerastream.getImage();
-      
-      if (Devices.frontLeft.get() == 0.0 && Devices.frontRight.get() == 0.0) {
-        if (image != null) {
-        if (image.height()>0 && image.width() >0){
-            if (targetTopTarget(image)) {
-            // Shoot the ball by starting autoshoot
-            //AutoQueue.addQueue(true,AutoStates.Shooter,GearStates.HighGearPressed,DeviceStates.Drive,DriveStates.Stop,LifterStates.Down,IntakeStates.intakeStop,IntakeStates.intakeStop,TargetStates.TargetOff,0.0,0.0,0.0,0.0);        
-            return true;
+
+      if (UserInput.getTarget()) {
+            image = camerastream.getImage();
+        if (Devices.frontLeft.get() == 0.0 && Devices.frontRight.get() == 0.0) {
+            if (image != null) {
+            if (image.height()>0 && image.width() >0){
+                AutoQueue.addTargetQueue(AutoStates.Target,TargetStates.TargetStart,1);    
+                AutoQueue.moveFirst();
+                if (targetTopTarget(image)) {
+                // Shoot the ball by starting autoshoot            AutoQueue.addQueue(AutoStates.Shooter,GearStates.HighGearPressed,DeviceStates.Drive,DriveStates.Stop,LifterStates.Down,IntakeStates.intakeStop,IntakeStates.intakeStop,TargetStates.TargetOff,0.0,0.0,0.0,0.0);        
+                return true;
+                }
+                else {
+                    SmartDashboard.putString("Targetting","No Target Found. You must see it to push the button.");
+                    return false;
+                }
             }
             else {
-                SmartDashboard.putString("Targetting","No Target Found. You must see it to push the button.");
+                SmartDashboard.putString("Targetting","Image Capture Failed. Try again ... press the button?");
                 return false;
             }
         }
@@ -64,15 +73,12 @@ public Boolean shootTopTarget() {
             return false;
         }
     }
-    else {
-        SmartDashboard.putString("Targetting","Image Capture Failed. Try again ... press the button?");
-        return false;
+        else {
+            SmartDashboard.putString("Targetting","Don't move robot while trying to target.");
+            return false;
+        }
     }
-  }
-    else {
-        SmartDashboard.putString("Targetting","Don't move robot while trying to target.");
-        return false;
-    }
+    return false;
 }
 /**
  * Moves Robot to target top vision target.
@@ -84,26 +90,31 @@ public Boolean targetTopTarget(Mat image) {
     Target current = detectTopTarget(image);
     Size size = current.getBoundary().size;
 
-        System.out.println("target:"+current.toString());
-        if (true/* Target Size too Big */) {
+        //System.out.println("target:"+current.toString());
+        if (size.width > 1 && size.height > 1 /* Target Size too Big */) {
             /* sample call */
-            AutoQueue.addQueue(true,AutoStates.TeleOpt,GearStates.HighGearPressed,DeviceStates.Drive,DriveStates.Stop,LifterStates.LifterDown,0.0,IntakeStates.intakeStop,IntakeStates.intakeStop,TargetStates.TargetOff,0.0,0.0,0.0,0.0);        }
-        else if (true/* target size too small */) {
-
+//            AutoQueue.addDriveQueue(AutoStates.Drive,DriveStates.DriveStart,GearStates.LowGearPressed,5.0,-.1,5.0,-.1);
+//                AutoQueue.moveFirst();
+        }
+        else if (size.width < 1 && size.height < 1/* target size too small */) {
+//            AutoQueue.addDriveQueue(AutoStates.Drive,DriveStates.DriveStart,GearStates.LowGearPressed,5.0,.1,5.0,.1);
+//                AutoQueue.moveFirst();
             }
-            else  if (true/*target too far left */) {
-
+            else  if (current.getVerticalAngle() < -10/*target too far left */) {
+//                AutoQueue.addDriveQueue(AutoStates.Drive,DriveStates.DriveStart,GearStates.LowGearPressed,5.0,.1,5.0,.1);
+//                AutoQueue.moveFirst();
             }
-            else if (true/* target too far right */) {
-
+            else if (current.getVerticalAngle() > 10/* target too far right */) {
+//                AutoQueue.addDriveQueue(AutoStates.Drive,DriveStates.DriveStart,GearStates.LowGearPressed,5.0,.1,5.0,.1);
+//                AutoQueue.moveFirst();
             }
-            else if (true/* target too right skewed */) {
-
-            }
-            else if (true/* target too left skewed */) {
-
+            else if (size.width < 1/* target too right skewed */) {
+//                AutoQueue.addDriveQueue(AutoStates.Drive,DriveStates.DriveStart,GearStates.LowGearPressed,5.0,.1,5.0,.1);
+//                AutoQueue.moveFirst();
             }
             else {
+                AutoQueue.addShooterQueue(AutoStates.Shooter,ShootingStates.HIGHSHOT,10.0);    
+                AutoQueue.moveFirst();
                 return true; /*fire*/
             }
     return false;
@@ -187,6 +198,19 @@ public Target detectTopTarget(Mat image){
     }
 }
 
+public void AutoTarget() {
+    AutoControlData q = AutoQueue.currentQueue();
+    if (q.targetState == TargetStates.TargetStart) {
+        q.targetLoop--;
+    }
+    if (q.targetLoop <0) {
+        AutoQueue.removeCurrent();
+    }
+    else {
+        shootTopTarget();
+    }
+}
+
 private boolean isRunningTest() {
     if (isRunningTest == null) {
         isRunningTest = true;
@@ -198,5 +222,6 @@ private boolean isRunningTest() {
     }
     return isRunningTest;
 }
+
 
 }

@@ -1,5 +1,6 @@
 package frc.robot;
 
+import frc.robot.DaBearsJoystick;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 
@@ -9,7 +10,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 //
 @RunWith(JUnit4.class)
-public class testRecordJson_Drive {  
+public class testRecordJson_Shooter {  
   static Drive drive;
   static Devices devices;
   static UserInput userinput;
@@ -33,89 +34,72 @@ public class testRecordJson_Drive {
       lifter.Init();
       UserInput.Init();
       shooter.Init();
-
-      UserInput.leftStick.resetIndexes();
-
-      UserInput.leftStick.setButtonResp(false,false,false);
-      UserInput.rightStick.setButtonResp(false,false,false);
-      drive.drive();
-      UserInput.leftStick.setButtonResp(true,true,true);
-      UserInput.rightStick.setButtonResp(true,true,true);
-      drive.drive();
+      UserInput.leftStick.setButtonResp(false,false, false);
+      UserInput.rightStick.setButtonResp(false,false, false);
+      drive.drive(); 
+      UserInput.leftStick.setButtonResp(false,false, false);
+      UserInput.rightStick.setButtonResp(false,false, false);
+      drive.drive(); 
       Assert.assertEquals(false,AutoRecordJson.WriteLog);
 
       UserInput.leftStick.setButtonResp(true,true,true);
       UserInput.rightStick.setButtonResp(true,true,true);
-      AutoRecordJson.AutoRecorder();
+      System.out.println("Record Json On!");
+      AutoRecordJson.AutoRecorder(); // true,true
+      Assert.assertEquals(true,AutoRecordJson.WriteLog);
+      UserInput.leftStick.setButtonResp(true,false,true);
+      UserInput.rightStick.setButtonResp(true,false,true);
+      shooter.operate(); 
+
+      UserInput.leftStick.setButtonResp(false,false,false);
+      UserInput.rightStick.setButtonResp(false,false,false);
+      AutoRecordJson.AutoRecorder(); // true,false
+      Assert.assertEquals(true,AutoRecordJson.WriteLog);
+
+      UserInput.leftStick.setButtonResp(true,false,true);
+      UserInput.rightStick.setButtonResp(true,false,true);
+      shooter.operate(); 
+
+      UserInput.leftStick.setButtonResp(false,false,false);
+      UserInput.rightStick.setButtonResp(false,false,false);
+      AutoRecordJson.AutoRecorder(); // true,false
+      Assert.assertEquals(true,AutoRecordJson.WriteLog);
+
+      UserInput.leftStick.setButtonResp(false,false, false);
+      UserInput.rightStick.setButtonResp(false,false, false);
+      drive.drive(); 
+      UserInput.leftStick.setButtonResp(false,false,false);
+      UserInput.rightStick.setButtonResp(false,false,false);
+      AutoRecordJson.AutoRecorder(); // true,false
+      Assert.assertEquals(true,AutoRecordJson.WriteLog);
+
+      UserInput.leftStick.setButtonResp(false,false,true);
+      UserInput.rightStick.setButtonResp(false,false,true);
+      shooter.operate(); 
+      UserInput.leftStick.setButtonResp(false,false,false);
+      UserInput.rightStick.setButtonResp(false,false,false);
+      AutoRecordJson.AutoRecorder(); // true,false
+      Assert.assertEquals(true,AutoRecordJson.WriteLog);
+
+      UserInput.leftStick.setButtonResp(false,false,true);
+      UserInput.rightStick.setButtonResp(false,false,true);
+      shooter.operate(); 
+      UserInput.leftStick.setButtonResp(false,false,false);
+      UserInput.rightStick.setButtonResp(false,false,false);
+      AutoRecordJson.AutoRecorder(); // true,false
       Assert.assertEquals(true,AutoRecordJson.WriteLog);
 
       UserInput.leftStick.setButtonResp(false,false,false);
       UserInput.rightStick.setButtonResp(false,false,false);
-      drive.drive();
+      shooter.operate(); 
       UserInput.leftStick.setButtonResp(false,false,false);
       UserInput.rightStick.setButtonResp(false,false,false);
-      AutoRecordJson.AutoRecorder();
-      Assert.assertEquals(true,AutoRecordJson.WriteLog);
-      UserInput.leftStick.setButtonResp(false,false,false);
-      UserInput.rightStick.setButtonResp(false,false,false);
-
-      drive.drive();
-      UserInput.leftStick.setButtonResp(false,false,false);
-      UserInput.rightStick.setButtonResp(false,false,false);
-      AutoRecordJson.AutoRecorder();
+      AutoRecordJson.AutoRecorder(); // true,false
       Assert.assertEquals(true,AutoRecordJson.WriteLog);
 
       UserInput.leftStick.setButtonResp(true,true,true);
       UserInput.rightStick.setButtonResp(true,true,true);
-      drive.drive();
-      UserInput.leftStick.setButtonResp(false,false,false);
-      UserInput.rightStick.setButtonResp(false,false,false);
-      AutoRecordJson.AutoRecorder();
-      Assert.assertEquals(true,AutoRecordJson.WriteLog);
-
-      UserInput.leftStick.setButtonResp(true,true,true);
-      UserInput.rightStick.setButtonResp(true,true,true);
-      drive.drive();
-      UserInput.leftStick.setButtonResp(false,false,false);
-      UserInput.rightStick.setButtonResp(false,false,false);
-      AutoRecordJson.AutoRecorder();
-      Assert.assertEquals(true,AutoRecordJson.WriteLog);
-
-      UserInput.leftStick.setButtonResp(true,true,true);
-      UserInput.rightStick.setButtonResp(true,true,true);
-      intake.operate();
-      UserInput.leftStick.setButtonResp(true,true,true);
-      UserInput.rightStick.setButtonResp(true,true,true);
-      lifter.operate();   
-      UserInput.leftStick.setButtonResp(true,true,true);
-      UserInput.rightStick.setButtonResp(true,true,true);
-      drive.drive();
-      UserInput.leftStick.setButtonResp(false,false,false);
-      UserInput.rightStick.setButtonResp(false,false,false);
-      AutoRecordJson.AutoRecorder();
-      Assert.assertEquals(true,AutoRecordJson.WriteLog);
-      UserInput.leftStick.setButtonResp(false,false,false);
-      UserInput.rightStick.setButtonResp(false,false,false);
-      drive.drive();
-      UserInput.leftStick.setButtonResp(false,false,false);
-      UserInput.rightStick.setButtonResp(false,false,false);
-      AutoRecordJson.AutoRecorder();
-      Assert.assertEquals(true,AutoRecordJson.WriteLog);
-      UserInput.leftStick.setButtonResp(false,false,false);
-      UserInput.rightStick.setButtonResp(false,false,false);
-      drive.drive();
-      UserInput.leftStick.setButtonResp(false,false,false);
-      UserInput.rightStick.setButtonResp(false,false,false);
-      AutoRecordJson.AutoRecorder();
-      Assert.assertEquals(true,AutoRecordJson.WriteLog);
-      drive.drive();
-      UserInput.leftStick.setButtonResp(false,false,false);
-      UserInput.rightStick.setButtonResp(false,false,false);
-      AutoRecordJson.AutoRecorder();
-
-      UserInput.leftStick.setButtonResp(true,true,true);
-      UserInput.rightStick.setButtonResp(true,true,true);
-      AutoRecordJson.AutoRecorder();
+      AutoRecordJson.AutoRecorder(); // true,false
       Assert.assertEquals(false,AutoRecordJson.WriteLog);
 
       DaBearsCloseDevices.close(shooter);
@@ -126,5 +110,4 @@ public class testRecordJson_Drive {
       DaBearsCloseDevices.close(drive);
       DaBearsCloseDevices.close(recordJson);
      }
-
 }

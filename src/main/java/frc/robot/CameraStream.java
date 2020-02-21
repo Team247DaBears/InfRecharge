@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class CameraStream {
 
-    private UsbCamera camera1;
+    public UsbCamera camera1;
 
     private CvSink cvSink;
     private CvSource outputStream;
@@ -51,9 +51,14 @@ public class CameraStream {
         Mat image = new Mat();
         //cvSink.grabFrameNoTimeout(image);
         int curBright = camera1.getBrightness();
-        camera1.setExposureManual(10);
-        cvSink.grabFrame(image, 200);
+        camera1.setResolution(720, 478);
+        camera1.setExposureManual(3);
+        //camera1.setWhiteBalanceManual(50);
+        camera1.setBrightness(200);
+        cvSink.grabFrame(image, 400);
         camera1.setExposureManual(curBright);
+        camera1.setWhiteBalanceAuto();
+        //camera1.setResolution(320, 240);
         //SmartDashboard.putBoolean("targetImage",(image != null));
         //SmartDashboard.putNumber("image width:",(double)image.width());
         //SmartDashboard.putNumber("image height:",(double)image.height());
