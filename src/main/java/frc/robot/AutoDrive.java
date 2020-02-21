@@ -1,15 +1,15 @@
 package frc.robot;
 
 import com.revrobotics.ControlType;
-
+import java.lang.Math.*;
 import frc.robot.Devices;
 public class  AutoDrive
 {
     private static final double KP=5e-5;
     private static final double KI=2e-6;
     private static final double KD=0;
-    private static final double MAXOUT=.3;
-    private static final double MINOUT=-.3;
+    private static final double MAXOUT=1;
+    private static final double MINOUT=-1;
     private static final double FFVALUE=-0.22;  //Will require experimentation to set a better value
     private static final double IZONE=200;
     private static final double TARGETRPM=-1000;  //Will begin with a single setpoint.  We'll modify that for multiple distance ranges later.
@@ -23,35 +23,35 @@ public class  AutoDrive
         }
         switch (q.driveState) {
             case DriveStart: {
-                Devices.frontLeft.set(q.LeftDriveSpeed); // set the left speed
-                Devices.frontLeft.setFollower(Devices.backLeft); // set follower speed
-                Devices.frontRight.set(q.RightDriveSpeed); // set the right speed
-                Devices.frontRight.setFollower(Devices.backRight); // set follower speed
-
-                Devices.frontLeft.setPosition(q.LeftDrivePos); // set the left speed
-                Devices.frontLeft.setFollower(Devices.backLeft); // set follower speed
-                Devices.frontRight.setPosition(q.RightDrivePos); // set the right speed
-                Devices.frontRight.setFollower(Devices.backRight); // set follower speed
                 q.driveState = DriveStates.Drive;
                 Devices.frontLeft.setPosition(0);
                 Devices.frontRight.setPosition(0);
-            }
+                Devices.backLeft.setPosition(0);
+                Devices.backRight.setPosition(0);
+
+                Devices.frontLeft.setOutputRange(-1*Math.abs(q.LeftDriveSpeed), Math.abs(q.LeftDriveSpeed));
+                Devices.frontRight.setOutputRange(-1*Math.abs(q.RightDriveSpeed), Math.abs(q.RightDriveSpeed));
+                Devices.backLeft.setOutputRange(-1*Math.abs(q.LeftDriveSpeed), Math.abs(q.LeftDriveSpeed));
+                Devices.backRight.setOutputRange(-1*Math.abs(q.RightDriveSpeed), Math.abs(q.RightDriveSpeed));
+                System.out.println("min:" + -1*Math.abs(q.LeftDriveSpeed)+" Max:"+ Math.abs(q.LeftDriveSpeed));
+                }
             case Drive: {
                 double frontLeftPos = Devices.frontLeft.getPosition();
-                //double backLeftPos = Devices.backLeft.getPosition();
-
                 double frontRightPos = Devices.frontRight.getPosition();
-                //double backRightPos = Devices.backRight.getPosition();
 
-                double leftDiff = q.LeftDrivePos - frontLeftPos;
-                double rightDiff = q.RightDrivePos - frontRightPos;
+                double leftDiff = java.lang.Math.abs(q.LeftDrivePos - frontLeftPos);
+                double rightDiff = java.lang.Math.abs(q.RightDrivePos - frontRightPos);
+                System.out.println("diff:"+leftDiff);
+                System.out.println("diff:"+rightDiff);
                 if (leftDiff > .2 || rightDiff > .2) {
                     Devices.frontLeft.setReference(q.LeftDrivePos, ControlType.kPosition);
                     Devices.frontRight.setReference(q.RightDrivePos, ControlType.kPosition);
+                    Devices.backLeft.setReference(q.LeftDrivePos, ControlType.kPosition);
+                    Devices.backRight.setReference(q.RightDrivePos, ControlType.kPosition);
 
                     // not sure the following are needed with PID SparkMax Example doesn't have
-                    Devices.frontLeft.set(q.LeftDriveSpeed); // set the left speed
-                    Devices.frontRight.set(q.RightDriveSpeed); // set the right speed
+                    //Devices.frontLeft.set(q.LeftDriveSpeed); // set the left speed
+                    //Devices.frontRight.set(q.RightDriveSpeed); // set the right speed
                     switch (q.gearState) {
                         case HighGearOff:
                         case HighGearPressed:{
@@ -102,12 +102,12 @@ public class  AutoDrive
         }
     }
     public static void autonomousModeInit(){
-        Devices.backLeft.setFollower(Devices.frontLeft); // set follower speed
-        Devices.backRight.setFollower(Devices.frontRight); // set follower speed
         InitEncoderController(Devices.frontLeft);
         InitEncoderController(Devices.frontRight);
         InitEncoderController(Devices.backLeft);
         InitEncoderController(Devices.backRight);
+        //Devices.backLeft.setFollower(Devices.frontLeft); // set follower speed
+        //Devices.backRight.setFollower(Devices.frontRight); // set follower speed
 
         AutoQueue.clearQueue();  
         // drive forward for 2ft
@@ -124,6 +124,7 @@ public class  AutoDrive
 //        AutoQueue.addTargetQueue(AutoStates.Target,TargetStates.TargetStart,2);
       }
       public static void InitEncoderController(DaBearsSpeedController motor) {
+        //motor.restoreFactoryDefaults();
         motor.set(0);
         motor.setP(KP);
         motor.setD(KD);
@@ -131,6 +132,6 @@ public class  AutoDrive
         motor.setOutputRange(MINOUT, MAXOUT);
         motor.setIZone(IZONE);
         motor.setFF(FFVALUE/TARGETRPM);
-        motor.setReference(0, ControlType.kPosition);
+        //motor.setReference(0, ControlType.kPosition);
     }
 }       

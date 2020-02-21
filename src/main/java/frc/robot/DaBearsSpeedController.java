@@ -2,6 +2,7 @@ package frc.robot;
 
 import com.revrobotics.*;
 import com.revrobotics.CANPIDController.ArbFFUnits;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Victor;
@@ -297,5 +298,17 @@ public class DaBearsSpeedController implements SpeedController {
             return sparkMaxEncoder.getVelocity();
         } 
         return this.get(); // otherwise return speed
+    }
+    public void restoreFactoryDefaults() {
+        if (useSparkMax && useEncoder) {
+            sparkMaxMotor.restoreFactoryDefaults();
+        } 
+        return;
+    }
+    public void setIdleMode(IdleMode mode) {
+        if (useSparkMax && useEncoder) {
+            sparkMaxMotor.setIdleMode(mode); //IdleMode.kBreak or IdleMode.KCoast 
+        } 
+        return; 
     }
 }
