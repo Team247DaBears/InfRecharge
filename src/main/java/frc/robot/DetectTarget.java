@@ -34,7 +34,12 @@ public class DetectTarget {
     double width;
     double horizontal;
     double virtical;
-    static final double okDist =0.1; //top centered target
+    static final double okDist =0.1; //ok distance diff
+    static final double okVirt =0.1; //ok Vertical diff
+    static final double okHztl =0.1; //ok Horizontal diff
+
+    static final double hztlAdj =1; //adjust horizontal position ONE INCH
+    static final double virtAdj =1; //adjust horizontal position ONE INCH
     static final double default_distance =8.0; //top centered target
     static final double default_height =0.0; //top centered target
     static final double default_width = 0.0; //top centered target
@@ -121,25 +126,20 @@ public Boolean targetTopTarget(Mat image) {
     FixedAngleCameraDistanceEstimator distanceEstimator = 
         new FixedAngleCameraDistanceEstimator(10, 1, 10);
     Double currdistance = distanceEstimator.getDistance(current);
+    Double currvirt = current.getVerticalAngle();
+    Double currhztl = current.getHorizontalAngle();
     Double diffDist = currdistance - distance;
+    Double diffVirt = currvirt - virtical;
     System.out.println("distance:"+distance);
     if (Math.abs(diffDist) > okDist /* Target Size too Big */) {
             AutoQueue.addDriveQueue(AutoStates.Drive,DriveStates.DriveStart,GearStates.LowGearPressed,0.5,diffDist,0.5,diffDist);
             AutoQueue.moveFirst();
         }
-        else  if (current.getVerticalAngle() < -1*virtical/*target too far left */) {
-//                AutoQueue.addDriveQueue(AutoStates.Drive,DriveStates.DriveStart,GearStates.LowGearPressed,5.0,.1,5.0,.1);
-//                AutoQueue.moveFirst();
+    else  if (Math.abs(diffVirt) > okVirt/*target too far left */) {
+                AutoQueue.addDriveQueue(AutoStates.Drive,DriveStates.DriveStart,GearStates.LowGearPressed,.5,diffVirt*virtAdj,.5,-diffVirt*virtAdj);
+                AutoQueue.moveFirst();
         }
-        else if (current.getVerticalAngle() > virtical/* target too far right */) {
-//                AutoQueue.addDriveQueue(AutoStates.Drive,DriveStates.DriveStart,GearStates.LowGearPressed,5.0,.1,5.0,.1);
-//                AutoQueue.moveFirst();
-        }
-        else if (size.width < width/* target too right skewed */) {
-//                AutoQueue.addDriveQueue(AutoStates.Drive,DriveStates.DriveStart,GearStates.LowGearPressed,5.0,.1,5.0,.1);
-//                AutoQueue.moveFirst();
-        }
-        else {
+    else {
             AutoQueue.addShooterQueue(AutoStates.Shooter,ShootingStates.HIGHSHOT,10.0);    
             AutoQueue.moveFirst();
             return true; /*fire*/

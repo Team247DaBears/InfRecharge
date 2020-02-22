@@ -27,6 +27,12 @@ public class AutoControlData implements Cloneable {
 
     Double RightDriveSpeed=0.0;
     double RightDrivePos=0.0;
+    
+    double distance = 0;
+    double height = 0;
+    double width = 0;
+    double horizontal = 0;
+    double virtical = 0;
 
     public AutoControlData() {
 
