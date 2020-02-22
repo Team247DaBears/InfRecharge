@@ -13,12 +13,18 @@ import org.junit.runners.JUnit4;
 //
 @RunWith(JUnit4.class)
 public class testDetectTarget {  
+  Devices devices;
+  UserInput userinput;
+
   @Test
   public void test(){
       // The following 3 lines are for desktop usage, assign the Mat image to the camera image when deploying to a robot
-      
       DetectTarget detectTarget = new DetectTarget();
- 
+      devices = new Devices();
+      Devices.Init();
+      userinput = new UserInput();
+      UserInput.Init();
+
       OpenCVManager.getInstance().load(new SystemProperties());
       System.out.println(getClass().getResource("").getFile());
       //System.out.println(Imgcodecs.haveImageReader​(getClass().getResource("frontview2019.png").getFile()));
@@ -39,6 +45,10 @@ public class testDetectTarget {
         Assert.assertEquals(6,(int)target.getHorizontalAngle());
         Assert.assertEquals(11,(int)target.getVerticalAngle());
         Assert.assertEquals(6,(int)target.getPercentArea());
+
+        DaBearsCloseDevices.close(devices);
+        DaBearsCloseDevices.close(userinput);
+  
       }
 
 }

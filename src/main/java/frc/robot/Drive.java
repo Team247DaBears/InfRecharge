@@ -93,7 +93,7 @@ System.out.println("Rs  "+rightSideMotorSpeed);
            if (UserInput.getGearButton())
            {
                currentGearState=GearStates.HighGearPressed;
-           }
+            }
            break;
       case LowGearPressed:
            if (!UserInput.getGearButton())
@@ -105,13 +105,15 @@ System.out.println("Rs  "+rightSideMotorSpeed);
       }
       switch(currentGearState)
       {
+        case LowGearOff:
+        case HighGearPressed:
+                Devices.gearShift.set(true);
+                Devices.setMotorConversionHigh();
+                break;
           case HighGearOff:
-          case HighGearPressed:
-          Devices.gearShift.set(true);
-              break;
-          case LowGearOff:
           case LowGearPressed:
               Devices.gearShift.set(false);
+              Devices.setMotorConversionLow();
               break;
       }
   }

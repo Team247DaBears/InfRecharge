@@ -309,4 +309,10 @@ public class DaBearsSpeedController implements SpeedController {
         } 
         return; 
     }
+    public void setPositionConversionFactor(double confFactor) {
+        if (useSparkMax && useEncoder) {
+            sparkMaxEncoder.setPositionConversionFactor(confFactor); //IdleMode.kBreak or IdleMode.KCoast 
+        } 
+        return; 
+    }
 }

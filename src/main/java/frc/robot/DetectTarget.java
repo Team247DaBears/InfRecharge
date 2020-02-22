@@ -29,11 +29,29 @@ import java.util.List;
 //
 
 public class DetectTarget {
+    double distance;
+    double height;
+    double width;
+    double horizontal;
+    double virtical;
+    static final double okDist =0.1; //top centered target
+    static final double default_distance =8.0; //top centered target
+    static final double default_height =0.0; //top centered target
+    static final double default_width = 0.0; //top centered target
+    static final double default_horizontal = 0.0; //target location
+    static final double default_virtical = 10; //target location
+
     CameraStream camerastream;
     CvSource outputStream;
     private Boolean isRunningTest = null;
 
     public void Init(CameraStream camera) {
+        distance = default_distance;
+        height = default_height;
+        width = default_width;
+        horizontal = default_horizontal;
+        virtical = default_virtical;
+    
         SmartDashboard.putNumber("camExp:", 4);
         SmartDashboard.putNumber("camBal:", 100);
         camerastream = camera;
@@ -102,34 +120,30 @@ public Boolean targetTopTarget(Mat image) {
     Size size = current.getBoundary().size;
     FixedAngleCameraDistanceEstimator distanceEstimator = 
         new FixedAngleCameraDistanceEstimator(10, 1, 10);
-    Double distance = distanceEstimator.getDistance(current);
+    Double currdistance = distanceEstimator.getDistance(current);
+    Double diffDist = currdistance - distance;
     System.out.println("distance:"+distance);
-    if (size.width > 1 && size.height > 1 /* Target Size too Big */) {
-            /* sample call */
-//            AutoQueue.addDriveQueue(AutoStates.Drive,DriveStates.DriveStart,GearStates.LowGearPressed,5.0,-.1,5.0,-.1);
+    if (Math.abs(diffDist) > okDist /* Target Size too Big */) {
+            AutoQueue.addDriveQueue(AutoStates.Drive,DriveStates.DriveStart,GearStates.LowGearPressed,0.5,diffDist,0.5,diffDist);
+            AutoQueue.moveFirst();
+        }
+        else  if (current.getVerticalAngle() < -1*virtical/*target too far left */) {
+//                AutoQueue.addDriveQueue(AutoStates.Drive,DriveStates.DriveStart,GearStates.LowGearPressed,5.0,.1,5.0,.1);
 //                AutoQueue.moveFirst();
         }
-        else if (size.width < 1 && size.height < 1/* target size too small */) {
-//            AutoQueue.addDriveQueue(AutoStates.Drive,DriveStates.DriveStart,GearStates.LowGearPressed,5.0,.1,5.0,.1);
-//                AutoQueue.moveFirst();
-            }
-            else  if (current.getVerticalAngle() < -10/*target too far left */) {
+        else if (current.getVerticalAngle() > virtical/* target too far right */) {
 //                AutoQueue.addDriveQueue(AutoStates.Drive,DriveStates.DriveStart,GearStates.LowGearPressed,5.0,.1,5.0,.1);
 //                AutoQueue.moveFirst();
-            }
-            else if (current.getVerticalAngle() > 10/* target too far right */) {
+        }
+        else if (size.width < width/* target too right skewed */) {
 //                AutoQueue.addDriveQueue(AutoStates.Drive,DriveStates.DriveStart,GearStates.LowGearPressed,5.0,.1,5.0,.1);
 //                AutoQueue.moveFirst();
-            }
-            else if (size.width < 1/* target too right skewed */) {
-//                AutoQueue.addDriveQueue(AutoStates.Drive,DriveStates.DriveStart,GearStates.LowGearPressed,5.0,.1,5.0,.1);
-//                AutoQueue.moveFirst();
-            }
-            else {
-                AutoQueue.addShooterQueue(AutoStates.Shooter,ShootingStates.HIGHSHOT,10.0);    
-                AutoQueue.moveFirst();
-                return true; /*fire*/
-            }
+        }
+        else {
+            AutoQueue.addShooterQueue(AutoStates.Shooter,ShootingStates.HIGHSHOT,10.0);    
+            AutoQueue.moveFirst();
+            return true; /*fire*/
+        }
     return false;
 }
  /**

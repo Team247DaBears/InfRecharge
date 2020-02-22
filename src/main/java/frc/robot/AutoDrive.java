@@ -53,13 +53,16 @@ public class  AutoDrive
                     //Devices.frontLeft.set(q.LeftDriveSpeed); // set the left speed
                     //Devices.frontRight.set(q.RightDriveSpeed); // set the right speed
                     switch (q.gearState) {
-                        case HighGearOff:
-                        case HighGearPressed:{
-                            Devices.gearShift.set(true); // set High speed           
-                        }
                         case LowGearOff:
+                        case HighGearPressed:{
+                            Devices.gearShift.set(true); // set High speed  
+                            Devices.setMotorConversionHigh();
+         
+                        }
+                        case HighGearOff:
                         case LowGearPressed: {
-                            Devices.gearShift.set(false); // set low speed           
+                            Devices.gearShift.set(false); // set low speed
+                            Devices.setMotorConversionLow();           
                         }
                     }
                 }

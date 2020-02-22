@@ -52,6 +52,9 @@ public class Devices {
     public static final int  PCM_LIFTER_FORWARD=5;
     public static final int  PCM_LIFTER_BACK=6;
 
+    public static final double GearSpeedHigh = 11.88;
+    public static final double GearSpeedLow = 47.5356;
+    
     public static DaBearsSpeedController frontLeft = null;
     public static DaBearsSpeedController frontRight = null;
     public static DaBearsSpeedController backLeft = null;
@@ -86,7 +89,6 @@ public class Devices {
         UseSparkMax = false;  // use victors if junits
         UseEncoder = false; // don't use encoder if junits
       }
-            // intake_motor=new DaBearsSpeedController(PWM_INTAKE_MOTOR);
         intake_motor=new DaBearsSpeedController(PWM_INTAKE_MOTOR);
         System.out.println("Inited.");
         intake_solenoid=new DoubleSolenoid(PCM_INTAKE_FORWARD, PCM_INTAKE_BACK);
@@ -127,13 +129,9 @@ public class Devices {
         backRight.setIdleMode(IdleMode.kCoast);
         backLeft.setIdleMode(IdleMode.kCoast);
 
-      
-
-
         lifter_left_motor=new DaBearsSpeedController(PWM_LIFTER_LEFT);
         lifter_right_motor=new DaBearsSpeedController(PWM_LIFTER_RIGHT);
         lifter_left_motor.setInverted(true);
-
 
         feeder =new DaBearsSpeedController(PWM_SHOOTER_FEEDER);
         conveyor=new DaBearsSpeedController(PWM_SHOOTER_CONVEYOR);
@@ -151,6 +149,18 @@ public class Devices {
 
       
 
+    }
+    public static void setMotorConversionLow() {
+      frontLeft.setPositionConversionFactor(GearSpeedLow);
+      frontRight.setPositionConversionFactor(GearSpeedLow);
+      backLeft.setPositionConversionFactor(GearSpeedLow);
+      backRight.setPositionConversionFactor(GearSpeedLow);
+    }
+    public static void setMotorConversionHigh() {
+      frontLeft.setPositionConversionFactor(GearSpeedHigh);
+      frontRight.setPositionConversionFactor(GearSpeedHigh);
+      backLeft.setPositionConversionFactor(GearSpeedHigh);
+      backRight.setPositionConversionFactor(GearSpeedHigh);
     }
     private static Boolean isRunningTest() {
       if (isRunningTest == null) {
