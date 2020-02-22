@@ -60,7 +60,6 @@ public class Shooter {
     /**************************************************************************************************************************** */
     private final long AUTO_SHOOT_TIME_MS=9000;//Amount of time to run the shooter for basic autonomous
 
-
     public void Init()
     {
         feeder =Devices.feeder;
@@ -70,12 +69,6 @@ public class Shooter {
 
         //encoder=shooter.getEncoder();
         //controlLoop=shooter.getPIDController();
-
-        
-
-        
-
-
 
         conveyor.set(CONVEYORSPEED);
         shooter.setP(KP);
@@ -88,8 +81,6 @@ public class Shooter {
 
         currentState=ShootingStates.IDLE;
     }
-
-
 
     public void operate()
     {
@@ -124,7 +115,6 @@ public class Shooter {
             if (UserInput.getShooting())
             {
                 currentState=ShootingStates.RAMPING_UP;
-                
             }
             break;
             case RAMPING_UP:

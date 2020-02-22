@@ -20,7 +20,7 @@ public class Intake {
 
     
     DaBearsSpeedController intakeMotor;
-    private final double INTAKE_SPEED=1.0;
+    private final double INTAKE_SPEED=.5;
 
     public void Init()
     {

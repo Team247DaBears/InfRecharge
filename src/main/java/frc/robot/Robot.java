@@ -51,18 +51,18 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Auto choices", m_chooser);
     m_autoSelected = m_chooser.getSelected();
 
-   // lifter=new Lifter();
+    lifter=new Lifter();
     intake=new Intake();
     shooter=new Shooter();
     userinput=new UserInput();
     devices=new Devices();
     Devices.Init();
     UserInput.Init();
-    //lifter.Init();
-//    intake.Init();
-//    shooter.Init();
+    lifter.Init();
+    intake.Init();
+    shooter.Init();
     cameraStream = new CameraStream();
-    cameraStream.initCamera();
+//    cameraStream.initCamera();
     detecttarget = new DetectTarget();
     detecttarget.Init(cameraStream);
 
@@ -95,28 +95,35 @@ public class Robot extends TimedRobot {
         case TeleOpt: {
 
           drive.drive(); 
-  //        intake.operate(); 
+          intake.operate(); 
    //       lifter.operate();
-  //        shooter.operate();
-          detecttarget.shootTopTarget(); // when implemented it will switch to autonomous mode
+          shooter.operate();
+//          detecttarget.shootTopTarget(); // when implemented it will switch to autonomous mode
 
 //          AutoRecordJson.AutoRecorder(); // records userinput & writes file Takes two buttons to turn on//
 
         }
         case Target: {
-          detecttarget.AutoTarget();
+//          detecttarget.AutoTarget();
         }
         case Shooter: {
-          shooter.AutoShoot();
+//          drive.drive(); 
+//          shooter.AutoShoot();
         }
         case Lifter: {
+          drive.drive(); 
+//          shooter.AutoShoot();
           
         }
         case Collecter: {
+ //         drive.drive(); 
+ //         shooter.AutoShoot();
           
         }
         case Drive: {
-          AutoDrive.Drive();
+//          drive.drive(); 
+//          shooter.AutoShoot();
+//          AutoDrive.Drive();
         }
       }
     }  
