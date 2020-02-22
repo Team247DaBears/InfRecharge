@@ -12,6 +12,7 @@ import com.kylecorry.frc.vision.camera.Resolution;
 import com.kylecorry.frc.vision.contourFilters.ContourFilter;
 import com.kylecorry.frc.vision.contourFilters.StandardContourFilter;
 import com.kylecorry.frc.vision.distance.AreaCameraDistanceEstimator;
+import com.kylecorry.frc.vision.distance.FixedAngleCameraDistanceEstimator;
 import com.kylecorry.frc.vision.filters.HSVFilter;
 import com.kylecorry.frc.vision.filters.TargetFilter;
 import com.kylecorry.frc.vision.targetConverters.TargetGrouping;
@@ -46,11 +47,15 @@ public class DetectTarget {
  * @param image The image from the camera.
  * @return The list of vision target groups.
  */
-public Boolean shootTopTarget() {
-      Mat image;
-
-      if (UserInput.getTarget()) {
-            image = camerastream.getImage();
+    public Boolean shootTopTarget() {
+        if (UserInput.getTarget()) {
+            return shootTarget(camerastream.getImage());
+        }
+        else {
+            return false;
+        }
+    }
+    public Boolean shootTarget(Mat image) {
         if (Devices.frontLeft.get() == 0.0 && Devices.frontRight.get() == 0.0) {
             if (image != null) {
             if (image.height()>0 && image.width() >0){
@@ -75,12 +80,10 @@ public Boolean shootTopTarget() {
             return false;
         }
     }
-        else {
-            SmartDashboard.putString("Targetting","Don't move robot while trying to target.");
-            return false;
-        }
+    else {
+        SmartDashboard.putString("Targetting","Don't move robot while trying to target.");
+        return false;
     }
-    return false;
 }
 /**
  * Moves Robot to target top vision target.
@@ -97,10 +100,8 @@ public Boolean targetTopTarget(Mat image) {
     if (current==null) {System.err.println("no target found"); return false;} // no target found
 
     Size size = current.getBoundary().size;
-    AreaCameraDistanceEstimator distanceEstimator = 
-        new AreaCameraDistanceEstimator(
-            new AreaCameraDistanceEstimator.AreaDistancePair(100, 0), 
-            new AreaCameraDistanceEstimator.AreaDistancePair(50, 10));
+    FixedAngleCameraDistanceEstimator distanceEstimator = 
+        new FixedAngleCameraDistanceEstimator(10, 1, 10);
     Double distance = distanceEstimator.getDistance(current);
     System.out.println("distance:"+distance);
     if (size.width > 1 && size.height > 1 /* Target Size too Big */) {
