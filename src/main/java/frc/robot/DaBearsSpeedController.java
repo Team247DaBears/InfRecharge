@@ -105,10 +105,8 @@ public class DaBearsSpeedController implements SpeedController {
     public void set(double speed) {
         if (useEncoder){
             if (useSparkMax) { 
-                if (Position == 0) { // Spark Max set speed if Position = 0
                     speedController.set(speed);
                     driveSpeed = speed;
-                }
             }
             else { // Victor Set Speed
                 speedController.set(speed);
