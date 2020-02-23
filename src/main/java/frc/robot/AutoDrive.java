@@ -5,12 +5,12 @@ import java.lang.Math.*;
 import frc.robot.Devices;
 public class  AutoDrive
 {
-    private static final double KP=5e-5;
-    private static final double KI=2e-6;
+    private static final double KP=0;
+    private static final double KI=0;
     private static final double KD=0;
     private static final double MAXOUT=1;
     private static final double MINOUT=-1;
-    private static final double FFVALUE=-0.22;  //Will require experimentation to set a better value
+    private static final double FFVALUE=0;  //Will require experimentation to set a better value
     private static final double IZONE=200;
     private static final double TARGETRPM=-1000;  //Will begin with a single setpoint.  We'll modify that for multiple distance ranges later.
 
@@ -28,6 +28,7 @@ public class  AutoDrive
                 Devices.frontRight.setPosition(0);
                 Devices.backLeft.setPosition(0);
                 Devices.backRight.setPosition(0);
+                System.out.println("getPosition:"+Devices.frontLeft.getPosition());
 
                 Devices.frontLeft.setOutputRange(-1*Math.abs(q.LeftDriveSpeed), Math.abs(q.LeftDriveSpeed));
                 Devices.frontRight.setOutputRange(-1*Math.abs(q.RightDriveSpeed), Math.abs(q.RightDriveSpeed));
@@ -115,8 +116,8 @@ public class  AutoDrive
         AutoQueue.addDriveQueue(AutoStates.Drive,
             DriveStates.DriveStart,
             GearStates.LowGearPressed,
-            .1,10.0, /*LeftDrivePos,LeftDriveSpeed*/
-            .1,10.0 /*RightDrivePos,RightDriveSpeed*/);
+            .3,10.0, /*LeftDrivePos,LeftDriveSpeed*/
+            .3,10.0 /*RightDrivePos,RightDriveSpeed*/);
         AutoQueue.addDriveQueue(AutoStates.Drive,
             DriveStates.DriveStart,
             GearStates.LowGearPressed,
@@ -134,21 +135,24 @@ public class  AutoDrive
 
         AutoQueue.clearQueue();  
         // drive forward for 2ft
-        AutoQueue.addTargetQueue(AutoStates.Target,TargetStates.TargetStart1,2);
+//        AutoQueue.addIntakeQueue(AutoStates.Intake,IntakeStates.intakeRun);
+//        AutoQueue.addShooterQueue(AutoStates.Shooter,ShootingStates.RAMPING_UP,10.0);
+        //AutoQueue.addTargetQueue(AutoStates.Target,TargetStates.TargetStart1,2);
         AutoQueue.addDriveQueue(AutoStates.Drive,
             DriveStates.DriveStart,
             GearStates.LowGearPressed,
-            .1,10.0, /*LeftDrivePos,LeftDriveSpeed*/
-            .1,10.0 /*RightDrivePos,RightDriveSpeed*/);
-        AutoQueue.addDriveQueue(AutoStates.Drive,
-            DriveStates.DriveStart,
-            GearStates.LowGearPressed,
-            -.3,10.0, /*LeftDrivePos,LeftDriveSpeed*/
-            -.1,10.0 /*RightDrivePos,RightDriveSpeed*/);
+            1.0,-15.0, /*LeftDrivePos,LeftDriveSpeed*/
+            1.0,-15.0 /*RightDrivePos,RightDriveSpeed*/);
+//        AutoQueue.addDriveQueue(AutoStates.Drive,
+//            DriveStates.DriveStart,
+//            GearStates.LowGearPressed,
+//            -.3,10.0, /*LeftDrivePos,LeftDriveSpeed*/
+//            -.1,10.0 /*RightDrivePos,RightDriveSpeed*/);
       }
       public static void InitEncoderController(DaBearsSpeedController motor) {
         //motor.restoreFactoryDefaults();
         motor.set(0);
+        motor.setPosition(0);
         motor.setP(KP);
         motor.setD(KD);
         motor.setI(KI);

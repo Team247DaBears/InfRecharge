@@ -206,11 +206,12 @@ public class Shooter {
 
 
         public long autoBeginTime=0;
-        public void calcNextStateAuto()
+        public void calcNextStateAuto() 
         {
             long elapsed;
             switch(currentState)
             {
+
                 case IDLE:
                       autoBeginTime=System.currentTimeMillis();
                       currentState=ShootingStates.RAMPING_UP;
@@ -237,46 +238,22 @@ public class Shooter {
             }
         }
 
-
-
-
         public boolean isIntakeRunning()
         {
             return false;  //Needs some experimentation, but the idea is that during intake running, the conveyor might move faster.
         }
     
 
-
     public void AutoShoot() {
         AutoControlData q = AutoQueue.currentQueue();
-        switch (q.shootingState) {
-            case HIGHSHOT:
-                q.shootingState=ShootingStates.RAMPING_UP;
-                shooterSolenoid.set(true);
-                break;
-            case LOWSHOT:
-                q.shootingState=ShootingStates.RAMPING_UP;
-                shooterSolenoid.set(false);
-                break;
-            case IDLE:
-                AutoQueue.removeCurrent();
-                break;
-            case RAMPING_UP:
-                if (Math.abs((shooter.getVelocity()-TARGETRPM)/TARGETRPM)<=.05)
-                {
-                    q.shootingState=ShootingStates.SHOOTING;
-                }
-                break;
-            case SHOOTING:
-                if (q.shootingRamp <= 0.0)
-                {
-                    AutoQueue.removeCurrent();
-                }
-                break;
-            }
         currentState = q.shootingState;
-        q.shootingRamp--;
+        System.out.println(q.shootingState);
         setOutputs();
+        calcNextStateAuto();
+        q.shootingState = currentState;
+        if (currentState == ShootingStates.FINISHED) {
+            AutoQueue.removeCurrent();
+        }
     }
 
 }

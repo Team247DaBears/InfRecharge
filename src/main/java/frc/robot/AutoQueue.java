@@ -2,8 +2,8 @@ package frc.robot;
 
 public class AutoQueue {
     public static final int MaxSize = 30;
-    public static final int MaxDistance = 300;
-    public static final int MinDistance = 0;
+    public static final int MaxDistance = 200;
+    public static final int MinDistance = -200;
     public static final Double MaxSpeed = 1.0;
     public static final Double MinSpeed = -1.0;
     public static final Double CalcSpeed = -99999999.0;
@@ -27,6 +27,19 @@ public class AutoQueue {
         return addQueue(q);
         }
     /**
+   * Queue AutoInake States. 
+   * @param autoState Automous Shooter state
+   * @param IntakeState State of the Shooter
+   * @return int number of entries in the queue
+   */
+  public static int addIntakeQueue(AutoStates autostate,
+  IntakeStates intakestate) {
+  AutoControlData q = new AutoControlData();
+  q.autoState = autostate;
+  q.intakeState = intakestate;
+  return addQueue(q);
+  }
+/**
    * Queue AutoShoot States. 
    * @param autoState Automous Drive state
    * @param DriveState State of the Drive
@@ -144,16 +157,16 @@ public class AutoQueue {
             q.RightDriveSpeed =  q.RightDrivePos / q.LeftDrivePos * q.LeftDriveSpeed;
         }
         if (q.LeftDrivePos>MaxDistance) {
-            throw new ArithmeticException("LeftDrivePos exceeded maxdistance of " + MaxDistance); 
+            throw new ArithmeticException("LeftDrivePos " + q.LeftDrivePos + " exceeded max-distance of " + MaxDistance); 
         }
         if (q.RightDrivePos>MaxDistance) {
-            throw new ArithmeticException("RightDrivePos exceeded maxdistance of " + MaxDistance); 
+            throw new ArithmeticException("RightDrivePos " + q.RightDrivePos + " exceeded max-distance of " + MaxDistance); 
         }
         if (q.LeftDrivePos<MinDistance) {
-            throw new ArithmeticException("LeftDrivePos below mindistance of " + MinDistance); 
+            throw new ArithmeticException("LeftDrivePos " + q.LeftDrivePos + " below min-distance of " + MinDistance); 
         }
         if (q.RightDrivePos<MinDistance) {
-            throw new ArithmeticException("RightDrivePos below mindistance of " + MinDistance); 
+            throw new ArithmeticException("RightDrivePos " + q.RightDrivePos + " below min-distance of " + MinDistance); 
         }
         if (q.LeftDriveSpeed>MaxSpeed) {
             throw new ArithmeticException("LeftDriveSpeed " + q.LeftDriveSpeed + " exceeded maxspeed of " + MaxSpeed); 

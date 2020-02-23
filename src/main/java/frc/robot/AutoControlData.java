@@ -8,7 +8,7 @@ public class AutoControlData implements Cloneable {
 
     boolean WriteLog = true;
     AutoStates autoState = AutoStates.TeleOpt;
-    GearStates gearState = GearStates.HighGearPressed;
+    GearStates gearState = GearStates.LowGearPressed;
     DeviceStates deviceState = DeviceStates.Drive;
     DriveStates driveState = DriveStates.Stop;
     LifterStates lifterState = LifterStates.LifterDown;

@@ -52,8 +52,8 @@ public class Devices {
     public static final int  PCM_LIFTER_FORWARD=5;
     public static final int  PCM_LIFTER_BACK=6;
 
-    public static final double GearSpeedHigh = 11.88;
-    public static final double GearSpeedLow = 47.5356;
+    public static final double GearSpeedHigh = 1; //0.0841750841750842; //11.88 inches
+    public static final double GearSpeedLow = 1; //0.0210368650022299; //1/47.5356;
     
     public static DaBearsSpeedController frontLeft = null;
     public static DaBearsSpeedController frontRight = null;

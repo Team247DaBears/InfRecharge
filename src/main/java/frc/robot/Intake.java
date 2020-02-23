@@ -69,6 +69,9 @@ public void operate()
         AutoControlData q = AutoQueue.currentQueue();
         switch (q.intakeState) {
             case intakeRun:
+                Devices.gearShift.set(false); // set low speed
+                Devices.setMotorConversionLow();           
+
                 intakeMotor.set(INTAKE_SPEED);
                 q.intakeState = IntakeStates.intakeDown;
 
@@ -78,24 +81,29 @@ public void operate()
                 InitEncoderController(Devices.backRight);        
             break;
             case intakeDown:
-                intakeSolenoid.set(DoubleSolenoid.Value.kForward);
+//                intakeSolenoid.set(DoubleSolenoid.Value.kForward);
                 double frontLeftPos = Devices.frontLeft.getPosition();
                 double frontRightPos = Devices.frontRight.getPosition();
 
                 double leftDiff = java.lang.Math.abs(intakeTravel - frontLeftPos);
                 double rightDiff = java.lang.Math.abs(intakeTravel - frontRightPos);
+                System.out.println("diff:"+leftDiff);
+                System.out.println("diff:"+rightDiff);
                 if (leftDiff > .2 || rightDiff > .2) {
+                    System.out.println("IntakeTravel" + intakeTravel);
                     Devices.frontLeft.setReference(intakeTravel, ControlType.kPosition);
                     Devices.frontRight.setReference(intakeTravel, ControlType.kPosition);
                     Devices.backLeft.setReference(intakeTravel, ControlType.kPosition);
                     Devices.backRight.setReference(intakeTravel, ControlType.kPosition);
-
+                }
+                else {
                     q.intakeState = IntakeStates.intakeUp;
                 }
-            break;
+                break;
             case intakeUp:
                 intakeMotor.set(0);
-                intakeSolenoid.set(DoubleSolenoid.Value.kReverse);
+                q.intakeState = IntakeStates.intakeStop;
+            //                intakeSolenoid.set(DoubleSolenoid.Value.kReverse);
             break;
             case intakeStop:
                 intakeSolenoid.set(DoubleSolenoid.Value.kOff);

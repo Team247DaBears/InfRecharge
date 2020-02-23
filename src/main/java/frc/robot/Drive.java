@@ -77,27 +77,41 @@ public class  Drive
 //System.out.println("Gear state before is "+currentGearState.toString());
     switch(currentGearState)
     {
-        case HighGearPressed:
-            if (!UserInput.getGearButton())
+        case HighGearOff:
+            if(UserInput.getGearButton())
             {
-                currentGearState=GearStates.HighGearPressed;
+                currentGearState=GearStates.LowGearPressed;
             }
             break;
-        case LowGearPressed:
+       case HighGearPressed:
+            if (!UserInput.getGearButton())
+            {
+                currentGearState=GearStates.HighGearOff;
+            }
+            break;
+      case LowGearOff:
+           if (UserInput.getGearButton())
+           {
+               currentGearState=GearStates.HighGearPressed;
+           }
+           break;
+      case LowGearPressed:
            if (!UserInput.getGearButton())
            {
-               currentGearState=GearStates.LowGearPressed;
+               currentGearState=GearStates.HighGearOff;
            }
            break;
           
       }
       switch(currentGearState)
       {
+        case HighGearOff:
         case HighGearPressed:
                 Devices.gearShift.set(true);
                 Devices.setMotorConversionHigh();
                 break;
-          case LowGearPressed:
+        case LowGearOff:
+        case LowGearPressed:
               Devices.gearShift.set(false);
               Devices.setMotorConversionLow();
               break;

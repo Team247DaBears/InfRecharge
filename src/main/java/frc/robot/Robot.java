@@ -59,7 +59,7 @@ public class Robot extends TimedRobot {
     devices=new Devices();
     Devices.Init();
     UserInput.Init();
-    lifter.Init();
+    //lifter.Init();
     intake.Init();
     shooter.Init();
     cameraStream = new CameraStream();
@@ -88,8 +88,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
+    //System.out.println("auto size:"+AutoQueue.getSize());
+
     AutoControlData autoControlData = AutoQueue.currentQueue();
-    System.out.println(autoControlData.autoState);
+    System.out.println(autoControlData.toString());
     switch (autoControlData.autoState) {
         case TeleOpt: {
           // do nothing in autonomous mode
@@ -100,11 +102,11 @@ public class Robot extends TimedRobot {
         case Shooter: {
           shooter.AutoShoot();
         }
+        case Intake: {
+          intake.AutoIntake();
+        }
         case Lifter: {
           //lifter.AutoLift();   // TODO code autolifter
-        }
-        case Collecter: {
- //         intake.AutoCollect(); // TODO code autoCollect
         }
         case Drive: {
           AutoDrive.Drive();
@@ -121,7 +123,6 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     AutoControlData autoControlData = AutoQueue.currentQueue();
-    System.out.println(autoControlData.autoState);
     switch (autoControlData.autoState) {
         case TeleOpt: {
           drive.drive(); 
@@ -142,8 +143,8 @@ public class Robot extends TimedRobot {
         case Lifter: {
           //lifter.AutoLift();          
         }
-        case Collecter: {
- //         intake.AutoCollect();
+        case Intake: {
+          intake.AutoIntake();
         }
         case Drive: {
           AutoDrive.Drive();
