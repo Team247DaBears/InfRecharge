@@ -91,32 +91,38 @@ public class Robot extends TimedRobot {
     //System.out.println("auto size:"+AutoQueue.getSize());
 
     AutoControlData autoControlData = AutoQueue.currentQueue();
-    System.out.println(autoControlData.toString());
+//    System.out.println(autoControlData.toJson());
     switch (autoControlData.autoState) {
         case TeleOpt: {
           // do nothing in autonomous mode
         }
+        break;
         case Target: {
           detecttarget.AutoTarget();
         }
+        break;
         case Shooter: {
           shooter.AutoShoot();
         }
+        break;
         case Intake: {
           intake.AutoIntake();
         }
+        break;
         case Lifter: {
-          //lifter.AutoLift();   // TODO code autolifter
+          // not needed for autonomous
         }
+        break;
         case Drive: {
           AutoDrive.Drive();
         }
+        break;
       }
 }
 
   @Override
   public void teleopInit() {
-    AutoQueue.clearQueue();
+ //   AutoQueue.clearQueue();
   }
   
   int counter=0;

@@ -49,8 +49,8 @@ public class Shooter {
                                 //if using setInverted, but that will require some testing.
     private final double FFVALUE=-0.22;  //Will require experimentation to set a better value
     private final double IZONE=200;
-    private final double TARGETRPM=-1100;  //Will begin with a single setpoint.  We'll modify that for multiple distance ranges later.
-    private final double CUTOFFRPM=-1090;
+    private final double TARGETRPM=-1200;  //Will begin with a single setpoint.  We'll modify that for multiple distance ranges later.
+    private final double CUTOFFRPM=-1190;
     private final double FIRINGTHRESHOLD=-950; //Begin feeding balls when this threshold is reached
 
 
@@ -58,7 +58,7 @@ public class Shooter {
     /*  Basic Autonomous ... may never be used, depending on what else becomes availalbe                                        */
     /*  The baasic autonomus sequence will be used to turn on the motor long enough tore three preloaded balls toward the target */
     /**************************************************************************************************************************** */
-    private final long AUTO_SHOOT_TIME_MS=9000;//Amount of time to run the shooter for basic autonomous
+    private final long AUTO_SHOOT_TIME_MS=5600;//Amount of time to run the shooter for basic autonomous
 
     public void Init()
     {
@@ -213,10 +213,12 @@ public class Shooter {
             {
 
                 case IDLE:
+                System.out.println("Shooter.IDLE");
                       autoBeginTime=System.currentTimeMillis();
                       currentState=ShootingStates.RAMPING_UP;
                       break;
                 case RAMPING_UP:
+                System.out.println("Shooter.Ramping");
                         elapsed=System.currentTimeMillis()-autoBeginTime;
                       if (elapsed>AUTO_SHOOT_TIME_MS)
                         currentState=ShootingStates.FINISHED;
@@ -226,6 +228,7 @@ public class Shooter {
                       }
                       break;
                 case SHOOTING:
+                System.out.println("Shooter.Shooting");
                 elapsed=System.currentTimeMillis()-autoBeginTime;
                       if (elapsed>AUTO_SHOOT_TIME_MS)
                       {
@@ -233,6 +236,7 @@ public class Shooter {
                       }
                       break;
                 default:
+                System.out.println("Shooter.Finished");
                      currentState=ShootingStates.FINISHED;
                      break;
             }
@@ -251,9 +255,11 @@ public class Shooter {
         setOutputs();
         calcNextStateAuto();
         q.shootingState = currentState;
+        AutoControlData q1 = AutoQueue.currentQueue();
         if (currentState == ShootingStates.FINISHED) {
             AutoQueue.removeCurrent();
         }
+        System.out.println("size" + AutoQueue.getSize());
     }
 
 }
