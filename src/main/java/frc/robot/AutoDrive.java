@@ -8,8 +8,8 @@ public class  AutoDrive
     private final static double KP = 60; // sets the speed error between current and future
     private final static double KI = 0;
     private static final double KD = 0;
-    private static final double MAXOUT = 1;
-    private static final double MINOUT = -1;
+    private static final double MAXOUT = .4;
+    private static final double MINOUT = -.4;
     private final static double FFVALUE = 0; // Will require experimentation to set a better value
     private static final double IZONE = 200;
     private static final double TARGETRPM = -1000; // Will begin with a single setpoint. We'll modify that for multiple
@@ -136,16 +136,15 @@ public class  AutoDrive
 
         AutoQueue.clearQueue();
         // drive forward for 2ft
-        // AutoQueue.addIntakeQueue(AutoStates.Intake,IntakeStates.intakeRun);
         AutoQueue.addShooterQueue(AutoStates.Shooter, ShootingStates.IDLE, 10.0);
-        // AutoQueue.addShooterQueue(AutoStates.Shooter,ShootingStates.IDLE,10.0);
         // AutoQueue.addTargetQueue(AutoStates.Target,TargetStates.TargetStart1,2);
-        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, 1.0, 18.0, 1.0, -18.0 /* RightDrivePos,RightDriveSpeed */);
-//        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, 1.0, -17.0, 1.0, -17.0 /* RightDrivePos,RightDriveSpeed */);
+        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, 1.0, -10.0, 1.0, -10.0 /* RightDrivePos,RightDriveSpeed */);
+        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, 1.0, 32.0, 1.0, -32.0 /* RightDrivePos,RightDriveSpeed */);
+        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, 1.0, 45.0, 1.0, 45.0 /* RightDrivePos,RightDriveSpeed */);
+        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, 1.0, 10.0, 1.0, -10.0 /* RightDrivePos,RightDriveSpeed */);
 //        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, 1.0, 5.0, 1.0, -5.0 /* RightDrivePos,RightDriveSpeed */);
 //        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, 1.0, -10.0, 1.0, -10.0 /* RightDrivePos,RightDriveSpeed */);
-//        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, 1.0, 5.0, 1.0, -5.0 /* RightDrivePos,RightDriveSpeed */);
-//        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, 1.0, -10.0, 1.0, -10.0 /* RightDrivePos,RightDriveSpeed */);
+        //AutoQueue.addIntakeQueue(AutoStates.Intake,IntakeStates.intakeRun);
         // AutoQueue.addDriveQueue(AutoStates.Drive,
         // DriveStates.DriveStart,
         // GearStates.LowGearPressed,
