@@ -33,7 +33,7 @@ public class  Drive
         motor.setReference(0, ControlType.kPosition);
     }
     public Drive() {
-        currentGearState=GearStates.LowGearOff;
+        currentGearState=GearStates.LowGearPressed;
     }
     public void drive()
       {
@@ -77,40 +77,26 @@ public class  Drive
 //System.out.println("Gear state before is "+currentGearState.toString());
     switch(currentGearState)
     {
-        case HighGearOff:
-            if(UserInput.getGearButton())
-            {
-                currentGearState=GearStates.LowGearPressed;
-            }
-            break;
-       case HighGearPressed:
+        case HighGearPressed:
             if (!UserInput.getGearButton())
             {
-                currentGearState=GearStates.HighGearOff;
+                currentGearState=GearStates.HighGearPressed;
             }
             break;
-      case LowGearOff:
-           if (UserInput.getGearButton())
-           {
-               currentGearState=GearStates.HighGearPressed;
-            }
-           break;
-      case LowGearPressed:
+        case LowGearPressed:
            if (!UserInput.getGearButton())
            {
-               currentGearState=GearStates.HighGearOff;
+               currentGearState=GearStates.LowGearPressed;
            }
            break;
           
       }
       switch(currentGearState)
       {
-        case LowGearOff:
         case HighGearPressed:
                 Devices.gearShift.set(true);
                 Devices.setMotorConversionHigh();
                 break;
-          case HighGearOff:
           case LowGearPressed:
               Devices.gearShift.set(false);
               Devices.setMotorConversionLow();

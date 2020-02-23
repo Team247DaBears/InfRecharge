@@ -53,13 +53,11 @@ public class  AutoDrive
                     //Devices.frontLeft.set(q.LeftDriveSpeed); // set the left speed
                     //Devices.frontRight.set(q.RightDriveSpeed); // set the right speed
                     switch (q.gearState) {
-                        case LowGearOff:
                         case HighGearPressed:{
                             Devices.gearShift.set(true); // set High speed  
                             Devices.setMotorConversionHigh();
          
                         }
-                        case HighGearOff:
                         case LowGearPressed: {
                             Devices.gearShift.set(false); // set low speed
                             Devices.setMotorConversionLow();           
@@ -104,7 +102,7 @@ public class  AutoDrive
             Devices.frontLeft.Position = 0;            
         }
     }
-    public static void autonomousModeInit(){
+    public static void autonomousInitCenter(){
         InitEncoderController(Devices.frontLeft);
         InitEncoderController(Devices.frontRight);
         InitEncoderController(Devices.backLeft);
@@ -116,15 +114,37 @@ public class  AutoDrive
         // drive forward for 2ft
         AutoQueue.addDriveQueue(AutoStates.Drive,
             DriveStates.DriveStart,
-            GearStates.LowGearOff,
+            GearStates.LowGearPressed,
             .1,10.0, /*LeftDrivePos,LeftDriveSpeed*/
             .1,10.0 /*RightDrivePos,RightDriveSpeed*/);
         AutoQueue.addDriveQueue(AutoStates.Drive,
             DriveStates.DriveStart,
-            GearStates.LowGearOff,
+            GearStates.LowGearPressed,
             -.3,10.0, /*LeftDrivePos,LeftDriveSpeed*/
             -.1,10.0 /*RightDrivePos,RightDriveSpeed*/);
 //        AutoQueue.addTargetQueue(AutoStates.Target,TargetStates.TargetStart,2);
+      }
+    public static void autonomousModeInit(){
+        InitEncoderController(Devices.frontLeft);
+        InitEncoderController(Devices.frontRight);
+        InitEncoderController(Devices.backLeft);
+        InitEncoderController(Devices.backRight);
+        //Devices.backLeft.setFollower(Devices.frontLeft); // set follower speed
+        //Devices.backRight.setFollower(Devices.frontRight); // set follower speed
+
+        AutoQueue.clearQueue();  
+        // drive forward for 2ft
+        AutoQueue.addTargetQueue(AutoStates.Target,TargetStates.TargetStart1,2);
+        AutoQueue.addDriveQueue(AutoStates.Drive,
+            DriveStates.DriveStart,
+            GearStates.LowGearPressed,
+            .1,10.0, /*LeftDrivePos,LeftDriveSpeed*/
+            .1,10.0 /*RightDrivePos,RightDriveSpeed*/);
+        AutoQueue.addDriveQueue(AutoStates.Drive,
+            DriveStates.DriveStart,
+            GearStates.LowGearPressed,
+            -.3,10.0, /*LeftDrivePos,LeftDriveSpeed*/
+            -.1,10.0 /*RightDrivePos,RightDriveSpeed*/);
       }
       public static void InitEncoderController(DaBearsSpeedController motor) {
         //motor.restoreFactoryDefaults();

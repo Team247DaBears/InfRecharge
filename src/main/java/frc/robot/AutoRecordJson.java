@@ -74,8 +74,7 @@ public class AutoRecordJson {
         cq.RightDriveSpeed = Devices.frontRight.driveSpeed;
         cq.LeftDrivePos = Devices.frontLeft.getPosition();
         cq.RightDrivePos = Devices.frontRight.getPosition();
-        cq.intakeStateMotor = null; //intake.intakeStateMotor;
-        cq.intakeStateArms = null; //intake.intakeStateArms;
+        cq.intakeState = null; //intake.intakeStateMotor;
         cq.lifterState = lifter.lifterState;
         cq.shootingState = shooter.currentState;
         pq.shootingRamp++;

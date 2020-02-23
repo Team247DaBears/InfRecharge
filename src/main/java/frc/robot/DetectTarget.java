@@ -57,12 +57,12 @@ public class DetectTarget {
         horizontal = default_horizontal;
         virtical = default_virtical;
     
-        SmartDashboard.putNumber("camExp:", 4);
-        SmartDashboard.putNumber("camBal:", 100);
-        camerastream = camera;
-        outputStream = CameraServer.getInstance().putVideo("TargetCam", 320, 240);
-        outputStream.setFPS(12);
-        outputStream.setResolution(320, 240);
+ //       SmartDashboard.putNumber("camExp:", 4);
+ //       SmartDashboard.putNumber("camBal:", 100);
+//        camerastream = camera;
+//        outputStream = CameraServer.getInstance().putVideo("TargetCam", 320, 240);
+//        outputStream.setFPS(12);
+//        outputStream.setResolution(320, 240);
     }
 
  /**
@@ -72,8 +72,13 @@ public class DetectTarget {
  */
     public Boolean shootTopTarget() {
         if (UserInput.getTarget()) {
-            return shootTarget(camerastream.getImage());
-        }
+            if (camerastream != null){
+                return shootTarget(camerastream.getImage());
+            }
+            else {
+                return false;
+            }
+    }
         else {
             return false;
         }

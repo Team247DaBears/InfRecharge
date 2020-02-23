@@ -162,7 +162,7 @@ public class Devices {
       backLeft.setPositionConversionFactor(GearSpeedHigh);
       backRight.setPositionConversionFactor(GearSpeedHigh);
     }
-    private static Boolean isRunningTest() {
+    static Boolean isRunningTest() {
       if (isRunningTest == null) {
           isRunningTest = true;
           try {

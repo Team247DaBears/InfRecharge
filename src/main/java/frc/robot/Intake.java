@@ -12,36 +12,42 @@
 
 package frc.robot;
 
+import com.revrobotics.ControlType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Spark;
 
 public class Intake {
     DoubleSolenoid intakeSolenoid;
 
-    
     DaBearsSpeedController intakeMotor;
+    IntakeStates intakeState;
     private final double INTAKE_SPEED=.5;
+    private final int intakeTravel = 16; // go distance of ball size plus 4 in. 
+
+    private static final double KP=5e-5;
+    private static final double KI=2e-6;
+    private static final double KD=0;
+    private static final double MAXOUT=.5; // during intake drive speed
+    private static final double MINOUT=-.5;
+    private static final double FFVALUE=-0.22;  //Will require experimentation to set a better value
+    private static final double IZONE=200;
+    private static final double TARGETRPM=-1000;  //Will begin with a single setpoint.  We'll modify that for multiple distance ranges later.
 
     public void Init()
     {
         intakeSolenoid=Devices.intake_solenoid;
-        intakeMotor=Devices.intake_motor;
-        
+        intakeMotor=Devices.intake_motor;        
     }
-
 
 public void operate()
 {
         if (UserInput.intakeRun())
         {
             intakeMotor.set(INTAKE_SPEED);
-
-    }   
+        }   
         else 
         {
- 
             intakeMotor.set(0);
-   
         }
 
         if (UserInput.intakeDown())
@@ -58,5 +64,55 @@ public void operate()
      
         intakeSolenoid.set(DoubleSolenoid.Value.kOff);
         }
-}
+    }
+    public void AutoIntake(){
+        AutoControlData q = AutoQueue.currentQueue();
+        switch (q.intakeState) {
+            case intakeRun:
+                intakeMotor.set(INTAKE_SPEED);
+                q.intakeState = IntakeStates.intakeDown;
+
+                InitEncoderController(Devices.frontLeft);
+                InitEncoderController(Devices.frontRight);
+                InitEncoderController(Devices.backLeft);
+                InitEncoderController(Devices.backRight);        
+            break;
+            case intakeDown:
+                intakeSolenoid.set(DoubleSolenoid.Value.kForward);
+                double frontLeftPos = Devices.frontLeft.getPosition();
+                double frontRightPos = Devices.frontRight.getPosition();
+
+                double leftDiff = java.lang.Math.abs(intakeTravel - frontLeftPos);
+                double rightDiff = java.lang.Math.abs(intakeTravel - frontRightPos);
+                if (leftDiff > .2 || rightDiff > .2) {
+                    Devices.frontLeft.setReference(intakeTravel, ControlType.kPosition);
+                    Devices.frontRight.setReference(intakeTravel, ControlType.kPosition);
+                    Devices.backLeft.setReference(intakeTravel, ControlType.kPosition);
+                    Devices.backRight.setReference(intakeTravel, ControlType.kPosition);
+
+                    q.intakeState = IntakeStates.intakeUp;
+                }
+            break;
+            case intakeUp:
+                intakeMotor.set(0);
+                intakeSolenoid.set(DoubleSolenoid.Value.kReverse);
+            break;
+            case intakeStop:
+                intakeSolenoid.set(DoubleSolenoid.Value.kOff);
+                AutoQueue.removeCurrent();
+                break;    
+        }
+     }
+     public static void InitEncoderController(DaBearsSpeedController motor) {
+        //motor.restoreFactoryDefaults();
+        motor.set(0);
+        motor.setP(KP);
+        motor.setD(KD);
+        motor.setI(KI);
+        motor.setOutputRange(MINOUT, MAXOUT);
+        motor.setIZone(IZONE);
+        motor.setFF(FFVALUE/TARGETRPM);
+        motor.set(0);
+        motor.setPosition(0);
+    }
 }

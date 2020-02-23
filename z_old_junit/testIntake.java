@@ -26,10 +26,10 @@ public class testIntake {
       Assert.assertEquals(0.0,intake.intakeMotor.get(),.01);
       intake.operate();
       Assert.assertEquals(DoubleSolenoid.Value.kReverse,intake.intakeSolenoid.get());
-      Assert.assertEquals(1.0,intake.intakeMotor.get(),.01);
+      Assert.assertEquals(.5,intake.intakeMotor.get(),.01);
       intake.operate();
       Assert.assertEquals(DoubleSolenoid.Value.kForward,intake.intakeSolenoid.get());
-      Assert.assertEquals(1.0,intake.intakeMotor.get(),.01);
+      Assert.assertEquals(0.5,intake.intakeMotor.get(),.01);
       intake.operate();
       Assert.assertEquals(DoubleSolenoid.Value.kForward,intake.intakeSolenoid.get());
       Assert.assertEquals(0.0,intake.intakeMotor.get(),.01);

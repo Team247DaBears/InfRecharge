@@ -26,6 +26,7 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
+  static AutoQueue autoQueue;
   static Drive drive;
   static Devices devices;
   static Intake intake;  
@@ -43,14 +44,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    m_chooser.setDefaultOption("Auto Mode?", kDefaultAuto);
-    m_chooser.addOption("Center High Shooter", kCustomAuto);
-    m_chooser.addOption("Center Low Shooter", kCustomAuto);
-    m_chooser.addOption("Left High Shooter", kCustomAuto);
-    m_chooser.addOption("Left Low Shooter", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
+    m_chooser.setDefaultOption("test mode", kDefaultAuto);
+    m_chooser.addOption("test mode", kCustomAuto);
+    m_chooser.addOption("left", kCustomAuto);
+    m_chooser.addOption("centr", kCustomAuto);
+    m_chooser.addOption("right", kCustomAuto);
     m_autoSelected = m_chooser.getSelected();
 
+    autoQueue = new AutoQueue();
     lifter=new Lifter();
     intake=new Intake();
     shooter=new Shooter();
@@ -62,68 +63,90 @@ public class Robot extends TimedRobot {
     intake.Init();
     shooter.Init();
     cameraStream = new CameraStream();
-//    cameraStream.initCamera();
+//    cameraStream.initCamera(); // comment out until camera installed. 
     detecttarget = new DetectTarget();
     detecttarget.Init(cameraStream);
-
-    drive=new Drive();
-    
+    drive=new Drive();    
   }
 
   @Override
   public void autonomousInit() {
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
+    m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + m_autoSelected);
-
-  AutoDrive.autonomousModeInit();
+    switch(m_autoSelected) {
+      case "test mode":
+        AutoDrive.autonomousModeInit();
+      break;
+      case "center":
+        AutoDrive.autonomousInitCenter();
+      break;
+      case "Default":
+        AutoDrive.autonomousModeInit();
+      break;
+    }
   }
 
   @Override
   public void autonomousPeriodic() {
-  AutoDrive.Drive(); 
+    AutoControlData autoControlData = AutoQueue.currentQueue();
+    System.out.println(autoControlData.autoState);
+    switch (autoControlData.autoState) {
+        case TeleOpt: {
+          // do nothing in autonomous mode
+        }
+        case Target: {
+          detecttarget.AutoTarget();
+        }
+        case Shooter: {
+          shooter.AutoShoot();
+        }
+        case Lifter: {
+          //lifter.AutoLift();   // TODO code autolifter
+        }
+        case Collecter: {
+ //         intake.AutoCollect(); // TODO code autoCollect
+        }
+        case Drive: {
+          AutoDrive.Drive();
+        }
+      }
 }
 
   @Override
   public void teleopInit() {
+    AutoQueue.clearQueue();
   }
   
   int counter=0;
   @Override
   public void teleopPeriodic() {
     AutoControlData autoControlData = AutoQueue.currentQueue();
-      switch (autoControlData.autoState) {
+    System.out.println(autoControlData.autoState);
+    switch (autoControlData.autoState) {
         case TeleOpt: {
-
           drive.drive(); 
           intake.operate(); 
-   //       lifter.operate();
+          lifter.operate();
           shooter.operate();
-//          detecttarget.shootTopTarget(); // when implemented it will switch to autonomous mode
+//          detecttarget.shootTopTarget(); // semi-autonomous shoot target (using camera)
 
 //          AutoRecordJson.AutoRecorder(); // records userinput & writes file Takes two buttons to turn on//
 
         }
         case Target: {
-//          detecttarget.AutoTarget();
+          detecttarget.AutoTarget();
         }
         case Shooter: {
-//          drive.drive(); 
-//          shooter.AutoShoot();
+          shooter.AutoShoot();
         }
         case Lifter: {
-          drive.drive(); 
-//          shooter.AutoShoot();
-          
+          //lifter.AutoLift();          
         }
         case Collecter: {
- //         drive.drive(); 
- //         shooter.AutoShoot();
-          
+ //         intake.AutoCollect();
         }
         case Drive: {
-//          drive.drive(); 
-//          shooter.AutoShoot();
-//          AutoDrive.Drive();
+          AutoDrive.Drive();
         }
       }
     }  

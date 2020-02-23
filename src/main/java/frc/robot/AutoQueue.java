@@ -111,7 +111,6 @@ public class AutoQueue {
         double lifterleftpos,
         double lifterrightpos,
         IntakeStates intakestate,
-        IntakeStates intakearmstate,
         TargetStates targetstate,
         Double leftdrivespeed,
         Double leftdrivepos,
@@ -124,8 +123,7 @@ public class AutoQueue {
         q.lifterState = lifterstate;
         q.lifterLeftPos = lifterleftpos;
         q.lifterRightPos = lifterrightpos;
-        q.intakeStateMotor = intakestate;
-        q.intakeStateArms = intakearmstate;
+        q.intakeState = intakestate;
         q.targetState = targetstate;
         q.LeftDriveSpeed = leftdrivespeed;
         q.LeftDrivePos = leftdrivepos;

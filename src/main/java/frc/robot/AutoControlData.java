@@ -16,11 +16,9 @@ public class AutoControlData implements Cloneable {
     double lifterRightPos = 0;
     ShootingStates shootingState = ShootingStates.IDLE;
     double shootingRamp = 0;
-    IntakeStates intakeStateMotor = IntakeStates.intakeStop;
-    IntakeStates intakeStateArms = IntakeStates.intakeStop;
+    IntakeStates intakeState = IntakeStates.intakeStop;
     TargetStates targetState = TargetStates.TargetOff;
     double targetLoop = 0;
-
 
     Double LeftDriveSpeed=0.0;
     double LeftDrivePos=0.0;

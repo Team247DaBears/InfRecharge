@@ -4,6 +4,7 @@ import java.lang.reflect.*;
 
 public class DaBearsCloseDevices {  
   public static void close (Object devices) {
+        if (devices == null) {return;}
         Field[] fields = devices.getClass().getFields();
         for(Field field : fields){
           Method[] methods=null;
