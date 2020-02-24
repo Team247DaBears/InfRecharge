@@ -30,8 +30,9 @@ public class UserInput
     private static final int JSB_LIFTERUP=5;
     private static final int JSB_LIFTERDOWN=6;
 
-    private static final int AXIS_HOIST = 2;
-    private static final int AXIS_SHOOTER = 5;
+    private static final int AXIS_OPERATOR_HOIST = 2;
+    private static final int JSB_DRIVER_HOIST = 11;
+    private static final int AXIS_SHOOTER = 3;
     
     private static final int JSB_WRITERECORDER=8; 
     private static final int JSB_GETTARGET=9;
@@ -79,7 +80,9 @@ public static boolean getLifterDown()
 
 public static boolean getLifterClimb()
 {
-   return operatorStick.getRawAxis(AXIS_HOIST)>0.5;
+    boolean left= operatorStick.getRawAxis(AXIS_OPERATOR_HOIST)>0.5;
+    boolean right= rightStick.getRawButton(JSB_DRIVER_HOIST);
+    return left && right;
    //return false;
 }
 
@@ -116,7 +119,9 @@ public static boolean getGearButton()
     public static boolean getShooting()
     {
         //return operatorStick.getRawAxis(AXIS_SHOOTER)>.5;
-        return operatorStick.getRawAxis(3)>.5;
+        System.out.println("UserInput.getShooting(); temp assign button4");
+        return operatorStick.getRawButton(4);
+//        return operatorStick.getRawAxis(AXIS_SHOOTER)>.5;
     }
 
     //Activate solenoid to tilt the shooter    

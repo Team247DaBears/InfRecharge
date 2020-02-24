@@ -16,6 +16,7 @@ public class  AutoDrive
                                                    // distance ranges later.
 
     public static void Drive() {
+        if (AutoQueue.getSize() ==0) {return;}
         AutoControlData q = AutoQueue.currentQueue();
         if (q.WriteLog) {
             System.out.println(q.toString());
@@ -28,13 +29,13 @@ public class  AutoDrive
             Devices.frontRight.setPosition(0);
             Devices.backLeft.setPosition(0);
             Devices.backRight.setPosition(0);
-            System.out.println("getPosition:" + Devices.frontLeft.getPosition());
+            //System.out.println("getPosition:" + Devices.frontLeft.getPosition());
 
             Devices.frontLeft.setOutputRange(-1 * Math.abs(q.LeftDriveSpeed), Math.abs(q.LeftDriveSpeed));
             Devices.frontRight.setOutputRange(-1 * Math.abs(q.RightDriveSpeed), Math.abs(q.RightDriveSpeed));
             Devices.backLeft.setOutputRange(-1 * Math.abs(q.LeftDriveSpeed), Math.abs(q.LeftDriveSpeed));
             Devices.backRight.setOutputRange(-1 * Math.abs(q.RightDriveSpeed), Math.abs(q.RightDriveSpeed));
-            System.out.println("min:" + -1 * Math.abs(q.LeftDriveSpeed) + " Max:" + Math.abs(q.LeftDriveSpeed));
+            //System.out.println("min:" + -1 * Math.abs(q.LeftDriveSpeed) + " Max:" + Math.abs(q.LeftDriveSpeed));
         }
         case Drive: {
             double frontLeftPos = Devices.frontLeft.getPosition();
@@ -42,8 +43,8 @@ public class  AutoDrive
 
             double leftDiff = java.lang.Math.abs(q.LeftDrivePos - frontLeftPos);
             double rightDiff = java.lang.Math.abs(q.RightDrivePos - frontRightPos);
-            System.out.println("diff:" + leftDiff);
-            System.out.println("diff:" + rightDiff);
+            //System.out.println("diff:" + leftDiff);
+            //System.out.println("diff:" + rightDiff);
             if (leftDiff > .2 || rightDiff > .2) {
                 Devices.frontLeft.setReference(q.LeftDrivePos, ControlType.kPosition);
                 Devices.frontRight.setReference(q.RightDrivePos, ControlType.kPosition);
@@ -54,11 +55,13 @@ public class  AutoDrive
                 // Devices.frontLeft.set(q.LeftDriveSpeed); // set the left speed
                 // Devices.frontRight.set(q.RightDriveSpeed); // set the right speed
                 switch (q.gearState) {
+                case HighGearOff:
                 case HighGearPressed: {
                     Devices.gearShift.set(true); // set High speed
                     Devices.setMotorConversionHigh();
 
                 }
+                case LowGearOff:
                 case LowGearPressed: {
                     Devices.gearShift.set(false); // set low speed
                     Devices.setMotorConversionLow();
@@ -138,10 +141,10 @@ public class  AutoDrive
         // drive forward for 2ft
         AutoQueue.addShooterQueue(AutoStates.Shooter, ShootingStates.IDLE, 10.0);
         // AutoQueue.addTargetQueue(AutoStates.Target,TargetStates.TargetStart1,2);
-        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, 1.0, -10.0, 1.0, -10.0 /* RightDrivePos,RightDriveSpeed */);
-        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, 1.0, 32.0, 1.0, -32.0 /* RightDrivePos,RightDriveSpeed */);
-        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, 1.0, 45.0, 1.0, 45.0 /* RightDrivePos,RightDriveSpeed */);
-        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, 1.0, 10.0, 1.0, -10.0 /* RightDrivePos,RightDriveSpeed */);
+        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, .4, -10.0, .4, -10.0 /* RightDrivePos,RightDriveSpeed */);
+        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, .4, 29.0, .4, -29.0 /* RightDrivePos,RightDriveSpeed */);
+        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, .4, 55.0, .4, 55.0 /* RightDrivePos,RightDriveSpeed */);
+        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, .4, 14.0, .4, -14.0 /* RightDrivePos,RightDriveSpeed */);
 //        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, 1.0, 5.0, 1.0, -5.0 /* RightDrivePos,RightDriveSpeed */);
 //        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, 1.0, -10.0, 1.0, -10.0 /* RightDrivePos,RightDriveSpeed */);
         //AutoQueue.addIntakeQueue(AutoStates.Intake,IntakeStates.intakeRun);

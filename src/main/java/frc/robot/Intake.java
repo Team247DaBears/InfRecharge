@@ -66,6 +66,7 @@ public void operate()
         }
     }
     public void AutoIntake(){
+        if (AutoQueue.getSize() ==0) {return;}
         AutoControlData q = AutoQueue.currentQueue();
         switch (q.intakeState) {
             case intakeRun:

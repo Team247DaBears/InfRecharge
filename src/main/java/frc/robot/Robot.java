@@ -59,7 +59,7 @@ public class Robot extends TimedRobot {
     devices=new Devices();
     Devices.Init();
     UserInput.Init();
-    //lifter.Init();
+    lifter.Init();
     intake.Init();
     shooter.Init();
     cameraStream = new CameraStream();

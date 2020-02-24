@@ -17,6 +17,7 @@ public class  Drive
     private final double TARGETRPM=-1000;  //Will begin with a single setpoint.  We'll modify that for multiple distance ranges later.
 
     public void Init() {
+        
         InitEncoderController(Devices.frontLeft);
         InitEncoderController(Devices.frontRight);
         InitEncoderController(Devices.backLeft);
@@ -33,7 +34,7 @@ public class  Drive
         motor.setReference(0, ControlType.kPosition);
     }
     public Drive() {
-        currentGearState=GearStates.LowGearPressed;
+        currentGearState=GearStates.LowGearOff;
     }
     public void drive()
       {
@@ -112,7 +113,7 @@ public class  Drive
                 break;
         case LowGearOff:
         case LowGearPressed:
-              Devices.gearShift.set(false);
+            Devices.gearShift.set(false);
               Devices.setMotorConversionLow();
               break;
       }
