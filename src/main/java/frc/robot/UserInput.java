@@ -118,11 +118,7 @@ public static boolean getGearButton()
     //Activate the sequence to spin up the motor and to increase conveyor speed
     public static boolean getShooting()
     {
-        //return operatorStick.getRawAxis(AXIS_SHOOTER)>.5;
-        boolean temp = operatorStick.getRawButton(4);
-        System.out.println("UserInput.getShooting(); temp assign button4" + temp);
-        return temp;
-//        return operatorStick.getRawAxis(AXIS_SHOOTER)>.5;
+        return operatorStick.getRawAxis(AXIS_SHOOTER)>.5;
     }
 
     //Activate solenoid to tilt the shooter    
