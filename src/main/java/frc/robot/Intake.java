@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.Spark;
 
 public class Intake {
     DoubleSolenoid intakeSolenoid;
-    public static double CONVEYORSPEED=-0.60;
+    private double CONVEYORSPEED=-0.60;
 
     DaBearsSpeedController intakeMotor;
     IntakeStates intakeState;
@@ -36,6 +36,7 @@ public class Intake {
 
     public void Init()
     {
+        Devices.conveyor.set(0); // turn off conveyor
         intakeSolenoid=Devices.intake_solenoid;
         intakeMotor=Devices.intake_motor;        
     }
