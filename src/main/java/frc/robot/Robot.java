@@ -75,16 +75,23 @@ public class Robot extends TimedRobot {
     System.out.println("Auto selected: " + m_autoSelected);
     switch(m_autoSelected) {
       case "left":
-        AutoDrive.autonomousModeInit();
+        AutoDrive.autonomousInitLeft();
       break;
       case "center":
         AutoDrive.autonomousInitCenter();
       break;
       case "right":
-        AutoDrive.autonomousInitCenter();
+        AutoDrive.autonomousInitRight();
+      break;
+      case "backup left":
+        AutoDrive.autonomousInitBackupLeft();
+      break;
+      case "backup right":
+        AutoDrive.autonomousInitBackupRight();
       break;
       case "Default":
-        AutoDrive.autonomousModeInit();
+      AutoDrive.autonomousInitBackupRight();
+      //      AutoDrive.autonomousInitDefault();
       break;
     }
   }

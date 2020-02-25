@@ -218,6 +218,10 @@ public class Shooter {
                       break;
                 case RAMPING_UP:
                         elapsed=System.currentTimeMillis()-autoBeginTime;
+                        if (shooter.getVelocity()<CUTOFFRPM)
+                        {
+                            currentState=ShootingStates.SHOOTING;
+                        }
                       break;
                 case SHOOTING:
                 elapsed=System.currentTimeMillis()-autoBeginTime;
@@ -242,8 +246,9 @@ public class Shooter {
         if (AutoQueue.getSize() == 0) {return;}
         AutoControlData q = AutoQueue.currentQueue();
         currentState = q.shootingState;
-        setOutputs();
+        System.out.println(currentState);
         calcNextStateAuto();
+        setOutputs();
         q.shootingState = currentState;
         if (currentState == ShootingStates.FINISHED) {
             AutoQueue.removeCurrent();

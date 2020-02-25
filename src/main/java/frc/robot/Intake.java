@@ -77,6 +77,7 @@ public void operate()
                 Devices.gearShift.set(false); // set low speed
                 Devices.setMotorConversionLow();           
 
+                Devices.conveyor.set(CONVEYORSPEED);
                 intakeMotor.set(INTAKE_SPEED);
                 q.intakeState = IntakeStates.intakeDown;
 
