@@ -98,8 +98,7 @@ public class Shooter {
         setOutputs();
     }
 
-
-    public ShootingStates currentState;
+    public ShootingStates currentState = ShootingStates.IDLE;
 
     public void calcNextState()
     {
@@ -107,24 +106,19 @@ public class Shooter {
         {
             System.out.println("Current velocity: "+shooter.getVelocity());
         }
-        System.out.println("shooterstate"+currentState);
         switch(currentState)
         {
             case HIGHSHOT:
             case LOWSHOT:
             case IDLE:
-            System.out.println("UserInput IDLE");
             if (UserInput.getShooting())
             {
-                System.out.println("UserInput Ramping_up");
                 currentState=ShootingStates.RAMPING_UP;
             }
             break;
             case RAMPING_UP:
-            System.out.println("UserInput RAMPING_UP");
             if (!UserInput.getShooting())
             {
-                System.out.println("UserInput Idle");
                 currentState=ShootingStates.IDLE;
             }
 
@@ -140,13 +134,11 @@ public class Shooter {
             case SHOOTING:
             if (!UserInput.getShooting())
             {
-                System.out.println("UserInput Idle During Shooting");
                 currentState=ShootingStates.IDLE;
             }
             break;
             case FINISHED:
             {
-                System.out.println("Finished");
                 currentState=ShootingStates.IDLE;
             }
             break;
@@ -156,7 +148,6 @@ public class Shooter {
 
         public void setOutputs()
         {
-            System.out.println("setoutputs"+currentState);
             switch(currentState)
             {
                 case HIGHSHOT:
@@ -194,12 +185,10 @@ public class Shooter {
         {
             if (shooter.getVelocity()>CUTOFFRPM)
             { 
-                System.out.println("run");
                 shooter.setReference(-1, ControlType.kDutyCycle);
             }
             else
             {
-                System.out.println("cutoff");
                 shooter.setReference(0, ControlType.kDutyCycle);
             }
 
@@ -223,17 +212,13 @@ public class Shooter {
             {
 
                 case IDLE:
-                System.out.println("Shooter.IDLE");
                       autoBeginTime=System.currentTimeMillis();
                       currentState=ShootingStates.RAMPING_UP;
                       break;
                 case RAMPING_UP:
-                System.out.println("Shooter.Ramping");
                         elapsed=System.currentTimeMillis()-autoBeginTime;
-
                       break;
                 case SHOOTING:
-                System.out.println("Shooter.Shooting");
                 elapsed=System.currentTimeMillis()-autoBeginTime;
                       if (elapsed>AUTO_SHOOT_TIME_MS)
                       {
@@ -241,7 +226,6 @@ public class Shooter {
                       }
                       break;
                 default:
-                System.out.println("Shooter.Finished");
                      currentState=ShootingStates.FINISHED;
                      break;
             }
@@ -256,7 +240,6 @@ public class Shooter {
     public void AutoShoot() {
         AutoControlData q = AutoQueue.currentQueue();
         currentState = q.shootingState;
-        System.out.println(q.shootingState);
         setOutputs();
         calcNextStateAuto();
         q.shootingState = currentState;

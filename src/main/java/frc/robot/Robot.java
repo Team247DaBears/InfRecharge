@@ -140,21 +140,27 @@ public class Robot extends TimedRobot {
 //          AutoRecordJson.AutoRecorder(); // records userinput & writes file Takes two buttons to turn on//
 
         }
+        break;
         case Target: {
           detecttarget.AutoTarget();
         }
+        break;
         case Shooter: {
           shooter.AutoShoot();
         }
+        break;
         case Lifter: {
           //lifter.AutoLift();          
         }
+        break;
         case Intake: {
           intake.AutoIntake();
         }
+        break;
         case Drive: {
           AutoDrive.Drive();
         }
+        break;
       }
     }  
 

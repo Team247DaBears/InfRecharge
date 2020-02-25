@@ -141,12 +141,10 @@ public class  AutoDrive
         // drive forward for 2ft
         AutoQueue.addShooterQueue(AutoStates.Shooter, ShootingStates.IDLE, 10.0);
         // AutoQueue.addTargetQueue(AutoStates.Target,TargetStates.TargetStart1,2);
-        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, .4, -10.0, .4, -10.0 /* RightDrivePos,RightDriveSpeed */);
-        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, .4, 29.0, .4, -29.0 /* RightDrivePos,RightDriveSpeed */);
-        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, .4, 55.0, .4, 55.0 /* RightDrivePos,RightDriveSpeed */);
-        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, .4, 14.0, .4, -14.0 /* RightDrivePos,RightDriveSpeed */);
-//        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, 1.0, 5.0, 1.0, -5.0 /* RightDrivePos,RightDriveSpeed */);
-//        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, 1.0, -10.0, 1.0, -10.0 /* RightDrivePos,RightDriveSpeed */);
+        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, .4, -10.0, .4, -10.0 /* backup from line */);
+        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, .4, 28.0, .4, -28.0 /* turn toward color wheel */);
+        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, .4, 62.0, .4, 62.0 /* drive toward color wheel */);
+        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, .4, 14.0, .4, -14.0 /* Turn toward balls */);
         //AutoQueue.addIntakeQueue(AutoStates.Intake,IntakeStates.intakeRun);
         // AutoQueue.addDriveQueue(AutoStates.Drive,
         // DriveStates.DriveStart,

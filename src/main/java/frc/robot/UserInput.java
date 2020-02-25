@@ -119,8 +119,9 @@ public static boolean getGearButton()
     public static boolean getShooting()
     {
         //return operatorStick.getRawAxis(AXIS_SHOOTER)>.5;
-        System.out.println("UserInput.getShooting(); temp assign button4");
-        return operatorStick.getRawButton(4);
+        boolean temp = operatorStick.getRawButton(4);
+        System.out.println("UserInput.getShooting(); temp assign button4" + temp);
+        return temp;
 //        return operatorStick.getRawAxis(AXIS_SHOOTER)>.5;
     }
 
