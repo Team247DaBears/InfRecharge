@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 
 public class Shooter {
 
-    private double CONVEYORSPEED=-0.50;
+    public static double CONVEYORSPEED=-0.50;
     private double CONVEYORSHOOTSPEED=-1;
     private double FEEDER_HOLD_SPEED=-1.0;
     private double FEEDER_FEED_SPEED=1.0;
@@ -104,7 +104,7 @@ public class Shooter {
     {
         if (currentState!=ShootingStates.IDLE)
         {
-            System.out.println("Current velocity: "+shooter.getVelocity());
+            //System.out.println("Current velocity: "+shooter.getVelocity());
         }
         switch(currentState)
         {

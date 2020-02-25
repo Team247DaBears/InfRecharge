@@ -106,7 +106,7 @@ public class  AutoDrive
         }
     }
 
-    public static void autonomousInitCenter() {
+    public static void autonomousInitRight() {
         InitEncoderController(Devices.frontLeft);
         InitEncoderController(Devices.frontRight);
         InitEncoderController(Devices.backLeft);
@@ -127,6 +127,54 @@ public class  AutoDrive
                                                                                                                  */
                 -.1, 10.0 /* RightDrivePos,RightDriveSpeed */);
         // AutoQueue.addTargetQueue(AutoStates.Target,TargetStates.TargetStart,2);
+    }
+
+    public static void autonomousInitCenter() {
+        InitEncoderController(Devices.frontLeft);
+        InitEncoderController(Devices.frontRight);
+        InitEncoderController(Devices.backLeft);
+        InitEncoderController(Devices.backRight);
+        // Devices.backLeft.setFollower(Devices.frontLeft); // set follower speed
+        // Devices.backRight.setFollower(Devices.frontRight); // set follower speed
+
+        AutoQueue.clearQueue();
+        // drive forward for 2ft
+        AutoQueue.addShooterQueue(AutoStates.Shooter, ShootingStates.IDLE, 10.0);
+        // AutoQueue.addTargetQueue(AutoStates.Target,TargetStates.TargetStart1,2);
+        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, .4, -10.0, .4, -10.0 /* backup from line */);
+        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, .4, 28.0, .4, -28.0 /* turn toward color wheel */);
+        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, .4, 62.0, .4, 62.0 /* drive toward color wheel */);
+        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, .4, 14.0, .4, -14.0 /* Turn toward balls */);
+        //AutoQueue.addIntakeQueue(AutoStates.Intake,IntakeStates.intakeRun);
+        // AutoQueue.addDriveQueue(AutoStates.Drive,
+        // DriveStates.DriveStart,
+        // GearStates.LowGearPressed,
+        // -.3,10.0, /*LeftDrivePos,LeftDriveSpeed*/
+        // -.1,10.0 /*RightDrivePos,RightDriveSpeed*/);
+    }
+
+    public static void autonomousInitLeft() {
+        InitEncoderController(Devices.frontLeft);
+        InitEncoderController(Devices.frontRight);
+        InitEncoderController(Devices.backLeft);
+        InitEncoderController(Devices.backRight);
+        // Devices.backLeft.setFollower(Devices.frontLeft); // set follower speed
+        // Devices.backRight.setFollower(Devices.frontRight); // set follower speed
+
+        AutoQueue.clearQueue();
+        // drive forward for 2ft
+        AutoQueue.addShooterQueue(AutoStates.Shooter, ShootingStates.IDLE, 10.0);
+        // AutoQueue.addTargetQueue(AutoStates.Target,TargetStates.TargetStart1,2);
+        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, .4, -10.0, .4, -10.0 /* backup from line */);
+        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, .4, 28.0, .4, -28.0 /* turn toward color wheel */);
+        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, .4, 62.0, .4, 62.0 /* drive toward color wheel */);
+        AutoQueue.addDriveQueue(AutoStates.Drive, DriveStates.DriveStart, GearStates.LowGearPressed, .4, 14.0, .4, -14.0 /* Turn toward balls */);
+        //AutoQueue.addIntakeQueue(AutoStates.Intake,IntakeStates.intakeRun);
+        // AutoQueue.addDriveQueue(AutoStates.Drive,
+        // DriveStates.DriveStart,
+        // GearStates.LowGearPressed,
+        // -.3,10.0, /*LeftDrivePos,LeftDriveSpeed*/
+        // -.1,10.0 /*RightDrivePos,RightDriveSpeed*/);
     }
 
     public static void autonomousModeInit() {

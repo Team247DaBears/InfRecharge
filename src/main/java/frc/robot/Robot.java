@@ -63,7 +63,7 @@ public class Robot extends TimedRobot {
     intake.Init();
     shooter.Init();
     cameraStream = new CameraStream();
-//    cameraStream.initCamera(); // comment out until camera installed. 
+    cameraStream.initCamera(); // comment out until camera installed. 
     detecttarget = new DetectTarget();
     detecttarget.Init(cameraStream);
     drive=new Drive();    
@@ -74,10 +74,13 @@ public class Robot extends TimedRobot {
     m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + m_autoSelected);
     switch(m_autoSelected) {
-      case "test mode":
+      case "left":
         AutoDrive.autonomousModeInit();
       break;
       case "center":
+        AutoDrive.autonomousInitCenter();
+      break;
+      case "right":
         AutoDrive.autonomousInitCenter();
       break;
       case "Default":

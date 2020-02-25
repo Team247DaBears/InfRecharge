@@ -30,10 +30,13 @@ public class CameraStream {
         camera1 = CameraServer.getInstance().startAutomaticCapture(0);
        // camera2 = CameraServer.getInstance().startAutomaticCapture(1);
         
-      camera1.setResolution(320, 240);
+
+       camera1.setResolution(320, 240);
       camera1.setFPS(12);
       
       //  camera2.setResolution(320, 240);
+      camera1.setBrightness(50);
+      camera1.setWhiteBalanceManual(50);
         cvSink = CameraServer.getInstance().getVideo();
         outputStream = CameraServer.getInstance().putVideo("DriverCam", 320, 240);
         outputStream.setFPS(12);
