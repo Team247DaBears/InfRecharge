@@ -47,8 +47,12 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("test mode", kDefaultAuto);
     m_chooser.addOption("test mode", kCustomAuto);
     m_chooser.addOption("left", kCustomAuto);
-    m_chooser.addOption("centr", kCustomAuto);
+    m_chooser.addOption("center", kCustomAuto);
+    m_chooser.addOption("center delay", kCustomAuto);
     m_chooser.addOption("right", kCustomAuto);
+    m_chooser.addOption("backup right", kCustomAuto);
+    m_chooser.addOption("backup left", kCustomAuto);
+    SmartDashboard.putData("Auto choices", m_chooser);
     m_autoSelected = m_chooser.getSelected();
 
     autoQueue = new AutoQueue();
@@ -71,7 +75,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
+    //m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
+    m_autoSelected = m_chooser.getSelected();
     System.out.println("Auto selected: " + m_autoSelected);
     switch(m_autoSelected) {
       case "left":
