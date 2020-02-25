@@ -70,7 +70,7 @@ public class Shooter {
         //encoder=shooter.getEncoder();
         //controlLoop=shooter.getPIDController();
 
-        conveyor.set(CONVEYORSPEED);
+        conveyor.set(0);
         shooter.setP(KP);
         shooter.setD(KD);
         shooter.setI(KI);
@@ -134,6 +134,7 @@ public class Shooter {
             case SHOOTING:
             if (!UserInput.getShooting())
             {
+                conveyor.set(0);
                 currentState=ShootingStates.IDLE;
             }
             break;
