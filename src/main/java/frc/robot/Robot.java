@@ -80,6 +80,9 @@ public class Robot extends TimedRobot {
       case "center":
         AutoDrive.autonomousInitCenter();
       break;
+      case "center delay":
+        AutoDrive.autonomousInitCenterDelay();
+      break;
       case "right":
         AutoDrive.autonomousInitRight();
       break;
@@ -90,7 +93,7 @@ public class Robot extends TimedRobot {
         AutoDrive.autonomousInitBackupRight();
       break;
       case "Default":
-      AutoDrive.autonomousInitBackupRight();
+      AutoDrive.autonomousInitCenterDelay();
       //      AutoDrive.autonomousInitDefault();
       break;
     }
