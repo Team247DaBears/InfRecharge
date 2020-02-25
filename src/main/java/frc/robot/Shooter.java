@@ -238,6 +238,7 @@ public class Shooter {
     
 
     public void AutoShoot() {
+        if (AutoQueue.getSize() == 0) {return;}
         AutoControlData q = AutoQueue.currentQueue();
         currentState = q.shootingState;
         setOutputs();

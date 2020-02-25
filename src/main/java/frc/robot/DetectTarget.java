@@ -237,6 +237,7 @@ public Target detectTopTarget(Mat image){
 }
 
 public void AutoTarget() {
+    if (AutoQueue.getSize() == 0) {return;}
     AutoControlData q = AutoQueue.currentQueue();
     switch(q.targetState){
         case TargetStart1:
