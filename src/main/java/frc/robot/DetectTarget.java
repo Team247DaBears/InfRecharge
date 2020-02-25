@@ -124,7 +124,7 @@ public Boolean targetTopTarget(Mat image) {
     if (image.height()==0){System.err.println("image invalid");return false;} // image empty
 
     Target current = detectTopTarget(image);
-    System.out.println("target:"+current.toString());
+    //System.out.println("target:"+current.toString());
     if (current==null) {System.err.println("no target found"); return false;} // no target found
 
     Size size = current.getBoundary().size;
@@ -135,7 +135,7 @@ public Boolean targetTopTarget(Mat image) {
     Double currhztl = current.getHorizontalAngle();
     Double diffDist = currdistance - distance;
     Double diffVirt = currvirt - virtical;
-    System.out.println("distance:"+distance);
+    //System.out.println("distance:"+distance);
     if (Math.abs(diffDist) > okDist /* Target Size too Big */) {
             AutoQueue.addDriveQueue(AutoStates.Drive,DriveStates.DriveStart,GearStates.LowGearPressed,0.5,diffDist,0.5,diffDist);
             AutoQueue.moveFirst();
@@ -201,10 +201,10 @@ public Target detectTopTarget(Mat image){
     
     // If the current target is a left and the next is a right, make it a pair
     for (int i = 0; i < targets.size(); i++) {
-        System.out.println(":"+targets.get(i).toString());
+        //System.out.println(":"+targets.get(i).toString());
         if (targets.get(i).getPercentArea() >= 1){
             if (targets.get(i).getVerticalAngle() >= 10){
-                System.out.println("-->"+targets.get(i).toString());
+                //System.out.println("-->"+targets.get(i).toString());
                 foundTarget = targets.get(i);
                 SaveTargetImage("findTopTarget", foundTarget, image);
                 return targets.get(i);

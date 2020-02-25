@@ -27,11 +27,9 @@ public class CameraStream {
 
     public void initCamera()
     {
-        System.out.println("About to init");
         camera1 = CameraServer.getInstance().startAutomaticCapture(0);
        // camera2 = CameraServer.getInstance().startAutomaticCapture(1);
         
-      System.out.println("It didn't crash");
       camera1.setResolution(320, 240);
       camera1.setFPS(12);
       

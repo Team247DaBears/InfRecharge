@@ -22,7 +22,7 @@ public class Lifter
     private DaBearsSpeedController left_winch;
     private DaBearsSpeedController right_winch;
     private DoubleSolenoid solenoid;
-    private final double WINCH_SPEED=0.5;
+    private final double WINCH_SPEED=0.70;
 
     public void Init() {
         left_winch=Devices.lifter_left_motor;  //This isn't very good, but I'm in a hurry

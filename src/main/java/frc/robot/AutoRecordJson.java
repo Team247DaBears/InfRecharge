@@ -68,7 +68,7 @@ public class AutoRecordJson {
     }
 
     public static void updateRecord(boolean lastQueue){
-        System.out.println(cq.toString());
+        //System.out.println(cq.toString());
         cq.gearState = drive.currentGearState;
         cq.LeftDriveSpeed = Devices.frontLeft.driveSpeed;
         cq.RightDriveSpeed = Devices.frontRight.driveSpeed;

@@ -88,8 +88,8 @@ public void operate()
 
                 double leftDiff = java.lang.Math.abs(intakeTravel - frontLeftPos);
                 double rightDiff = java.lang.Math.abs(intakeTravel - frontRightPos);
-                System.out.println("diff:"+leftDiff);
-                System.out.println("diff:"+rightDiff);
+                //System.out.println("diff:"+leftDiff);
+                //System.out.println("diff:"+rightDiff);
                 if (leftDiff > .2 || rightDiff > .2) {
                     System.out.println("IntakeTravel" + intakeTravel);
                     Devices.frontLeft.setReference(intakeTravel, ControlType.kPosition);
