@@ -16,5 +16,6 @@ public enum ShootingStates {
     HIGHSHOT,
     RAMPING_UP,
     SHOOTING,
-    FINISHED
+    FINISHED,
+    PRIMING
 }

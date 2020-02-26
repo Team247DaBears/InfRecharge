@@ -37,17 +37,18 @@ public class Shooter {
 
 
     //Parameteres for velocity control PID on SparkMax
-    private final double KP=5e-5;
-    private final double KI=2e-6;
+    //By using a very high Kp value, and a max out of 0, it is effectively a bang/bang controller
+    private final double KP=.05;
+    private final double KI=0;
     private final double KD=0;
-    private final double MAXOUT=1;
+    private final double MAXOUT=0;
     private final double MINOUT=-1; //Never run backwards
                                 //It would be logical to use setInverted, and just use positive integers.
                                 //As logical as that would be, I'm not going to do it immediately, because
                                 //I have it from others that the encoders are inverted, and that might not work
                                 //with this.  The solution would be to modify DaBearsSpeedController to invert the encoder
                                 //if using setInverted, but that will require some testing.
-    private final double FFVALUE=-0.22;  //Will require experimentation to set a better value
+    private final double FFVALUE=0; //The extreme value of KP will make this term unnecessary
     private final double IZONE=200;
     private final double TARGETRPM=-1200;  //Will begin with a single setpoint.  We'll modify that for multiple distance ranges later.
     private final double CUTOFFRPM=-1190;
@@ -115,18 +116,24 @@ public class Shooter {
             {
                 currentState=ShootingStates.RAMPING_UP;
             }
+            else if (UserInput.getPrime())
+            {
+                currentState=ShootingStates.PRIMING;
+            }
             break;
             case RAMPING_UP:
             if (!UserInput.getShooting())
             {
+                if (UserInput.getPrime())
+                {
+                    currentState=ShootingStates.PRIMING;
+                }
+                else
+                {
                 currentState=ShootingStates.IDLE;
+                }
             }
-
- //if (Math.abs((encoder.getVelocity()-TARGETRPM)/TARGETRPM)<=.05)
- //           {
- //               currentState=ShootingStates.SHOOTING;
- //           }
-            if (shooter.getVelocity()<CUTOFFRPM)
+            else if (shooter.getVelocity()<CUTOFFRPM)
             {
                 currentState=ShootingStates.SHOOTING;
             }
@@ -134,13 +141,29 @@ public class Shooter {
             case SHOOTING:
             if (!UserInput.getShooting())
             {
-                conveyor.set(0);
-                currentState=ShootingStates.IDLE;
+                if (UserInput.getPrime())
+                {
+                currentState=ShootingStates.PRIMING;
+                }
+                else
+                {
+                    currentState=ShootingStates.IDLE;
+                }
             }
             break;
             case FINISHED:
             {
                 currentState=ShootingStates.IDLE;
+            }
+            break;
+            case PRIMING:
+            {
+                if (UserInput.getShooting())
+                    currentState=ShootingStates.RAMPING_UP;
+                else if (!UserInput.getPrime())
+                {
+                    currentState=ShootingStates.IDLE;
+                }
             }
             break;
 
@@ -155,19 +178,19 @@ public class Shooter {
                 case LOWSHOT:
                 case IDLE:
                 shooter.setReference(0, ControlType.kDutyCycle);
-                conveyor.set(CONVEYORSPEED);
+                setConveyorIdleSpeed();
                 feeder.set(FEEDER_HOLD_SPEED);
                 break;
-                case RAMPING_UP:
-                //controlLoop.setReference(TARGETRPM, ControlType.kVelocity);
-                //controlLoop.setReference(UserInput.getMotorSpeed(),ControlType.kDutyCycle);
+                case PRIMING:
+                setConveyorIdleSpeed();
+                feeder.set(FEEDER_HOLD_SPEED);
                 setPID();
-                conveyor.set(CONVEYORSPEED);
+                case RAMPING_UP:
+                setPID();
+                setConveyorIdleSpeed();
                 feeder.set(FEEDER_HOLD_SPEED);
                 break;
                 case SHOOTING:
-                //controlLoop.setReference(TARGETRPM, ControlType.kVelocity);
-                //controlLoop.setReference(UserInput.getMotorSpeed(), ControlType.kDutyCycle);
                 setPID();
                 conveyor.set(CONVEYORSHOOTSPEED);
                 feeder.set(FEEDER_FEED_SPEED);
@@ -184,15 +207,24 @@ public class Shooter {
         //This is a work in progress
         public void setPID()
         {
-            if (shooter.getVelocity()>CUTOFFRPM)
-            { 
-                shooter.setReference(-1, ControlType.kDutyCycle);
-            }
-            else
-            {
-                shooter.setReference(0, ControlType.kDutyCycle);
-            }
 
+            shooter.setReference(TARGETRPM, ControlType.kVelocity);
+            
+
+        }
+
+
+        private void setConveyorIdleSpeed()
+        {
+            if (UserInput.intakeRun())
+            {
+                conveyor.set(CONVEYORSPEED);
+            }
+            else if (UserInput.intakeRun())
+            {
+                conveyor.set(0);
+            }
+            feeder.set(FEEDER_HOLD_SPEED);
         }
 
 

@@ -45,12 +45,12 @@ public void operate()
 {
         if (UserInput.intakeRun())
         {
-            Devices.conveyor.set(CONVEYORSPEED);
+           // Devices.conveyor.set(CONVEYORSPEED);  This could be overridden depending on whether Shooter or intake is run first
             intakeMotor.set(INTAKE_SPEED);
         }   
         else 
         {
-            Devices.conveyor.set(0);
+            //Devices.conveyor.set(0);
             intakeMotor.set(0);
         }
 

@@ -37,8 +37,7 @@ public class UserInput
     private static final int JSB_WRITERECORDER=8; 
     private static final int JSB_GETTARGET=9;
 
-    private static final int JSB_FEED=99;//Obviously, it isn't 99
-    private static final int JSB_SHOOT=99;
+    private static final int JSB_PRIME=4;
 
 public static void Init()
     {
@@ -125,6 +124,11 @@ public static boolean getGearButton()
     public static boolean getShooterLowShot()
     {
         return operatorStick.getPOV()>=135 && operatorStick.getPOV()<=225;
+    }
+
+    public static boolean getPrime()
+    {
+        return operatorStick.getRawButton(JSB_PRIME);
     }
 }
 
