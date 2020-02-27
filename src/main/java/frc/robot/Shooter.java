@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 
 public class Shooter {
 
-    private double CONVEYORSPEED=-0.50;
+    private double CONVEYORSPEED=-0.55;
     private double CONVEYORSHOOTSPEED=-1;
     private double FEEDER_HOLD_SPEED=-1.0;
     private double FEEDER_FEED_SPEED=1.0;
@@ -134,7 +134,6 @@ public class Shooter {
             case SHOOTING:
             if (!UserInput.getShooting())
             {
-                conveyor.set(0);
                 currentState=ShootingStates.IDLE;
             }
             break;
@@ -155,7 +154,13 @@ public class Shooter {
                 case LOWSHOT:
                 case IDLE:
                 shooter.setReference(0, ControlType.kDutyCycle);
-                conveyor.set(CONVEYORSPEED);
+                if (UserInput.intakeRun())
+                {conveyor.set(CONVEYORSPEED);
+                }
+                else
+                {
+                    conveyor.set(0);
+                }
                 feeder.set(FEEDER_HOLD_SPEED);
                 break;
                 case RAMPING_UP:

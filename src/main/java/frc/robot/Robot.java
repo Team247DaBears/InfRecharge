@@ -21,10 +21,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "Auto Mode";
+  private static final String kDefault = "Default";
+  private static final String kTestMode = "Test Mode";
+  private static final String kLeft = "Left";
+  private static final String kCenter = "Center";
+  private static final String kCenterDelay = "Center Delay";
+  private static final String kRight = "Right";
+  private static final String kBackRight = "Backup Right";
+  private static final String kBackLeft = "Backup Left";
   private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  private SendableChooser<String> m_chooser = new SendableChooser<>();
 
   static AutoQueue autoQueue;
   static Drive drive;
@@ -44,14 +50,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    m_chooser.setDefaultOption("test mode", kDefaultAuto);
-    m_chooser.addOption("test mode", kCustomAuto);
-    m_chooser.addOption("left", kCustomAuto);
-    m_chooser.addOption("center", kCustomAuto);
-    m_chooser.addOption("center delay", kCustomAuto);
-    m_chooser.addOption("right", kCustomAuto);
-    m_chooser.addOption("backup right", kCustomAuto);
-    m_chooser.addOption("backup left", kCustomAuto);
+    m_chooser.setDefaultOption(kDefault, kDefault);
+    m_chooser.addOption(kTestMode, kTestMode);
+    m_chooser.addOption(kLeft, kLeft);
+    m_chooser.addOption(kCenter, kCenter);
+    m_chooser.addOption(kCenterDelay, kCenterDelay);
+    m_chooser.addOption(kRight, kRight);
+    m_chooser.addOption(kBackRight, kBackRight);
+    m_chooser.addOption(kBackLeft, kBackLeft);
     SmartDashboard.putData("Auto choices", m_chooser);
     m_autoSelected = m_chooser.getSelected();
 
@@ -75,34 +81,50 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    //m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-    m_autoSelected = m_chooser.getSelected();
+    try {
+      m_chooser = (SendableChooser<String>) SmartDashboard.getData("Auto choices");
+      m_autoSelected = m_chooser.getSelected();
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+    }
     System.out.println("Auto selected: " + m_autoSelected);
     switch(m_autoSelected) {
-      case "left":
+      case kLeft:
         AutoDrive.autonomousInitLeft();
       break;
-      case "center":
+      case kCenter:
         AutoDrive.autonomousInitCenter();
       break;
-      case "center delay":
+      case kCenterDelay:
         AutoDrive.autonomousInitCenterDelay();
       break;
-      case "right":
+      case kRight:
         AutoDrive.autonomousInitRight();
       break;
-      case "backup left":
+      case kBackLeft:
         AutoDrive.autonomousInitBackupLeft();
       break;
-      case "backup right":
+      case kBackRight:
         AutoDrive.autonomousInitBackupRight();
       break;
-      case "Default":
+      case kTestMode:
+      AutoDrive.autonomousInitDefault();
+      break;
+      case kDefault:
       AutoDrive.autonomousInitCenterDelay();
-      //      AutoDrive.autonomousInitDefault();
       break;
     }
-  }
+    //AutoDrive.autonomousInitLeft();
+    //  AutoDrive.autonomousInitCenter();
+    //  AutoDrive.autonomousInitCenterDelay();
+    //  AutoDrive.autonomousInitRight();
+    //  AutoDrive.autonomousInitBackupLeft();
+    //  AutoDrive.autonomousInitBackupRight();
+    //AutoDrive.autonomousInitDefault();
+    //AutoDrive.autonomousInitCenterDelay();
+}
 
   @Override
   public void autonomousPeriodic() {

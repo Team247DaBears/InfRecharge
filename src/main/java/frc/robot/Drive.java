@@ -70,40 +70,18 @@ public class  Drive
       
       }
    
-    public void shiftGears(){
 
-   // if (UserInput.getGearButton()) System.out.println("true");
-  //  else System.out.println("False");
-    //System.out.println("Gear button is "+UserCom.getGearButton());
-//System.out.println("Gear state before is "+currentGearState.toString());
-    switch(currentGearState)
-    {
-        case HighGearOff:
-            if(UserInput.getGearButton())
-            {
-                currentGearState=GearStates.LowGearPressed;
-            }
-            break;
-       case HighGearPressed:
-            if (!UserInput.getGearButton())
-            {
-                currentGearState=GearStates.HighGearOff;
-            }
-            break;
-      case LowGearOff:
-           if (UserInput.getGearButton())
-           {
-               currentGearState=GearStates.HighGearPressed;
-           }
-           break;
-      case LowGearPressed:
-           if (!UserInput.getGearButton())
-           {
-               currentGearState=GearStates.HighGearOff;
-           }
-           break;
-          
-      }
+      public void shiftGears()
+      {
+          if (UserInput.getLowGear())
+          {
+              currentGearState=GearStates.LowGearPressed;
+          }
+          else if (UserInput.getHighGear())
+          {
+              currentGearState=GearStates.HighGearOff;
+          }
+      
       switch(currentGearState)
       {
         case HighGearOff:

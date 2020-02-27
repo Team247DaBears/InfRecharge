@@ -62,8 +62,8 @@ public static void Init()
 
     public static double  getDeadband(double Joystick_val){ 
                 if (Math.abs(Joystick_val)<Deadband) return 0;
-
-                return Math.signum(Joystick_val)*(Math.abs(Joystick_val)-Deadband)/(1-Deadband);
+                double val=(Math.abs(Joystick_val)-Deadband)/(1-Deadband);
+                return Math.signum(Joystick_val)*val*val;
 }  
 
 
@@ -86,10 +86,20 @@ public static boolean getLifterClimb()
    //return false;
 }
 
-public static boolean getGearButton()
+/*public static boolean getGearButton()
     {
          
 		return rightStick.getRawButton(JSB_GEARSHIFT);
+    }*/
+
+    public static boolean getLowGear()
+    {
+        return leftStick.getRawButton(JSB_GEARSHIFT);
+    }
+
+    public static boolean getHighGear()
+    {
+        return rightStick.getRawButton(JSB_GEARSHIFT);
     }
 
     public static boolean intakeUp()

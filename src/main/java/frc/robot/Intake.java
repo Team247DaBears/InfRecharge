@@ -45,12 +45,10 @@ public void operate()
 {
         if (UserInput.intakeRun())
         {
-            Devices.conveyor.set(CONVEYORSPEED);
             intakeMotor.set(INTAKE_SPEED);
         }   
         else 
         {
-            Devices.conveyor.set(0);
             intakeMotor.set(0);
         }
 
