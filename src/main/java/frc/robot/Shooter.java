@@ -17,6 +17,7 @@ import com.revrobotics.ControlType;
 import com.revrobotics.SparkMax;
 
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter {
 
@@ -35,6 +36,11 @@ public class Shooter {
 
     private Solenoid shooterSolenoid;
 
+    private double[] shooterSpeeds={-1200, -1450,-1900};
+    private double[] cutoffSpeeds={-1190, -1440, -1890};
+    private int shootingIndex=0;
+    private boolean shooterPressed=false;
+
 
     //Parameteres for velocity control PID on SparkMax
     private final double KP=5e-5;
@@ -51,8 +57,7 @@ public class Shooter {
     private final double IZONE=200;
     private final double TARGETRPM=-1200;  //Will begin with a single setpoint.  We'll modify that for multiple distance ranges later.
     private final double CUTOFFRPM=-1190;
-    private final double FIRINGTHRESHOLD=-950; //Begin feeding balls when this threshold is reached
-
+   
 
     /****************************************************************************************************************************/
     /*  Basic Autonomous ... may never be used, depending on what else becomes availalbe                                        */
@@ -84,7 +89,27 @@ public class Shooter {
 
     public void operate()
     {
+ 
+        if ((!shooterPressed) && (UserInput.getShooterSpeedIncrement()))
+            {
+                shooterPressed=true;
+                shootingIndex++;
+                if (shootingIndex>=shooterSpeeds.length)
+                {
+                    shootingIndex=0;
+                }
+            }
+        else if (!UserInput.getShooterSpeedIncrement())
+            {
+                shooterPressed=false;
+            }
 
+
+            SmartDashboard.putNumber("Shooting Speed", shooterSpeeds[shootingIndex]);
+        
+        
+
+        
         if (UserInput.getShooterLowShot())
         {
             shooterSolenoid.set(true);
@@ -126,7 +151,7 @@ public class Shooter {
  //           {
  //               currentState=ShootingStates.SHOOTING;
  //           }
-            if (shooter.getVelocity()<CUTOFFRPM)
+            if (shooter.getVelocity()<shooterSpeeds[shootingIndex])
             {
                 currentState=ShootingStates.SHOOTING;
             }
@@ -164,15 +189,11 @@ public class Shooter {
                 feeder.set(FEEDER_HOLD_SPEED);
                 break;
                 case RAMPING_UP:
-                //controlLoop.setReference(TARGETRPM, ControlType.kVelocity);
-                //controlLoop.setReference(UserInput.getMotorSpeed(),ControlType.kDutyCycle);
                 setPID();
                 conveyor.set(CONVEYORSPEED);
                 feeder.set(FEEDER_HOLD_SPEED);
                 break;
                 case SHOOTING:
-                //controlLoop.setReference(TARGETRPM, ControlType.kVelocity);
-                //controlLoop.setReference(UserInput.getMotorSpeed(), ControlType.kDutyCycle);
                 setPID();
                 conveyor.set(CONVEYORSHOOTSPEED);
                 feeder.set(FEEDER_FEED_SPEED);
@@ -189,7 +210,7 @@ public class Shooter {
         //This is a work in progress
         public void setPID()
         {
-            if (shooter.getVelocity()>CUTOFFRPM)
+            if (shooter.getVelocity()>cutoffSpeeds[shootingIndex])
             { 
                 shooter.setReference(-1, ControlType.kDutyCycle);
             }

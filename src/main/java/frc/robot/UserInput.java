@@ -26,6 +26,7 @@ public class UserInput
     private static final int JSB_INTAKEDOWN=3;
     private static final int JSB_INTAKEUP=2;
     private static final int JSB_INTAKERUN=1;
+    private static final int JSB_SHOOTERSPEEDS=4;
   
     private static final int JSB_LIFTERUP=5;
     private static final int JSB_LIFTERDOWN=6;
@@ -136,6 +137,12 @@ public static boolean getLifterClimb()
     {
         return operatorStick.getPOV()>=135 && operatorStick.getPOV()<=225;
     }
+
+    public static boolean getShooterSpeedIncrement()
+    {
+        return operatorStick.getRawButton(JSB_SHOOTERSPEEDS);
+    }
+
 }
 
   
