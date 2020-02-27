@@ -36,24 +36,24 @@ public class Shooter {
 
     private Solenoid shooterSolenoid;
 
-    private double[] shooterSpeeds={-1200, -1450,-1900};
-    private double[] cutoffSpeeds={-1190, -1440, -1890};
+    private double[] shooterSpeeds={-1250, -1450};
     private int shootingIndex=0;
     private boolean shooterPressed=false;
+    private boolean shooterSet=false;
 
 
     //Parameteres for velocity control PID on SparkMax
-    private final double KP=5e-5;
+    private final double KP=0.1;
     private final double KI=2e-6;
     private final double KD=0;
-    private final double MAXOUT=1;
+    private final double MAXOUT=0;
     private final double MINOUT=-1; //Never run backwards
                                 //It would be logical to use setInverted, and just use positive integers.
                                 //As logical as that would be, I'm not going to do it immediately, because
                                 //I have it from others that the encoders are inverted, and that might not work
                                 //with this.  The solution would be to modify DaBearsSpeedController to invert the encoder
                                 //if using setInverted, but that will require some testing.
-    private final double FFVALUE=-0.22;  //Will require experimentation to set a better value
+    private final double FFVALUE=-0;  //Will require experimentation to set a better value
     private final double IZONE=200;
     private final double TARGETRPM=-1200;  //Will begin with a single setpoint.  We'll modify that for multiple distance ranges later.
     private final double CUTOFFRPM=-1190;
@@ -71,6 +71,7 @@ public class Shooter {
         conveyor=Devices.conveyor;
         shooter=Devices.shooter;
         shooterSolenoid=Devices.shooterAngleControl;
+        shooterSet=false;
 
         //encoder=shooter.getEncoder();
         //controlLoop=shooter.getPIDController();
@@ -85,6 +86,8 @@ public class Shooter {
         shooter.setReference(0, ControlType.kDutyCycle);
 
         currentState=ShootingStates.IDLE;
+        shooterPressed=false;
+        shootingIndex=0;
     }
 
     public void operate()
@@ -106,6 +109,7 @@ public class Shooter {
 
 
             SmartDashboard.putNumber("Shooting Speed", shooterSpeeds[shootingIndex]);
+            SmartDashboard.putNumber("Current RPM", shooter.getVelocity());
         
         
 
@@ -151,7 +155,7 @@ public class Shooter {
  //           {
  //               currentState=ShootingStates.SHOOTING;
  //           }
-            if (shooter.getVelocity()<shooterSpeeds[shootingIndex])
+            if (shooter.getVelocity()<shooterSpeeds[shootingIndex]-10)
             {
                 currentState=ShootingStates.SHOOTING;
             }
@@ -178,6 +182,7 @@ public class Shooter {
                 case HIGHSHOT:
                 case LOWSHOT:
                 case IDLE:
+                shooterSet=false;
                 shooter.setReference(0, ControlType.kDutyCycle);
                 if (UserInput.intakeRun())
                 {conveyor.set(CONVEYORSPEED);
@@ -209,7 +214,7 @@ public class Shooter {
 
         //This is a work in progress
         public void setPID()
-        {
+        {/*
             if (shooter.getVelocity()>cutoffSpeeds[shootingIndex])
             { 
                 shooter.setReference(-1, ControlType.kDutyCycle);
@@ -217,6 +222,10 @@ public class Shooter {
             else
             {
                 shooter.setReference(0, ControlType.kDutyCycle);
+            }*/
+            if (!shooterSet)
+            {shooter.setReference(shooterSpeeds[shootingIndex], ControlType.kVelocity);
+                shooterSet=true;
             }
 
         }

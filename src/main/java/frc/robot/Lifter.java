@@ -55,6 +55,11 @@ public class Lifter
             left_winch.set(WINCH_SPEED);
             right_winch.set(WINCH_SPEED);
         }
+        else
+        {
+            left_winch.set(0);
+            right_winch.set(0);
+        }
         
 
     }
