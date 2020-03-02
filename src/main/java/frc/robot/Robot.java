@@ -168,40 +168,10 @@ public class Robot extends TimedRobot {
   int counter=0;
   @Override
   public void teleopPeriodic() {
-    AutoControlData autoControlData = AutoQueue.currentQueue();
-    switch (autoControlData.autoState) {
-        case TeleOpt: {
           drive.drive(); 
           intake.operate(); 
           lifter.operate();
           shooter.operate();
-//          detecttarget.shootTopTarget(); // semi-autonomous shoot target (using camera)
-
-//          AutoRecordJson.AutoRecorder(); // records userinput & writes file Takes two buttons to turn on//
-
-        }
-        break;
-        case Target: {
-          detecttarget.AutoTarget();
-        }
-        break;
-        case Shooter: {
-          shooter.AutoShoot();
-        }
-        break;
-        case Lifter: {
-          //lifter.AutoLift();          
-        }
-        break;
-        case Intake: {
-          intake.AutoIntake();
-        }
-        break;
-        case Drive: {
-          AutoDrive.Drive();
-        }
-        break;
-      }
     }  
 
   @Override
