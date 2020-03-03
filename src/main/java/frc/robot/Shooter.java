@@ -8,16 +8,16 @@
 package frc.robot;
 //Includes hopper
 
-import javax.lang.model.util.ElementScanner6;
 
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
-import com.revrobotics.SparkMax;
+
 
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.SpeedController;
+
 
 public class Shooter {
 
@@ -26,13 +26,13 @@ public class Shooter {
     private double FEEDER_HOLD_SPEED=-1.0;
     private double FEEDER_FEED_SPEED=1.0;
 
-    private DaBearsSpeedController feeder;
-    private DaBearsSpeedController conveyor;
+    private SpeedController feeder;
+    private SpeedController conveyor;
 
 
-    private DaBearsSpeedController shooter;
-    //private CANEncoder encoder;
-    //private CANPIDController controlLoop;
+    private CANSparkMax shooter;
+    private CANEncoder encoder;
+    private CANPIDController controlLoop;
 
     private Solenoid shooterSolenoid;
 
@@ -44,7 +44,7 @@ public class Shooter {
 
     //Parameteres for velocity control PID on SparkMax
     private final double KP=0.1;
-    private final double KI=2e-6;
+    private final double KI=0;
     private final double KD=0;
     private final double MAXOUT=0;
     private final double MINOUT=-1; //Never run backwards
@@ -55,15 +55,10 @@ public class Shooter {
                                 //if using setInverted, but that will require some testing.
     private final double FFVALUE=-0;  //Will require experimentation to set a better value
     private final double IZONE=200;
-    private final double TARGETRPM=-1200;  //Will begin with a single setpoint.  We'll modify that for multiple distance ranges later.
-    private final double CUTOFFRPM=-1190;
+
    
 
-    /****************************************************************************************************************************/
-    /*  Basic Autonomous ... may never be used, depending on what else becomes availalbe                                        */
-    /*  The baasic autonomus sequence will be used to turn on the motor long enough tore three preloaded balls toward the target */
-    /**************************************************************************************************************************** */
-    private final long AUTO_SHOOT_TIME_MS=5600;//Amount of time to run the shooter for basic autonomous
+
 
     public void Init()
     {
@@ -73,17 +68,17 @@ public class Shooter {
         shooterSolenoid=Devices.shooterAngleControl;
         shooterSet=false;
 
-        //encoder=shooter.getEncoder();
-        //controlLoop=shooter.getPIDController();
+        encoder=shooter.getEncoder();
+        controlLoop=shooter.getPIDController();
 
         conveyor.set(0);
-        shooter.setP(KP);
-        shooter.setD(KD);
-        shooter.setI(KI);
-        shooter.setOutputRange(MINOUT, MAXOUT);
-        shooter.setIZone(IZONE);
-        shooter.setFF(FFVALUE/TARGETRPM);
-        shooter.setReference(0, ControlType.kDutyCycle);
+        controlLoop.setP(KP);
+        controlLoop.setD(KD);
+        controlLoop.setI(KI);
+        controlLoop.setOutputRange(MINOUT, MAXOUT);
+        controlLoop.setIZone(IZONE);
+        controlLoop.setFF(FFVALUE);
+        controlLoop.setReference(0, ControlType.kDutyCycle);
 
         currentState=ShootingStates.IDLE;
         shooterPressed=false;
@@ -108,10 +103,6 @@ public class Shooter {
             }
 
 
-            SmartDashboard.putNumber("Shooting Speed", shooterSpeeds[shootingIndex]);
-            SmartDashboard.putNumber("Current RPM", shooter.getVelocity());
-        
-        
 
         
         if (UserInput.getShooterLowShot())
@@ -137,8 +128,6 @@ public class Shooter {
         }
         switch(currentState)
         {
-            case HIGHSHOT:
-            case LOWSHOT:
             case IDLE:
             if (UserInput.getShooting())
             {
@@ -151,11 +140,8 @@ public class Shooter {
                 currentState=ShootingStates.IDLE;
             }
 
- //if (Math.abs((encoder.getVelocity()-TARGETRPM)/TARGETRPM)<=.05)
- //           {
- //               currentState=ShootingStates.SHOOTING;
- //           }
-            if (shooter.getVelocity()<shooterSpeeds[shootingIndex]-10)
+
+            if (encoder.getVelocity()<shooterSpeeds[shootingIndex]+10)
             {
                 currentState=ShootingStates.SHOOTING;
             }
@@ -179,11 +165,9 @@ public class Shooter {
         {
             switch(currentState)
             {
-                case HIGHSHOT:
-                case LOWSHOT:
                 case IDLE:
                 shooterSet=false;
-                shooter.setReference(0, ControlType.kDutyCycle);
+                controlLoop.setReference(0, ControlType.kDutyCycle);
                 if (UserInput.intakeRun())
                 {conveyor.set(CONVEYORSPEED);
                 }
@@ -204,7 +188,7 @@ public class Shooter {
                 feeder.set(FEEDER_FEED_SPEED);
                 break;
                 case FINISHED:
-                shooter.setReference(0, ControlType.kDutyCycle);
+                controlLoop.setReference(0, ControlType.kDutyCycle);
                 conveyor.set(0);  //Will be changed if we move to something fancier
                 feeder.set(0);
                 break;
@@ -214,17 +198,9 @@ public class Shooter {
 
         //This is a work in progress
         public void setPID()
-        {/*
-            if (shooter.getVelocity()>cutoffSpeeds[shootingIndex])
-            { 
-                shooter.setReference(-1, ControlType.kDutyCycle);
-            }
-            else
-            {
-                shooter.setReference(0, ControlType.kDutyCycle);
-            }*/
+        {
             if (!shooterSet)
-            {shooter.setReference(shooterSpeeds[shootingIndex], ControlType.kVelocity);
+            {controlLoop.setReference(shooterSpeeds[shootingIndex], ControlType.kVelocity);
                 shooterSet=true;
             }
 
@@ -240,36 +216,6 @@ public class Shooter {
         }
 
 
-        public long autoBeginTime=0;
-        public void calcNextStateAuto() 
-        {
-            long elapsed;
-            switch(currentState)
-            {
-
-                case IDLE:
-                      autoBeginTime=System.currentTimeMillis();
-                      currentState=ShootingStates.RAMPING_UP;
-                      break;
-                case RAMPING_UP:
-                        elapsed=System.currentTimeMillis()-autoBeginTime;
-                        if (shooter.getVelocity()<CUTOFFRPM)
-                        {
-                            currentState=ShootingStates.SHOOTING;
-                        }
-                      break;
-                case SHOOTING:
-                elapsed=System.currentTimeMillis()-autoBeginTime;
-                      if (elapsed>AUTO_SHOOT_TIME_MS)
-                      {
-                          currentState=ShootingStates.FINISHED;
-                      }
-                      break;
-                default:
-                     currentState=ShootingStates.FINISHED;
-                     break;
-            }
-        }
 
         public boolean isIntakeRunning()
         {
@@ -277,17 +223,5 @@ public class Shooter {
         }
     
 
-    public void AutoShoot() {
-        if (AutoQueue.getSize() == 0) {return;}
-        AutoControlData q = AutoQueue.currentQueue();
-        currentState = q.shootingState;
-        System.out.println(currentState);
-        calcNextStateAuto();
-        setOutputs();
-        q.shootingState = currentState;
-        if (currentState == ShootingStates.FINISHED) {
-            AutoQueue.removeCurrent();
-        }
-    }
 
 }

@@ -10,10 +10,9 @@ package frc.robot;
 import org.opencv.core.Mat;
 
 import edu.wpi.cscore.CvSink;
-import edu.wpi.cscore.CvSource;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 
 /**
  * Add your docs here.
@@ -23,7 +22,7 @@ public class CameraStream {
     public UsbCamera camera1;
 
     private CvSink cvSink;
-    private CvSource outputStream;
+
 
     public void initCamera()
     {
@@ -37,16 +36,10 @@ public class CameraStream {
       //  camera2.setResolution(320, 240);
       camera1.setBrightness(50);
       camera1.setWhiteBalanceManual(50);
-        cvSink = CameraServer.getInstance().getVideo();
-        outputStream = CameraServer.getInstance().putVideo("DriverCam", 320, 240);
-        outputStream.setFPS(12);
-        outputStream.setResolution(320, 240);
-        //cvSink.setSource(camera1);
+     
     }
 
-    private long lastSwitch;
-    private boolean cam1=true;
-
+    
     // function to return single image from the above stream
     public Mat getImage(){
         Mat image = new Mat();

@@ -1,5 +1,8 @@
 package frc.robot;
+
 import java.lang.Math;
+
+import edu.wpi.first.wpilibj.Joystick;
 
 public class UserInput
 {
@@ -10,15 +13,14 @@ public class UserInput
     
     
 
-    public static  DaBearsJoystick leftStick = null;
-    public static  DaBearsJoystick rightStick = null;
-    public static  DaBearsJoystick operatorStick = null;  //driver two
+    public static  Joystick leftStick = null;
+    public static  Joystick rightStick = null;
+    public static  Joystick operatorStick = null;  //driver two
   
     
 
     //buttons and controls on driver stick.  (Left and right are same, for now)
 
-    private static final int X_AXIS=0;
     private static final int Y_AXIS=1;
     //buttons and controls on operator stick (XBox controller)
     private static final int JSB_GEARSHIFT=1;
@@ -38,15 +40,13 @@ public class UserInput
     private static final int JSB_WRITERECORDER=8; 
     private static final int JSB_GETTARGET=9;
 
-    private static final int JSB_FEED=99;//Obviously, it isn't 99
-    private static final int JSB_SHOOT=99;
 
 public static void Init()
     {
         if (leftStick==null) {
-            leftStick=new DaBearsJoystick(LEFTPORT);
-            rightStick=new DaBearsJoystick(RIGHTPORT);
-            operatorStick=new DaBearsJoystick(OPERATORPORT);
+            leftStick=new Joystick(LEFTPORT);
+            rightStick=new Joystick(RIGHTPORT);
+            operatorStick=new Joystick(OPERATORPORT);
         }
     }
 
