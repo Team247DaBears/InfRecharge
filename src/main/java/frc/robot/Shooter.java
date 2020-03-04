@@ -26,6 +26,9 @@ public class Shooter {
     private double FEEDER_HOLD_SPEED=-1.0;
     private double FEEDER_FEED_SPEED=1.0;
 
+
+    private final long DEFAULT_TIME_LIMIT=6000;
+
     private SpeedController feeder;
     private SpeedController conveyor;
 
@@ -57,6 +60,9 @@ public class Shooter {
     private final double IZONE=200;
 
    
+    private long shootingTimeLimit=DEFAULT_TIME_LIMIT;  //The maximum amount of time allowed for a shooting sequence, beginning at ramp u
+                                     //May be set extermally to allow different values in different autonomous modes
+    private long shootingStartTime;
 
 
 
@@ -85,6 +91,15 @@ public class Shooter {
         shootingIndex=0;
     }
 
+    public void teleopInit()
+    {
+        currentState=ShootingStates.IDLE;
+    }
+
+
+    /**
+     * Execute shooter operations in teleoperated mode
+     */
     public void operate()
     {
  
@@ -114,6 +129,17 @@ public class Shooter {
             shooterSolenoid.set(false);
         }
 
+        if (!UserInput.getShooting())
+        {
+            resetShooting();
+        }
+        else if ((currentState!=ShootingStates.IDLE)&&(UserInput.getShooting()))
+        {
+            commenceShooting();
+        }
+
+
+
         calcNextState();
         setOutputs();
     }
@@ -122,40 +148,26 @@ public class Shooter {
 
     public void calcNextState()
     {
-        if (currentState!=ShootingStates.IDLE)
-        {
-            //System.out.println("Current velocity: "+shooter.getVelocity());
-        }
+        long now=System.currentTimeMillis();
         switch(currentState)
         {
             case IDLE:
-            if (UserInput.getShooting())
-            {
-                currentState=ShootingStates.RAMPING_UP;
-            }
             break;
             case RAMPING_UP:
-            if (!UserInput.getShooting())
-            {
-                currentState=ShootingStates.IDLE;
-            }
-
-
             if (encoder.getVelocity()<shooterSpeeds[shootingIndex]+10)
             {
                 currentState=ShootingStates.SHOOTING;
             }
+            else if ((now-shootingStartTime)>shootingTimeLimit)
+            {
+                currentState=ShootingStates.IDLE; //Abort if cannot get up to speed
+            }
             break;
             case SHOOTING:
-            if (!UserInput.getShooting())
-            {
-                currentState=ShootingStates.IDLE;
-            }
+            if (now-shootingStartTime>shootingTimeLimit) 
+                currentState=ShootingStates.FINISHED;
             break;
             case FINISHED:
-            {
-                currentState=ShootingStates.IDLE;
-            }
             break;
 
         }
@@ -193,6 +205,43 @@ public class Shooter {
                 feeder.set(0);
                 break;
             }
+        }
+
+
+        /**
+         * Put shooter back in state ready to accept another shooting command
+         */
+        public void resetShooting()
+        {
+            currentState=ShootingStates.IDLE;
+        }
+
+        public void completeShooting()
+        {
+            currentState=ShootingStates.FINISHED;
+        }
+
+        public void commenceShooting()
+        {
+            currentState=ShootingStates.RAMPING_UP;
+            shootingStartTime=System.currentTimeMillis();
+        }
+
+        public void setTimeLimit(long timeLimit)
+        {
+            shootingTimeLimit=timeLimit;
+        }
+
+
+
+
+        /**
+         * Based on your current state, continue on
+         */
+        public void execute()
+        {
+            calcNextState();
+            setOutputs();
         }
 
 

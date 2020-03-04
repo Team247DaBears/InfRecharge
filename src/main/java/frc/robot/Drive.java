@@ -23,13 +23,21 @@ public class  Drive
           double rightSideMotorSpeed=UserInput.getRightStick();
 //System.out.println("Ls  "+leftSideMotorSpeed);
 //System.out.println("Rs  "+rightSideMotorSpeed);
-         Devices.backLeft.set(leftSideMotorSpeed);
-         Devices.frontLeft.set(leftSideMotorSpeed);
-         Devices.frontRight.set(rightSideMotorSpeed);
-          Devices.backRight.set(rightSideMotorSpeed);
+          drive_Command(leftSideMotorSpeed, rightSideMotorSpeed);
+
              shiftGears();// This could go in robot.java
              
       }
+
+
+      
+    public void drive_Command(double leftSideMotorSpeed, double rightSideMotorSpeed)
+    {
+      Devices.backLeft.set(leftSideMotorSpeed);
+      Devices.frontLeft.set(leftSideMotorSpeed);
+      Devices.frontRight.set(rightSideMotorSpeed);
+       Devices.backRight.set(rightSideMotorSpeed);
+    }
 
       
    
