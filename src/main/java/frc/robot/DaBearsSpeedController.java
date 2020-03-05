@@ -29,6 +29,29 @@ public class DaBearsSpeedController implements SpeedController {
 
     private Boolean isRunningTest = null;
 
+    public DaBearsSpeedController(SpeedController baseController)
+    {
+        if (baseController instanceof CANSparkMax)
+        {
+            sparkMaxMotor=(CANSparkMax) baseController;
+
+            speedController = baseController;
+            useSparkMax=true;
+            useEncoder=true;
+            sparkMaxEncoder=sparkMaxMotor.getEncoder();
+            sparkMaxPIDController=sparkMaxMotor.getPIDController();
+
+
+        }
+        else  
+        {
+            speedController = baseController;
+            useSparkMax=false;
+            useEncoder=false;
+            victorMotor = (Victor) baseController;
+        }
+    }
+
     public DaBearsSpeedController(int pwm, MotorType type, boolean sparkmax, int encodepwm, int encodetype) {
         populateController(pwm, type, sparkmax);
         useEncoder = true;
