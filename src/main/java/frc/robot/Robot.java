@@ -58,8 +58,8 @@ public class Robot extends TimedRobot {
     m_chooser.addOption(kRight, kRight);
     m_chooser.addOption(kBackRight, kBackRight);
     m_chooser.addOption(kBackLeft, kBackLeft);
-    SmartDashboard.putData("Auto choices", m_chooser);
-    m_autoSelected = m_chooser.getSelected();
+
+
 
     autoQueue = new AutoQueue();
     lifter=new Lifter();
@@ -82,7 +82,6 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     try {
-      m_chooser = (SendableChooser<String>) SmartDashboard.getData("Auto choices");
       m_autoSelected = m_chooser.getSelected();
     }
     catch (Exception e)
@@ -182,6 +181,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testPeriodic() {
+  }
+
+  @Override
+  public void disabledPeriodic()
+  {
+    SmartDashboard.putData("Auto choices", m_chooser);
   }
 
 }
