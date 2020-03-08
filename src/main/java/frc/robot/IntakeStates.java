@@ -4,5 +4,5 @@ public enum IntakeStates implements Cloneable {
     intakeRun,
     intakeDown,
     intakeUp,
-    intakeStop
+    intakeStop, intakeTarget, intakeDrive
 }

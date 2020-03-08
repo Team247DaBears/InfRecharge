@@ -153,7 +153,7 @@ public class DaBearsSpeedController implements SpeedController {
             sign=1;
         }
         if (getInverted()) {
-            sign = sign * -1;
+        //    sign = sign * -1;
         //    System.out.println("inverted:"+sign);
         } 
         if (useSparkMax) {

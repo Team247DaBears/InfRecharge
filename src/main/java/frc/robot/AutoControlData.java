@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 public class AutoControlData implements Cloneable {
 
-    boolean WriteLog = true;
+    boolean WriteLog = false;
     AutoStates autoState = AutoStates.TeleOpt;
     GearStates gearState = GearStates.LowGearPressed;
     DeviceStates deviceState = DeviceStates.Drive;

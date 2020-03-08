@@ -30,7 +30,7 @@ public class testDrive {
       //UserInput.leftStick.setButtonResp(false,false,false);
       //UserInput.rightStick.setButtonResp(false,false,false);
       Assert.assertEquals(0.0,Devices.frontLeft.get(),0.1);
-      Assert.assertEquals(GearStates.LowGearPressed,drive.currentGearState);
+      Assert.assertEquals(GearStates.LowGearOff,drive.currentGearState);
       Assert.assertEquals(false,Devices.gearShift.get());
       drive.drive();
       Assert.assertEquals(0.0,Devices.frontLeft.get(),0.1);
@@ -38,10 +38,10 @@ public class testDrive {
       Assert.assertEquals(false,Devices.gearShift.get());
       drive.drive();
       Assert.assertEquals(1,Devices.frontLeft.get(),0.1);
-      Assert.assertEquals(GearStates.LowGearPressed,drive.currentGearState);
-      Assert.assertEquals(false,Devices.gearShift.get());
+      Assert.assertEquals(GearStates.HighGearOff,drive.currentGearState);
+      Assert.assertEquals(true,Devices.gearShift.get());
       drive.drive();
-      Assert.assertEquals(-0.37,Devices.frontLeft.get(),0.1);
+      Assert.assertEquals(-0.14,Devices.frontLeft.get(),0.1);
       Assert.assertEquals(GearStates.LowGearPressed,drive.currentGearState);
       Assert.assertEquals(false,Devices.gearShift.get());
       drive.drive();
@@ -49,9 +49,9 @@ public class testDrive {
       Assert.assertEquals(GearStates.LowGearPressed,drive.currentGearState);
       Assert.assertEquals(false,Devices.gearShift.get());
       drive.drive();
-      Assert.assertEquals(0.124,Devices.frontLeft.get(),0.1);
-      Assert.assertEquals(GearStates.LowGearPressed,drive.currentGearState);
-      Assert.assertEquals(false,Devices.gearShift.get());
+      Assert.assertEquals(0.015,Devices.frontLeft.get(),0.1);
+      Assert.assertEquals(GearStates.HighGearOff,drive.currentGearState);
+      Assert.assertEquals(true,Devices.gearShift.get());
       DaBearsCloseDevices.close(devices);
       DaBearsCloseDevices.close(userinput);
       DaBearsCloseDevices.close(drive);

@@ -161,7 +161,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
- //   AutoQueue.clearQueue();
+    AutoQueue.clearQueue();
   }
   
   int counter=0;

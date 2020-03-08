@@ -34,6 +34,7 @@ public class DetectTarget {
     double width;
     double horizontal;
     double virtical;
+    static final double okIntake =0.1; //ok intake final distance diff
     static final double okDist =0.1; //ok distance diff
     static final double okVirt =0.1; //ok Vertical diff
     static final double okHztl =0.1; //ok Horizontal diff
@@ -83,6 +84,7 @@ public class DetectTarget {
             return false;
         }
     }
+
     public Boolean shootTarget(Mat image) {
         if (Devices.frontLeft.get() == 0.0 && Devices.frontRight.get() == 0.0) {
             if (image != null) {
@@ -129,14 +131,14 @@ public Boolean targetTopTarget(Mat image) {
 
     Size size = current.getBoundary().size;
     FixedAngleCameraDistanceEstimator distanceEstimator = 
-        new FixedAngleCameraDistanceEstimator(10, 1, 10);
+        new FixedAngleCameraDistanceEstimator(10, 7, 10);
     Double currdistance = distanceEstimator.getDistance(current);
     Double currvirt = current.getVerticalAngle();
     Double currhztl = current.getHorizontalAngle();
     Double diffDist = currdistance - distance;
     Double diffVirt = currvirt - virtical;
     //System.out.println("distance:"+distance);
-    if (Math.abs(diffDist) > okDist /* Target Size too Big */) {
+    if (Math.abs(diffDist) > okIntake /* Target Size too Big */) {
             AutoQueue.addDriveQueue(AutoStates.Drive,DriveStates.DriveStart,GearStates.LowGearPressed,0.5,diffDist,0.5,diffDist);
             AutoQueue.moveFirst();
         }
@@ -151,7 +153,72 @@ public Boolean targetTopTarget(Mat image) {
         }
     return false;
 }
+
  /**
+ * Detects the 2020 top vision target.
+ * @param image The image from the camera.
+ * @return The list of vision target groups.
+ */
+public Target detectBallTarget(Mat image){
+    // Adjust these parameters for your team's needs
+    Target foundTarget;
+
+    if (image==null){System.err.println("image null");return null;}
+    if (image.height()==0){System.err.println("image invalid");return null;}
+
+    // Hue/Sat/Value filter parameters
+    Range hsvHue = new Range(15, 50);
+    Range hsvSaturation = new Range(185, 255);
+    Range hsvValue = new Range(67, 255);
+    
+    // Contour filter parameters
+    Range area = new Range(5, 1000);
+    Range fullness = new Range(0, 1000);
+    Range aspectRatio = new Range(0, 1000);
+  
+    // Camera settings
+    FOV fov = new FOV(50, 40); // This is the approx. Microsoft LifeCam FOV
+    Resolution resolution = new Resolution(720, 478);
+    boolean cameraInverted = false;
+  
+
+    int imageArea = resolution.getArea();
+  
+    // An HSV filter may be better for FRC target detection
+    CameraSettings cameraSettings = new CameraSettings(cameraInverted, fov, resolution);
+    //TargetFilter targetFilter = new HSVFilter(new Range(50, 70), new Range(100, 255), new Range(100, 255));
+    TargetFilter targetFilter = new HSVFilter(hsvHue, hsvSaturation, hsvValue);
+    ContourFilter contourFilter = new StandardContourFilter( area, fullness, aspectRatio, imageArea);
+    TargetGrouping targetGrouping = TargetGrouping.SINGLE;
+
+    TargetFinder targetFinder = new TargetFinder(cameraSettings, targetFilter, contourFilter, targetGrouping);
+
+    // Find targets
+    List<Target> targets = targetFinder.findTargets(image);
+    if (targets==null){System.err.println("no targets found");return null;}
+    if (targets.size()==0){System.err.println("no targets found");return null;}
+    
+    // If the current target is a left and the next is a right, make it a pair
+    for (int i = 0; i < targets.size(); i++) {
+        System.out.println(":"+targets.get(i).toString());
+        System.out.println("area:"+targets.get(i).getBoundary().size.area());
+        System.out.println("height:"+targets.get(i).getBoundary().size.height);
+        System.out.println("width:"+targets.get(i).getBoundary().size.width);
+        if (targets.get(i).getBoundary().size.area() >= 1){
+            if (targets.get(i).getPercentArea() >= 1){
+            if (targets.get(i).getVerticalAngle() <= 12){
+                //System.out.println("-->"+targets.get(i).toString());
+                foundTarget = targets.get(i);
+                return targets.get(i);
+            }
+        }
+    }
+}
+    
+    return null;
+  }
+  
+/**
  * Detects the 2020 top vision target.
  * @param image The image from the camera.
  * @return The list of vision target groups.
