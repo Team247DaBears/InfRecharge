@@ -41,11 +41,12 @@ public class Shooter {
 
     private double[] shooterSpeeds={-1250, -1450};
     private int shootingIndex=0;
-    private boolean shooterPressed=false;
-    private boolean shooterSet=false;
+    private boolean shooterSelectionPressed=false;
+    private boolean shooterSet=false;//The purpose of this is to set the parameters only once per cycle.  Don't know if this is necessary
 
 
     //Parameteres for velocity control PID on SparkMax
+    //The parameters used at Southfield are adequate, but should be improved upon.
     private final double KP=0.1;
     private final double KI=0;
     private final double KD=0;
@@ -57,12 +58,14 @@ public class Shooter {
                                 //with this.  The solution would be to modify DaBearsSpeedController to invert the encoder
                                 //if using setInverted, but that will require some testing.
     private final double FFVALUE=-0;  //Will require experimentation to set a better value
-    private final double IZONE=200;
+    private final double IZONE=0;
 
    
     private long shootingTimeLimit=DEFAULT_TIME_LIMIT;  //The maximum amount of time allowed for a shooting sequence, beginning at ramp u
                                      //May be set extermally to allow different values in different autonomous modes
     private long shootingStartTime;
+
+    private double targetRPM;
 
 
 
@@ -87,13 +90,18 @@ public class Shooter {
         controlLoop.setReference(0, ControlType.kDutyCycle);
 
         currentState=ShootingStates.IDLE;
-        shooterPressed=false;
+        shooterSelectionPressed=false;//The usual "is the button still held down" state machine
         shootingIndex=0;
     }
 
     public void teleopInit()
     {
         currentState=ShootingStates.IDLE;
+        shootingIndex=0;
+        shooterSelectionPressed=false;
+        shootingIndex=0;
+        targetRPM=shooterSpeeds[shootingIndex];
+
     }
 
 
@@ -102,24 +110,26 @@ public class Shooter {
      */
     public void operate()
     {
- 
-        if ((!shooterPressed) && (UserInput.getShooterSpeedIncrement()))
+        //Pick shooting speed
+        if ((!shooterSelectionPressed) && (UserInput.getShooterSpeedIncrement()))
             {
-                shooterPressed=true;
+                shooterSelectionPressed=true;
                 shootingIndex++;
                 if (shootingIndex>=shooterSpeeds.length)
                 {
                     shootingIndex=0;
+                    
                 }
+                targetRPM=shooterSpeeds[shootingIndex];
             }
         else if (!UserInput.getShooterSpeedIncrement())
             {
-                shooterPressed=false;
+                shooterSelectionPressed=false;
             }
 
 
 
-        
+        //Set the angle for the shooter
         if (UserInput.getShooterLowShot())
         {
             shooterSolenoid.set(true);
@@ -129,19 +139,32 @@ public class Shooter {
             shooterSolenoid.set(false);
         }
 
+
+
+        //Either begin or end shooting, based on user input
         if (!UserInput.getShooting())
         {
             resetShooting();
         }
-        else if ((currentState!=ShootingStates.IDLE)&&(UserInput.getShooting()))
+        else if ((currentState==ShootingStates.IDLE)&&(UserInput.getShooting()))
         {
             commenceShooting();
         }
 
+        //React to request for feed
+        {
+            if (UserInput.intakeRun())
+            {
+                setConveyor(true);
+            }
+            else
+            {
+                setConveyor(false);
+            }
+        }
 
 
-        calcNextState();
-        setOutputs();
+        execute();
     }
 
     public ShootingStates currentState = ShootingStates.IDLE;
@@ -153,8 +176,10 @@ public class Shooter {
         {
             case IDLE:
             break;
+            case PICKINGUP:
+            break;
             case RAMPING_UP:
-            if (encoder.getVelocity()<shooterSpeeds[shootingIndex]+10)
+            if (encoder.getVelocity()<targetRPM+10)  //Remember negative
             {
                 currentState=ShootingStates.SHOOTING;
             }
@@ -180,13 +205,13 @@ public class Shooter {
                 case IDLE:
                 shooterSet=false;
                 controlLoop.setReference(0, ControlType.kDutyCycle);
-                if (UserInput.intakeRun())
-                {conveyor.set(CONVEYORSPEED);
-                }
-                else
-                {
-                    conveyor.set(0);
-                }
+                conveyor.set(0);
+                feeder.set(FEEDER_HOLD_SPEED);
+                break;
+                case PICKINGUP:
+                shooterSet=false;
+                controlLoop.setReference(0, ControlType.kDutyCycle);
+                conveyor.set(CONVEYORSPEED);
                 feeder.set(FEEDER_HOLD_SPEED);
                 break;
                 case RAMPING_UP:
@@ -214,6 +239,7 @@ public class Shooter {
         public void resetShooting()
         {
             currentState=ShootingStates.IDLE;
+            shooterSet=false;
         }
 
         public void completeShooting()
@@ -230,6 +256,27 @@ public class Shooter {
         public void setTimeLimit(long timeLimit)
         {
             shootingTimeLimit=timeLimit;
+        }
+
+        public void setConveyor(boolean isPicking)
+        {
+            if (isPicking)
+                if (currentState==ShootingStates.IDLE)
+                {
+                    currentState=ShootingStates.PICKINGUP;
+                }
+            else
+            {
+                if (currentState==ShootingStates.PICKINGUP)
+                {
+                    currentState=ShootingStates.IDLE;
+                }
+            }
+        }
+
+        public void setTargetRPM(double target)
+        {
+            targetRPM=target;
         }
 
 
@@ -249,7 +296,7 @@ public class Shooter {
         public void setPID()
         {
             if (!shooterSet)
-            {controlLoop.setReference(shooterSpeeds[shootingIndex], ControlType.kVelocity);
+            {controlLoop.setReference(targetRPM, ControlType.kVelocity);
                 shooterSet=true;
             }
 
@@ -257,7 +304,6 @@ public class Shooter {
 
 
 
-/*Simple autonomous.....for use in build room and until there is something better */
 
         public boolean isAutoShootComplete()
         {
@@ -265,11 +311,6 @@ public class Shooter {
         }
 
 
-
-        public boolean isIntakeRunning()
-        {
-            return false;  //Needs some experimentation, but the idea is that during intake running, the conveyor might move faster.
-        }
     
 
 

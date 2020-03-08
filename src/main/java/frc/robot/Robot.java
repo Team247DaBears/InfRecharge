@@ -7,10 +7,15 @@
 
 package frc.robot;
 
+import java.util.HashMap;
+import java.util.Map;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Driverless.DriverlessDriveDistance;
+import frc.robot.Driverless.DriverlessProgram;
+import frc.robot.Driverless.DriverlessShoot;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -47,6 +52,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    try
+    {
     m_chooser.setDefaultOption(kDefault, kDefault);
     m_chooser.addOption(kTestMode, kTestMode);
     m_chooser.addOption(kLeft, kLeft);
@@ -71,30 +78,66 @@ public class Robot extends TimedRobot {
     cameraStream = new CameraStream();
     cameraStream.initCamera(); // comment out until camera installed. 
     drive=new Drive();    
+    }
+    catch(Exception e)
+    {
+      e.printStackTrace();
+    }
   }
 
   @Override
   public void autonomousInit()
   {
+    try
+    {
+
+    }
+    catch(Exception e)
+    {
+      e.printStackTrace();
+    }
 
   }
  
 
   @Override
   public void autonomousPeriodic() {
+    try
+    {
+
+    }
+    catch(Exception e)
+    {
+      e.printStackTrace();
+    }
  
   }
 
   @Override
   public void teleopInit() {
+    try
+    {
+    shooter.teleopInit();
+    }
+    catch(Exception e)
+    {
+      e.printStackTrace();
+    }
   }
   
   @Override
   public void teleopPeriodic() {
+    try
+    {
           drive.drive(); 
           intake.operate(); 
           lifter.operate();
           shooter.operate();
+    }
+    catch(Exception e)
+    {
+      e.printStackTrace();
+    }
     }  
 
   @Override
@@ -104,5 +147,27 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
   }
+
+
+  /******************************************************************************************************************/
+  /*  STATIC METHODS TO INITIALIZE AUTONOMOUS.......if used                                                        */
+
+  /*
+  public static Map<String,DriverlessProgram> availablePrograms=new HashMap<String,DriverlessProgram>();
+
+
+
+
+  public static void populateDriverlessPrograms()
+  {
+      DriverlessProgram basicAuto=new DriverlessProgram("Center");
+      basicAuto.addStep(new DriverlessShoot(basicAuto,shooter,9000));
+      basicAuto.addStep(new DriverlessDriveDistance(basicAuto,drive,-48.9,5000));
+
+      availablePrograms.put("Center",basicAuto);
+
+      
+
+  }*/
 
 }

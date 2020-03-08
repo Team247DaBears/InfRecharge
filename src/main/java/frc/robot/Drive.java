@@ -1,21 +1,32 @@
 package frc.robot;
 import frc.robot.UserInput;
+import edu.wpi.first.wpilibj.SpeedController;
 import frc.robot.Devices;
 
 public class  Drive
 {
 
 
-
+    SpeedController frontLeft;
+    SpeedController frontRight;
+    SpeedController backLeft;
+    SpeedController backRight;
 
     public void Init() {
+      frontLeft=Devices.frontLeft;
+      frontRight=Devices.frontRight;
+      backLeft=Devices.backLeft;
+      backRight=Devices.backRight;
 
     }
+
+  
 
     
     public Drive() {
       setGear(true);
     }
+
     public void drive()
       {
 
@@ -25,7 +36,7 @@ public class  Drive
 //System.out.println("Rs  "+rightSideMotorSpeed);
           drive_Command(leftSideMotorSpeed, rightSideMotorSpeed);
 
-             shiftGears();// This could go in robot.java
+          shiftGears();// This could go in robot.java
              
       }
 
@@ -33,10 +44,10 @@ public class  Drive
       
     public void drive_Command(double leftSideMotorSpeed, double rightSideMotorSpeed)
     {
-      Devices.backLeft.set(leftSideMotorSpeed);
-      Devices.frontLeft.set(leftSideMotorSpeed);
-      Devices.frontRight.set(rightSideMotorSpeed);
-       Devices.backRight.set(rightSideMotorSpeed);
+      backLeft.set(leftSideMotorSpeed);
+      frontLeft.set(leftSideMotorSpeed);
+      frontRight.set(rightSideMotorSpeed);
+      backRight.set(rightSideMotorSpeed);
     }
 
     public void drive_SpeedAndRotation(double forwardSpeed, double rotationRate)
