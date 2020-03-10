@@ -1,5 +1,8 @@
 package frc.robot;
+
 import java.lang.Math;
+
+import edu.wpi.first.wpilibj.Joystick;
 
 public class UserInput
 {
@@ -10,9 +13,9 @@ public class UserInput
     
     
 
-    public static  DaBearsJoystick leftStick = null;
-    public static  DaBearsJoystick rightStick = null;
-    public static  DaBearsJoystick operatorStick = null;  //driver two
+    public static  Joystick leftStick = null;
+    public static  Joystick rightStick = null;
+    public static  Joystick operatorStick = null;  //driver two
   
     
 
@@ -44,9 +47,9 @@ public class UserInput
 public static void Init()
     {
         if (leftStick==null) {
-            leftStick=new DaBearsJoystick(LEFTPORT);
-            rightStick=new DaBearsJoystick(RIGHTPORT);
-            operatorStick=new DaBearsJoystick(OPERATORPORT);
+            leftStick=new Joystick(LEFTPORT);
+            rightStick=new Joystick(RIGHTPORT);
+            operatorStick=new Joystick(OPERATORPORT);
         }
     }
 

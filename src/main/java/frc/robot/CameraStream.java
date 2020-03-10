@@ -48,7 +48,7 @@ public class CameraStream {
     private boolean cam1=true;
 
     // function to return single image from the above stream
-    public Mat getImage(){
+    public Mat getHighImage(){
         Mat image = new Mat();
         //cvSink.grabFrameNoTimeout(image);
         int curBright = camera1.getBrightness();
@@ -66,6 +66,43 @@ public class CameraStream {
         
         //cvSink.grabFrame(image);
         return image;
+    }
+
+    // function to return single image from the above stream
+    public Mat getLowImage(){
+        Mat image = new Mat();
+        //cvSink.grabFrameNoTimeout(image);
+        int curBright = camera1.getBrightness();
+        //outputStream.setResolution(320, 240);
+        camera1.setExposureManual(3);
+        //camera1.setWhiteBalanceManual(50);
+        camera1.setBrightness(200);
+        cvSink.grabFrame(image, 400);
+        camera1.setExposureManual(curBright);
+        camera1.setWhiteBalanceAuto();
+        //camera1.setResolution(320, 240);
+        //SmartDashboard.putBoolean("targetImage",(image != null));
+        //SmartDashboard.putNumber("image width:",(double)image.width());
+        //SmartDashboard.putNumber("image height:",(double)image.height());
+        
+        //cvSink.grabFrame(image);
+        return image;
+    }
+    int exp = 35;
+    int brt = 35;
+    int wtb = 35;
+    public void calebrateInit() {
+        SmartDashboard.putNumber("Exposure:",exp);
+        SmartDashboard.putNumber("Brightness:",brt);
+        SmartDashboard.putNumber("WhiteBalance:",wtb);
+    }
+    public void calebrateCamera() {
+        SmartDashboard.getNumber("Exposure:",exp);
+        SmartDashboard.getNumber("Brightness:",brt);
+        SmartDashboard.getNumber("WhiteBalance:",wtb);
+        camera1.setExposureManual(exp);
+        camera1.setBrightness(brt);
+        camera1.setWhiteBalanceManual(wtb);
     }
 }
 

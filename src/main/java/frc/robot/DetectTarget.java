@@ -74,7 +74,7 @@ public class DetectTarget {
     public Boolean shootTopTarget() {
         if (UserInput.getTarget()) {
             if (camerastream != null){
-                return shootTarget(camerastream.getImage());
+                return shootTarget(camerastream.getHighImage());
             }
             else {
                 return false;

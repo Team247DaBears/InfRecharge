@@ -17,20 +17,21 @@ import com.revrobotics.ControlType;
 import com.revrobotics.SparkMax;
 
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter {
 
-    private double CONVEYORSPEED=-0.55;
-    private double CONVEYORSHOOTSPEED=-1;
-    private double FEEDER_HOLD_SPEED=-1.0;
-    private double FEEDER_FEED_SPEED=1.0;
+    private double CONVEYORSPEED = -0.55;
+    private double CONVEYORSHOOTSPEED = -1;
+    private double FEEDER_HOLD_SPEED = -1.0;
+    private double FEEDER_FEED_SPEED = 1.0;
 
-    private DaBearsSpeedController feeder;
-    private DaBearsSpeedController conveyor;
+    private SpeedController feeder;
+    private SpeedController conveyor;
 
 
-    private DaBearsSpeedController shooter;
+    private CANSparkMax shooter;
     //private CANEncoder encoder;
     //private CANPIDController controlLoop;
 
@@ -69,7 +70,7 @@ public class Shooter {
     {
         feeder =Devices.feeder;
         conveyor=Devices.conveyor;
-        shooter=Devices.shooter;
+        shooter=Devices.shooterSpark;
         shooterSolenoid=Devices.shooterAngleControl;
         shooterSet=false;
 
@@ -77,13 +78,13 @@ public class Shooter {
         //controlLoop=shooter.getPIDController();
 
         conveyor.set(0);
-        shooter.setP(KP);
-        shooter.setD(KD);
-        shooter.setI(KI);
-        shooter.setOutputRange(MINOUT, MAXOUT);
-        shooter.setIZone(IZONE);
-        shooter.setFF(FFVALUE/TARGETRPM);
-        shooter.setReference(0, ControlType.kDutyCycle);
+        shooter.getPIDController().setP(KP);
+        shooter.getPIDController().setD(KD);
+        shooter.getPIDController().setI(KI);
+        shooter.getPIDController().setOutputRange(MINOUT, MAXOUT);
+        shooter.getPIDController().setIZone(IZONE);
+        shooter.getPIDController().setFF(FFVALUE/TARGETRPM);
+        shooter.getPIDController().setReference(0, ControlType.kDutyCycle);
 
         currentState=ShootingStates.IDLE;
         shooterPressed=false;
@@ -109,7 +110,7 @@ public class Shooter {
 
 
             SmartDashboard.putNumber("Shooting Speed", shooterSpeeds[shootingIndex]);
-            SmartDashboard.putNumber("Current RPM", shooter.getVelocity());
+            SmartDashboard.putNumber("Current RPM", shooter.getEncoder().getVelocity());
         
         
 
@@ -155,7 +156,7 @@ public class Shooter {
  //           {
  //               currentState=ShootingStates.SHOOTING;
  //           }
-            if (shooter.getVelocity()<shooterSpeeds[shootingIndex]-10)
+            if (shooter.getEncoder().getVelocity()<shooterSpeeds[shootingIndex]-10)
             {
                 currentState=ShootingStates.SHOOTING;
             }
@@ -183,7 +184,7 @@ public class Shooter {
                 case LOWSHOT:
                 case IDLE:
                 shooterSet=false;
-                shooter.setReference(0, ControlType.kDutyCycle);
+                shooter.getPIDController().setReference(0, ControlType.kDutyCycle);
                 if (UserInput.intakeRun())
                 {conveyor.set(CONVEYORSPEED);
                 }
@@ -204,7 +205,7 @@ public class Shooter {
                 feeder.set(FEEDER_FEED_SPEED);
                 break;
                 case FINISHED:
-                shooter.setReference(0, ControlType.kDutyCycle);
+                shooter.getPIDController().setReference(0, ControlType.kDutyCycle);
                 conveyor.set(0);  //Will be changed if we move to something fancier
                 feeder.set(0);
                 break;
@@ -224,7 +225,7 @@ public class Shooter {
                 shooter.setReference(0, ControlType.kDutyCycle);
             }*/
             if (!shooterSet)
-            {shooter.setReference(shooterSpeeds[shootingIndex], ControlType.kVelocity);
+            {shooter.getPIDController().setReference(shooterSpeeds[shootingIndex], ControlType.kVelocity);
                 shooterSet=true;
             }
 
@@ -253,7 +254,7 @@ public class Shooter {
                       break;
                 case RAMPING_UP:
                         elapsed=System.currentTimeMillis()-autoBeginTime;
-                        if (shooter.getVelocity()<CUTOFFRPM)
+                        if (shooter.getEncoder().getVelocity()<CUTOFFRPM)
                         {
                             currentState=ShootingStates.SHOOTING;
                         }

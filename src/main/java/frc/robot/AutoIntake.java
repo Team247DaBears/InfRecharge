@@ -7,8 +7,10 @@
 
 package frc.robot;
 
+import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.kylecorry.frc.vision.distance.FixedAngleCameraDistanceEstimator;
@@ -37,7 +39,7 @@ public class AutoIntake {
     DetectTarget detectTarget;
     long cnt = 0;
 
-    DaBearsSpeedController intakeMotor;
+    SpeedController intakeMotor;
     IntakeStates intakeState;
     private final double INTAKE_DRIVE_SPEED = .5;
     private final double INTAKE_SPEED = .5;
@@ -84,18 +86,18 @@ public class AutoIntake {
                 intakeMotor.set(INTAKE_SPEED);
                 q.intakeState = IntakeStates.intakeTarget;
 
-                InitEncoderController(Devices.frontLeft);
-                InitEncoderController(Devices.frontRight);
-                InitEncoderController(Devices.backLeft);
-                InitEncoderController(Devices.backRight);        
+                InitEncoderController(Devices.frontLeftSpark);
+                InitEncoderController(Devices.frontRightSpark);
+                InitEncoderController(Devices.backLeftSpark);
+                InitEncoderController(Devices.backRightSpark);        
             break;
             case intakeTarget:
-                Devices.frontLeft.setPosition(0);
-                Devices.frontRight.setPosition(0);
-                Devices.backLeft.setPosition(0);
-                Devices.backRight.setPosition(0);
+                Devices.frontLeftEncoder.setPosition(0);
+                Devices.frontRightEncoder.setPosition(0);
+                Devices.backLeftEncoder.setPosition(0);
+                Devices.backRightEncoder.setPosition(0);
 
-                Mat image = camerastream.getImage();
+                Mat image = camerastream.getLowImage();
                 if (image==null){
                     WriteIntakeStatus("TeleOpt-image null");
                     q.intakeState = IntakeStates.intakeStop;
@@ -113,13 +115,14 @@ public class AutoIntake {
                     } // no target found
                     else {
                         detectTarget.SaveTargetImage("ballTarget"+(cnt++), current, image);
-
-                        AreaCameraDistanceEstimator distanceEstimator = new AreaCameraDistanceEstimator(new AreaCameraDistanceEstimator.AreaDistancePair(100, 0), new AreaCameraDistanceEstimator.AreaDistancePair(50, 20));
-                        Double currdistance = Math.abs(distanceEstimator.getDistance(current));
+                        System.out.println("ball"+current);
+                        //AreaCameraDistanceEstimator distanceEstimator = new AreaCameraDistanceEstimator(new AreaCameraDistanceEstimator.AreaDistancePair(100, 0), new AreaCameraDistanceEstimator.AreaDistancePair(50, 20));
+                        //Double currdistance = Math.abs(distanceEstimator.getDistance(current));
+                        //WriteIntakeStatus("AutoTarget-Targ "+currdistance);
+                        FixedAngleCameraDistanceEstimator distanceEstimator2 = 
+                            new FixedAngleCameraDistanceEstimator(0, 12, -27.7);
+                        Double currdistance = Math.abs(distanceEstimator2.getDistance(current));
                         WriteIntakeStatus("AutoTarget-Targ "+currdistance);
-                        //FixedAngleCameraDistanceEstimator distanceEstimator2 = 
-                        //    new FixedAngleCameraDistanceEstimator(10, 7, 10);
-                        //currdistance = Math.abs(distanceEstimator2.getDistance(current));
                         Double currhorz = current.getHorizontalAngle() - CAMERA_CENTER_ADJUST;
                         if (currdistance < SCOOP_DISTANCE) { // Time to just scoop it up?
                             currdistance = SCOOP_DISTANCE;
@@ -139,8 +142,8 @@ public class AutoIntake {
                 }
                 break;
              case intakeDrive:
-                double frontLeftPos = Devices.frontLeft.getPosition();
-                double frontRightPos = Devices.frontRight.getPosition();
+                double frontLeftPos = Devices.frontLeftEncoder.getPosition();
+                double frontRightPos = Devices.frontRightEncoder.getPosition();
 
                 double leftDiff = java.lang.Math.abs(q.LeftDrivePos - frontLeftPos);
                 double rightDiff = java.lang.Math.abs(q.RightDrivePos - frontRightPos);
@@ -150,10 +153,10 @@ public class AutoIntake {
                 }
                 if (leftDiff > .2 || rightDiff > .2) {
                     // TODO: Add angle correction here
-                    Devices.frontLeft.setReference(q.LeftDrivePos, ControlType.kPosition);
-                    Devices.frontRight.setReference(q.RightDrivePos, ControlType.kPosition);
-                    Devices.backLeft.setReference(q.LeftDrivePos, ControlType.kPosition);
-                    Devices.backRight.setReference(q.RightDrivePos, ControlType.kPosition);
+                    Devices.frontLeftPID.setReference(q.LeftDrivePos, ControlType.kPosition);
+                    Devices.frontRightPID.setReference(q.RightDrivePos, ControlType.kPosition);
+                    Devices.backLeftPID.setReference(q.LeftDrivePos, ControlType.kPosition);
+                    Devices.backRightPID.setReference(q.RightDrivePos, ControlType.kPosition);
                 }
                 break;
             case intakeDown:
@@ -168,8 +171,8 @@ public class AutoIntake {
                }
                // Intentual flow into IntakeUp... Allows skipping of bounce
            case intakeUp:
-                frontLeftPos = Devices.frontLeft.getPosition();
-                frontRightPos = Devices.frontRight.getPosition();
+                frontLeftPos = Devices.frontLeftEncoder.getPosition();
+                frontRightPos = Devices.frontRightEncoder.getPosition();
 
                 leftDiff = java.lang.Math.abs(q.LeftDrivePos - frontLeftPos);
                 rightDiff = java.lang.Math.abs(q.RightDrivePos - frontRightPos);
@@ -177,10 +180,10 @@ public class AutoIntake {
                 if (leftDiff > .2 || rightDiff > .2) {
                     //System.out.println("LeftDrivePos:" + leftDiff);
                     //System.out.println("RightDrivePos:" + rightDiff);
-                    Devices.frontLeft.setReference(q.LeftDrivePos, ControlType.kPosition);
-                    Devices.frontRight.setReference(q.RightDrivePos, ControlType.kPosition);
-                    Devices.backLeft.setReference(q.LeftDrivePos, ControlType.kPosition);
-                    Devices.backRight.setReference(q.RightDrivePos, ControlType.kPosition);
+                    Devices.frontLeftPID.setReference(q.LeftDrivePos, ControlType.kPosition);
+                    Devices.frontRightPID.setReference(q.RightDrivePos, ControlType.kPosition);
+                    Devices.backLeftPID.setReference(q.LeftDrivePos, ControlType.kPosition);
+                    Devices.backRightPID.setReference(q.RightDrivePos, ControlType.kPosition);
                     if (BounceCount++ > MAX_BOUNCE_COUNT) { // time for bounce again? 
                         BounceCount = 0;
                         q.intakeState = IntakeStates.intakeUp; // switch back to driving
@@ -201,17 +204,17 @@ public class AutoIntake {
         }
      }
 
-    public static void InitEncoderController(DaBearsSpeedController motor) {
+    public static void InitEncoderController(CANSparkMax motor) {
         // motor.restoreFactoryDefaults();
         motor.set(0);
-        motor.setP(KP);
-        motor.setD(KD);
-        motor.setI(KI);
-        motor.setOutputRange(MINOUT, MAXOUT);
-        motor.setIZone(IZONE);
-        motor.setFF(FFVALUE / TARGETRPM);
+        motor.getPIDController().setP(KP);
+        motor.getPIDController().setD(KD);
+        motor.getPIDController().setI(KI);
+        motor.getPIDController().setOutputRange(MINOUT, MAXOUT);
+        motor.getPIDController().setIZone(IZONE);
+        motor.getPIDController().setFF(FFVALUE / TARGETRPM);
         motor.set(0);
-        motor.setPosition(0);
+        motor.getEncoder().setPosition(0);
     }
 
     public static void WriteIntakeStatus(String message) {
@@ -237,9 +240,13 @@ public Target detectBallTarget(Mat image){
     if (image.height()==0){System.err.println("image invalid");return null;}
 
     // Hue/Sat/Value filter parameters
-    Range hsvHue = new Range(15, 50);
-    Range hsvSaturation = new Range(185, 255);
-    Range hsvValue = new Range(67, 255);
+    Range hsvHue = new Range(0, 170); // doctored image colors
+    Range hsvSaturation = new Range(0, 255);
+    Range hsvValue = new Range(54, 255);
+
+//    Range hsvHue = new Range(15, 50); // cellphone colors
+//    Range hsvSaturation = new Range(185, 255);
+//    Range hsvValue = new Range(67, 255);
     
     // Contour filter parameters
     Range area = new Range(5, 1000);
@@ -276,11 +283,11 @@ public Target detectBallTarget(Mat image){
         //System.out.println("width:"+targets.get(i).getBoundary().size.width);
         if (targets.get(i).getBoundary().size.area() >= 1){
             if (targets.get(i).getPercentArea() >= 1){
-                if (targets.get(i).getVerticalAngle() <= 12){
+                //if (targets.get(i).getVerticalAngle() <= 12){
                     //System.out.println("-->"+targets.get(i).toString());
                     foundTarget = targets.get(i);
                     return targets.get(i);
-                }
+                //}
             }
         }
     }

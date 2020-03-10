@@ -29,38 +29,47 @@ public class CameraStream {
     private CvSink cvSink;
     private CvSource outputStream;
 
-    private int imageIndex = 0;
-    private String[] images = new String[10];
+    private int highimageIndex = 0;
+    private int lowimageIndex = 0;
+    private String[] highimages = new String[10];
+    private String[] lowimages = new String[10];
     public void initCamera()
     {
         OpenCVManager.getInstance().load(new SystemProperties());
-        imageIndex = 0;
-        if (images[0] !="TargetBall0.jpg") {
-            images[0] ="TargetBall0.jpg";
-            images[1] ="TargetBall1.jpg";
-            images[2] ="TargetBall2.jpg";
-            images[3] ="TargetBall3.jpg";
-            images[4] ="TargetBall4.jpg";
-            images[5] ="TargetBall5.jpg";
-            images[6] ="TargetBall6.jpg";
-        }
-        else {
-            images[0] ="2020target.jpg";
-            images[1] ="IMG_20200304_202256262_HDR.jpg";
-            images[2] ="IMG_20200304_202256263_HDR.jpg";
-        }
+        highimageIndex = 0;
+        lowimageIndex = 0;
+            lowimages[0] ="TargetBall0.jpg";
+            lowimages[0] ="2020target30inch.jpg";
+            lowimages[1] ="TargetBall1.jpg";
+            lowimages[1] ="2020target13inch.jpg";
+            lowimages[2] ="TargetBall2.jpg";
+            lowimages[3] ="TargetBall3.jpg";
+            lowimages[4] ="TargetBall4.jpg";
+            lowimages[5] ="TargetBall5.jpg";
+            lowimages[6] ="TargetBall6.jpg";
+
+            highimages[0] ="2020target.jpg";
+            highimages[1] ="2020target2.jpg";
+            highimages[2] ="2020target3.jpg";
+            highimages[3] ="2020target4.jpg";
+            highimages[4] ="2020target5.jpg";
     }
 
     private long lastSwitch;
     private boolean cam1=true;
 
-    // function to return single image from the above stream
-    public Mat getImage(){
-        System.out.println(images[imageIndex]);
-        String imageName = images[imageIndex++];
+    public Mat getHighImage(){
+        System.out.println(highimages[highimageIndex]);
+        String imageName = highimages[highimageIndex++];
         Mat image = Imgcodecs.imread(imageName);
-        //System.out.println(image);
-        //Mat image = Imgcodecs.imread(images[imageIndex++]);
+        return image;
+    }
+
+    // function to return single image from the above stream
+    public Mat getLowImage(){
+        System.out.println(lowimages[lowimageIndex]);
+        String imageName = lowimages[lowimageIndex++];
+        Mat image = Imgcodecs.imread(imageName);
         return image;
     }
 }

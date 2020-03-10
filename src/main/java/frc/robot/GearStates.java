@@ -1,6 +1,6 @@
 package frc.robot;
 
-public enum GearStates implements Cloneable {
+public enum GearStates {
         HighGearPressed, //pressing button in high gear
         HighGearOff,  //In high gear, no buttons
         LowGearPressed, //pressing button in low gear

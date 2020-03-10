@@ -1,37 +1,41 @@
 package frc.robot;
 import frc.robot.UserInput;
 import frc.robot.Devices;
-import com.revrobotics.ControlType;
-public class  Drive
-{
 
-  public GearStates currentGearState;
-    //Parameteres for velocity control PID on SparkMax
-    private final double KP=5e-5;
-    private final double KI=2e-6;
-    private final double KD=0;
-    private final double MAXOUT=1;
-    private final double MINOUT=-1;
-    private final double FFVALUE=-0.22;  //Will require experimentation to set a better value
-    private final double IZONE=200;
-    private final double TARGETRPM=-1000;  //Will begin with a single setpoint.  We'll modify that for multiple distance ranges later.
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
+
+public class Drive {
+
+    public GearStates currentGearState;
+    // Parameteres for velocity control PID on SparkMax
+    private final double KP = 5e-5;
+    private final double KI = 2e-6;
+    private final double KD = 0;
+    private final double MAXOUT = 1;
+    private final double MINOUT = -1;
+    private final double FFVALUE = -0.22; // Will require experimentation to set a better value
+    private final double IZONE = 200;
+    private final double TARGETRPM = -1000; // Will begin with a single setpoint. We'll modify that for multiple
+                                            // distance ranges later.
 
     public void Init() {
-        
-        InitEncoderController(Devices.frontLeft);
-        InitEncoderController(Devices.frontRight);
-        InitEncoderController(Devices.backLeft);
-        InitEncoderController(Devices.backRight);
+
+        InitEncoderController(Devices.frontLeftSpark);
+        InitEncoderController(Devices.frontRightSpark);
+        InitEncoderController(Devices.backLeftSpark);
+        InitEncoderController(Devices.backRightSpark);
     }
-    public void InitEncoderController(DaBearsSpeedController motor) {
+
+    public void InitEncoderController(CANSparkMax motor) {
         motor.set(0);
-        motor.setP(KP);
-        motor.setD(KD);
-        motor.setI(KI);
-        motor.setOutputRange(MINOUT, MAXOUT);
-        motor.setIZone(IZONE);
-        motor.setFF(FFVALUE/TARGETRPM);
-        motor.setReference(0, ControlType.kPosition);
+        motor.getPIDController().setP(KP);
+        motor.getPIDController().setD(KD);
+        motor.getPIDController().setI(KI);
+        motor.getPIDController().setOutputRange(MINOUT, MAXOUT);
+        motor.getPIDController().setIZone(IZONE);
+        motor.getPIDController().setFF(FFVALUE/TARGETRPM);
+        motor.getPIDController().setReference(0, ControlType.kPosition);
     }
     public Drive() {
         currentGearState=GearStates.LowGearOff;

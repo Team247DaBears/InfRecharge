@@ -17,6 +17,21 @@ public class AutoQueue {
    * @param ShootingRamp Number of cycles before changing state
    * @return int number of entries in the queue
    */
+  public static int addAutoShooterQueue(AutoStates autostate,
+  AutoShooterStates shootingstates) {
+  AutoControlData q = new AutoControlData();
+  q.autoState = autostate;
+  q.autoShooterState = shootingstates;
+  return addQueue(q);
+  }
+
+  /**
+   * Queue AutoShoot States. 
+   * @param autoState Automous Shooter state
+   * @param ShootingStates State of the Shooter
+   * @param ShootingRamp Number of cycles before changing state
+   * @return int number of entries in the queue
+   */
     public static int addShooterQueue(AutoStates autostate,
         ShootingStates shootingstates,
         Double shootingramp) {

@@ -1,6 +1,6 @@
 package frc.robot;
 
-public enum AutoStates implements Cloneable {
+public enum AutoStates {
     TeleOpt,
     Target,
     Intake,

@@ -12,6 +12,8 @@ public class AutoControlData implements Cloneable {
     DeviceStates deviceState = DeviceStates.Drive;
     DriveStates driveState = DriveStates.Stop;
     LifterStates lifterState = LifterStates.LifterDown;
+    AutoShooterStates autoShooterState = AutoShooterStates.shooterIDLE;
+    double shooterDistance = 0.0;
     double lifterLeftPos = 0;
     double lifterRightPos = 0;
     ShootingStates shootingState = ShootingStates.IDLE;
@@ -20,6 +22,8 @@ public class AutoControlData implements Cloneable {
     TargetStates targetState = TargetStates.TargetOff;
     double targetLoop = 0;
 
+    Double CurrentDriveAngle=0.0;
+    Double TargetDriveAngle=999.999;
     Double LeftDriveSpeed=0.0;
     double LeftDrivePos=0.0;
 

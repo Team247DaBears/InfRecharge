@@ -1,6 +1,6 @@
 package frc.robot;
 
-public enum IntakeStates implements Cloneable {
+public enum IntakeStates {
     intakeRun,
     intakeDown,
     intakeUp,

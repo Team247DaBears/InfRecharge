@@ -15,12 +15,12 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.SpeedController;
 
-public class Lifter
-{
+public class Lifter {
     public LifterStates lifterState = LifterStates.LifterDown;
-    private DaBearsSpeedController left_winch;
-    private DaBearsSpeedController right_winch;
+    private SpeedController left_winch;
+    private SpeedController right_winch;
     private DoubleSolenoid solenoid;
     private final double WINCH_SPEED=0.70;
 

@@ -12,7 +12,19 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.Victor;
+
+import com.revrobotics.CANEncoder;
+import com.revrobotics.CANError;
+import com.revrobotics.CANPIDController;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANPIDController.ArbFFUnits;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 
 /**
  * This class will contain all code for various devices
@@ -55,26 +67,44 @@ public class Devices {
     public static final double GearSpeedHigh = 1; //0.0841750841750842; //11.88 inches
     public static final double GearSpeedLow = 1; //0.0210368650022299; //1/47.5356;
     
-    public static DaBearsSpeedController frontLeft = null;
-    public static DaBearsSpeedController frontRight = null;
-    public static DaBearsSpeedController backLeft = null;
-    public static DaBearsSpeedController backRight = null;
+    public static CANSparkMax frontLeftSpark = null;
+    public static CANSparkMax frontRightSpark = null;
+    public static CANSparkMax backLeftSpark = null;
+    public static CANSparkMax backRightSpark = null;
+
+    public static SpeedController frontLeft = null;
+    public static SpeedController frontRight = null;
+    public static SpeedController backLeft = null;
+    public static SpeedController backRight = null;
+
+    public static CANPIDController frontLeftPID = null;
+    public static CANPIDController frontRightPID = null;
+    public static CANPIDController backLeftPID = null;
+    public static CANPIDController backRightPID = null;
+
+    public static CANEncoder frontLeftEncoder = null;
+    public static CANEncoder frontRightEncoder = null;
+    public static CANEncoder backLeftEncoder = null;
+    public static CANEncoder backRightEncoder = null;
 
     public static Solenoid gearShift;
 
     //So, I'll add another set of controls, and you can comment out whichever is unused.    
       public static DoubleSolenoid lifter_solenoid;
-      public static DaBearsSpeedController lifter_left_motor;
-      public static DaBearsSpeedController lifter_right_motor;
+      public static SpeedController lifter_left_motor;
+      public static SpeedController lifter_right_motor;
 
       public static DoubleSolenoid intake_solenoid;
  // public static DaBearsSpeedController intake_motor;
-      public static DaBearsSpeedController intake_motor;
+      public static SpeedController intake_motor;
 
-      public static DaBearsSpeedController feeder;
-      public static DaBearsSpeedController conveyor;
+      public static SpeedController feeder;
+      public static SpeedController conveyor;
       //public static CANSparkMax shooter;
-      public static DaBearsSpeedController shooter;
+      public static SpeedController shooter;
+      public static CANSparkMax shooterSpark;
+      public static CANEncoder shooterEncoder;
+      public static CANPIDController shooterPID;
       public static Solenoid shooterAngleControl;
 
 
@@ -89,7 +119,7 @@ public class Devices {
         UseSparkMax = false;  // use victors if junits
         UseEncoder = false; // don't use encoder if junits
       }
-        intake_motor=new DaBearsSpeedController(PWM_INTAKE_MOTOR);
+        intake_motor=new Victor(PWM_INTAKE_MOTOR);
         System.out.println("Inited.");
         intake_solenoid=new DoubleSolenoid(PCM_INTAKE_FORWARD, PCM_INTAKE_BACK);
         
@@ -100,48 +130,66 @@ public class Devices {
         Devices.gearShift.set(false); // set default as low
 
         if (UseSparkMax) {
-          frontLeft=new DaBearsSpeedController(CANFRONTLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax);
-          frontRight=new DaBearsSpeedController(CANFRONTRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax);
+          frontLeftSpark = new CANSparkMax(CANFRONTLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless);
+          frontLeft=frontLeftSpark;
+          frontLeftEncoder = frontLeftSpark.getEncoder();
+          frontLeftPID = frontLeftSpark.getPIDController();
 
-          backLeft=new DaBearsSpeedController(CANBACKLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax);
-          backRight=new DaBearsSpeedController(CANBACKRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax);
+          frontRightSpark = new CANSparkMax(CANFRONTRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless); 
+          frontRight=frontRightSpark;
+          frontRightEncoder = frontRightSpark.getEncoder();
+          frontRightPID = frontRightSpark.getPIDController();
+
+          backLeftSpark = new CANSparkMax(CANBACKLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless);
+          backLeft=backLeftSpark;
+          backLeftEncoder = backLeftSpark.getEncoder();
+          backLeftPID = backLeftSpark.getPIDController();
+
+          backRightSpark = new CANSparkMax(CANBACKRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless);
+          backRight=backRightSpark;
+          backRightEncoder = backRightSpark.getEncoder();
+          backRightPID = backRightSpark.getPIDController();
         }
         else {
-          frontLeft=new DaBearsSpeedController(FRONTLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax);
-          frontRight=new DaBearsSpeedController(BACKLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax);
+          frontLeft=new Victor(FRONTLEFTPWM);
+          frontRight=new Victor(BACKLEFTPWM);
 
-          backLeft=new DaBearsSpeedController(FRONTRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax);
-          backRight=new DaBearsSpeedController(BACKRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless,UseSparkMax);
+          backLeft=new Victor(FRONTRIGHTPWM);
+          backRight=new Victor(BACKRIGHTPWM);
         }
 
-        frontLeft.restoreFactoryDefaults();
-        frontRight.restoreFactoryDefaults();
-        backLeft.restoreFactoryDefaults();
-        backRight.restoreFactoryDefaults();
+
+        frontLeftSpark.restoreFactoryDefaults();
+        frontRightSpark.restoreFactoryDefaults();
+        backLeftSpark.restoreFactoryDefaults();
+        backRightSpark.restoreFactoryDefaults();
         
         frontRight.setInverted(true);
         backRight.setInverted(true);
         frontLeft.setInverted(false);
         backLeft.setInverted(false);
 
-        frontRight.setIdleMode(IdleMode.kCoast);//Temporary, for testing.  For permanent value they should be brake
-        frontLeft.setIdleMode(IdleMode.kCoast);
-        backRight.setIdleMode(IdleMode.kCoast);
-        backLeft.setIdleMode(IdleMode.kCoast);
+        frontRightSpark.setIdleMode(IdleMode.kCoast);//Temporary, for testing.  For permanent value they should be brake
+        frontLeftSpark.setIdleMode(IdleMode.kCoast);
+        backRightSpark.setIdleMode(IdleMode.kCoast);
+        backLeftSpark.setIdleMode(IdleMode.kCoast);
 
-        lifter_left_motor=new DaBearsSpeedController(PWM_LIFTER_LEFT);
-        lifter_right_motor=new DaBearsSpeedController(PWM_LIFTER_RIGHT);
+        lifter_left_motor=new Victor(PWM_LIFTER_LEFT);
+        lifter_right_motor=new Victor(PWM_LIFTER_RIGHT);
         lifter_left_motor.setInverted(true);
 
-        feeder =new DaBearsSpeedController(PWM_SHOOTER_FEEDER);
-        conveyor=new DaBearsSpeedController(PWM_SHOOTER_CONVEYOR);
+        feeder =new Victor(PWM_SHOOTER_FEEDER);
+        conveyor=new Victor(PWM_SHOOTER_CONVEYOR);
 
         if (UseSparkMax) {
           //shooter=new CANSparkMax(CANSHOOTER,MotorType.kBrushless);
-        shooter=new DaBearsSpeedController(CANSHOOTER,MotorType.kBrushless,UseSparkMax);
+        shooterSpark=new CANSparkMax(CANSHOOTER,MotorType.kBrushless);
+        shooter = shooterSpark;
+        shooterPID = shooterSpark.getPIDController();
+        shooterEncoder = shooterSpark.getEncoder();
         }
         else {
-          shooter=new DaBearsSpeedController(SHOOTERPWM,MotorType.kBrushless,UseSparkMax);
+          shooter=new Victor(SHOOTERPWM);
         }
         shooterAngleControl=new Solenoid(PCM_SHOOTER_ANGLE);
         
@@ -151,16 +199,16 @@ public class Devices {
 
     }
     public static void setMotorConversionLow() {
-      frontLeft.setPositionConversionFactor(GearSpeedLow);
-      frontRight.setPositionConversionFactor(GearSpeedLow);
-      backLeft.setPositionConversionFactor(GearSpeedLow);
-      backRight.setPositionConversionFactor(GearSpeedLow);
+      frontLeftEncoder.setPositionConversionFactor(GearSpeedLow);
+      frontRightEncoder.setPositionConversionFactor(GearSpeedLow);
+      backLeftEncoder.setPositionConversionFactor(GearSpeedLow);
+      backRightEncoder.setPositionConversionFactor(GearSpeedLow);
     }
     public static void setMotorConversionHigh() {
-      frontLeft.setPositionConversionFactor(GearSpeedHigh);
-      frontRight.setPositionConversionFactor(GearSpeedHigh);
-      backLeft.setPositionConversionFactor(GearSpeedHigh);
-      backRight.setPositionConversionFactor(GearSpeedHigh);
+      frontLeftEncoder.setPositionConversionFactor(GearSpeedHigh);
+      frontRightEncoder.setPositionConversionFactor(GearSpeedHigh);
+      backLeftEncoder.setPositionConversionFactor(GearSpeedHigh);
+      backRightEncoder.setPositionConversionFactor(GearSpeedHigh);
     }
     static Boolean isRunningTest() {
       if (isRunningTest == null) {

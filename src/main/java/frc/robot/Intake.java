@@ -12,15 +12,17 @@
 
 package frc.robot;
 
+import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Spark;
+import edu.wpi.first.wpilibj.SpeedController;
 
 public class Intake {
     DoubleSolenoid intakeSolenoid;
-    private double CONVEYORSPEED=-0.60;
+    private double CONVEYORSPEED = -0.60;
 
-    DaBearsSpeedController intakeMotor;
+    SpeedController intakeMotor;
     IntakeStates intakeState;
     private final double INTAKE_SPEED=.5;
     private final int intakeTravel = 16; // go distance of ball size plus 4 in. 
@@ -79,15 +81,15 @@ public void operate()
                 intakeMotor.set(INTAKE_SPEED);
                 q.intakeState = IntakeStates.intakeDown;
 
-                InitEncoderController(Devices.frontLeft);
-                InitEncoderController(Devices.frontRight);
-                InitEncoderController(Devices.backLeft);
-                InitEncoderController(Devices.backRight);        
+                InitEncoderController(Devices.frontLeftSpark);
+                InitEncoderController(Devices.frontRightSpark);
+                InitEncoderController(Devices.backLeftSpark);
+                InitEncoderController(Devices.backRightSpark);        
             break;
             case intakeDown:
 //                intakeSolenoid.set(DoubleSolenoid.Value.kForward);
-                double frontLeftPos = Devices.frontLeft.getPosition();
-                double frontRightPos = Devices.frontRight.getPosition();
+                double frontLeftPos = Devices.frontLeftEncoder.getPosition();
+                double frontRightPos = Devices.frontRightEncoder.getPosition();
 
                 double leftDiff = java.lang.Math.abs(intakeTravel - frontLeftPos);
                 double rightDiff = java.lang.Math.abs(intakeTravel - frontRightPos);
@@ -95,10 +97,10 @@ public void operate()
                 //System.out.println("diff:"+rightDiff);
                 if (leftDiff > .2 || rightDiff > .2) {
                     System.out.println("IntakeTravel" + intakeTravel);
-                    Devices.frontLeft.setReference(intakeTravel, ControlType.kPosition);
-                    Devices.frontRight.setReference(intakeTravel, ControlType.kPosition);
-                    Devices.backLeft.setReference(intakeTravel, ControlType.kPosition);
-                    Devices.backRight.setReference(intakeTravel, ControlType.kPosition);
+                    Devices.frontLeftPID.setReference(intakeTravel, ControlType.kPosition);
+                    Devices.frontRightPID.setReference(intakeTravel, ControlType.kPosition);
+                    Devices.backLeftPID.setReference(intakeTravel, ControlType.kPosition);
+                    Devices.backRightPID.setReference(intakeTravel, ControlType.kPosition);
                 }
                 else {
                     q.intakeState = IntakeStates.intakeUp;
@@ -115,16 +117,16 @@ public void operate()
                 break;    
         }
      }
-     public static void InitEncoderController(DaBearsSpeedController motor) {
+     public static void InitEncoderController(CANSparkMax motor) {
         //motor.restoreFactoryDefaults();
         motor.set(0);
-        motor.setP(KP);
-        motor.setD(KD);
-        motor.setI(KI);
-        motor.setOutputRange(MINOUT, MAXOUT);
-        motor.setIZone(IZONE);
-        motor.setFF(FFVALUE/TARGETRPM);
+        motor.getPIDController().setP(KP);
+        motor.getPIDController().setD(KD);
+        motor.getPIDController().setI(KI);
+        motor.getPIDController().setOutputRange(MINOUT, MAXOUT);
+        motor.getPIDController().setIZone(IZONE);
+        motor.getPIDController().setFF(FFVALUE/TARGETRPM);
         motor.set(0);
-        motor.setPosition(0);
+        motor.getEncoder().setPosition(0);
     }
 }
