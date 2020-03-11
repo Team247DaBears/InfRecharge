@@ -6,5 +6,6 @@ public enum AutoStates {
     Intake,
     Lifter,
     Shooter,
+    AutoShooter,
     Drive
 }

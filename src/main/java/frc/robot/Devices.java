@@ -6,24 +6,20 @@
 /*----------------------------------------------------------------------------*/
 package frc.robot;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkMax;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.Victor;
 
-import com.revrobotics.CANEncoder;
 import com.revrobotics.CANError;
-import com.revrobotics.CANPIDController;
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANPIDController.ArbFFUnits;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+//import edu.wpi.first.wpilibj.Victor;
+//import com.revrobotics.CANSparkMax;
+//import com.revrobotics.CANEncoder;
+//import com.revrobotics.CANPIDController;
 
 
 /**
@@ -115,10 +111,11 @@ public class Devices {
     // This will be called from robot.init, which executes as soon as the power is
     // applied and the roborio boots up.
     public static void Init() {
-      if (isRunningTest()) { // if running junit tests... set to test mode
-        UseSparkMax = false;  // use victors if junits
-        UseEncoder = false; // don't use encoder if junits
-      }
+//      if (isRunningTest()) { // if running junit tests... set to test mode
+//        UseSparkMax = false;  // use victors if junits
+//        UseEncoder = false; // don't use encoder if junits
+//      }
+        //isRunningTest();
         intake_motor=new Victor(PWM_INTAKE_MOTOR);
         System.out.println("Inited.");
         intake_solenoid=new DoubleSolenoid(PCM_INTAKE_FORWARD, PCM_INTAKE_BACK);
@@ -129,23 +126,25 @@ public class Devices {
         gearShift = new Solenoid(PCM_GEARFORWARD);
         Devices.gearShift.set(false); // set default as low
 
-        if (UseSparkMax) {
-          frontLeftSpark = new CANSparkMax(CANFRONTLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless);
+        if (UseSparkMax ) {
+          if (frontLeftSpark == null) {
+            frontLeftSpark = new CANSparkMax(CANFRONTLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless);
+            frontRightSpark = new CANSparkMax(CANFRONTRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless); 
+            backLeftSpark = new CANSparkMax(CANBACKLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless);
+            backRightSpark = new CANSparkMax(CANBACKRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless);
+          }
           frontLeft=frontLeftSpark;
           frontLeftEncoder = frontLeftSpark.getEncoder();
           frontLeftPID = frontLeftSpark.getPIDController();
 
-          frontRightSpark = new CANSparkMax(CANFRONTRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless); 
           frontRight=frontRightSpark;
           frontRightEncoder = frontRightSpark.getEncoder();
           frontRightPID = frontRightSpark.getPIDController();
 
-          backLeftSpark = new CANSparkMax(CANBACKLEFTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless);
           backLeft=backLeftSpark;
           backLeftEncoder = backLeftSpark.getEncoder();
           backLeftPID = backLeftSpark.getPIDController();
 
-          backRightSpark = new CANSparkMax(CANBACKRIGHTPWM, com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless);
           backRight=backRightSpark;
           backRightEncoder = backRightSpark.getEncoder();
           backRightPID = backRightSpark.getPIDController();
@@ -222,5 +221,18 @@ public class Devices {
       return isRunningTest;
   }
   
+  public static void InitEncoderController(Object Spark,Double KP, Double KD, Double KI, Double MINOUT, Double MAXOUT, Double IZONE, Double FFVALUE, Double TARGETRPM, int i, int j) {
+    CANSparkMax motor = (CANSparkMax)Spark;
+    // motor.restoreFactoryDefaults();
+      motor.set(i);
+      motor.getPIDController().setP(KP);
+      motor.getPIDController().setD(KD);
+      motor.getPIDController().setI(KI);
+      motor.getPIDController().setOutputRange(MINOUT, MAXOUT);
+      motor.getPIDController().setIZone(IZONE);
+      motor.getPIDController().setFF(FFVALUE / TARGETRPM);
+      motor.getEncoder().setPosition(j);
+  }
+
   }
 

@@ -1,10 +1,8 @@
 package frc.robot;
 
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.SpeedController;
 import frc.robot.Devices;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -48,20 +46,13 @@ public class AutoShooter {
     private static double FEEDER_HOLD_SPEED = -1.0;
     private static double FEEDER_FEED_SPEED = 1.0;
 
-    private static SpeedController feeder;
-    private static SpeedController conveyor;
-
-    private static CANSparkMax shooter;
-    // private CANEncoder encoder;
-    // private CANPIDController controlLoop;
-
     private static Solenoid shooterSolenoid;
 
     private static final double LOW_DISTANCE = 10;
     private static final double HIGH_DISTANCE = 15;
     private static final double LOW_SPEED = -1250;
     private static final double HIGH_SPEED = -1450;
-    private static final double CUTOFFRPM = -10; // diff between target and cutoff 
+    private static final double CUTOFFRPM = -10; // diff between target and cutoff
     private static final double TARGETRPM = -1300;
     public static long autoBeginTime = 0;
     private static boolean shooterSet = false;
@@ -84,8 +75,10 @@ public class AutoShooter {
     private final static long AUTO_SHOOT_TIME_MS = 5600;// Amount of time to run the shooter for basic autonomous
 
     // Targeting
+    static final long TARGET_HEIGHT =(6*12)+20; // height of middle of target
     static CameraStream camerastream;
     static int cnt = 0;
+    static int tgt = 0;
     static double distance;
     static double height;
     static double width;
@@ -114,9 +107,7 @@ public class AutoShooter {
 
     public static void Init(CameraStream cameraStream) {
         isRunningTest();
-        feeder = Devices.feeder;
-        conveyor = Devices.conveyor;
-        shooter = Devices.shooterSpark;
+        WriteShooterStatus("Teleopt");
         shooterSolenoid = Devices.shooterAngleControl;
         shooterSet = false;
         camerastream = cameraStream;
@@ -128,7 +119,8 @@ public class AutoShooter {
             return;
         } // keep from having Auto overlap with TeleOpt
         AutoControlData q = AutoQueue.currentQueue();
-        if (q.autoState != AutoStates.Shooter) {
+        if (q.autoState != AutoStates.AutoShooter) {
+            System.out.println("not Shooter"+q.autoState);
             return;
         } // keep from having Auto overlap with TeleOpt
         if (q.WriteLog) {
@@ -137,17 +129,19 @@ public class AutoShooter {
         }
         switch (q.autoShooterState) {
         case shooterIDLE:
-            // do nothing when shooter is IDLE
+            WriteShooterStatus("Shooter-Idle");
+        // do nothing when shooter is IDLE
             break;
 
-            case shooterTarget:
-            shooter.getPIDController().setP(KP);
-            shooter.getPIDController().setD(KD);
-            shooter.getPIDController().setI(KI);
-            shooter.getPIDController().setOutputRange(MINOUT, MAXOUT);
-            shooter.getPIDController().setIZone(IZONE);
-            shooter.getPIDController().setFF(FFVALUE / TARGETRPM); // approximate TARGET RPM
-            shooter.getPIDController().setReference(0, ControlType.kDutyCycle);
+        case shooterRun:
+            WriteShooterStatus("Shooter-Targ");
+            Devices.shooterSpark.getPIDController().setP(KP);
+            Devices.shooterSpark.getPIDController().setD(KD);
+            Devices.shooterSpark.getPIDController().setI(KI);
+            Devices.shooterSpark.getPIDController().setOutputRange(MINOUT, MAXOUT);
+            Devices.shooterSpark.getPIDController().setIZone(IZONE);
+            Devices.shooterSpark.getPIDController().setFF(FFVALUE / TARGETRPM); // approximate TARGET RPM
+            Devices.shooterSpark.getPIDController().setReference(0, ControlType.kDutyCycle);
 
             InitEncoderController(Devices.frontLeftSpark); // init drive motors
             InitEncoderController(Devices.frontRightSpark); // init drive motors
@@ -155,17 +149,21 @@ public class AutoShooter {
             InitEncoderController(Devices.backRightSpark); // init drive motors
             cnt = 0;
 
-            case shooterFindTarget:
-            WriteShooterStatus("AutoShooter-target");
+            case shooterTarget:
+            WriteShooterStatus("AutoShooter-targ");
             if (cnt++ > 3) { // give up and fire
                 q.autoShooterState = AutoShooterStates.shooterSTART_RAMP; // check again
             }
             else {
                 WriteShooterStatus("AutoShooter-target get target");
                 autoBeginTime = System.currentTimeMillis();
-                shooter.getPIDController().setReference(0, ControlType.kDutyCycle);
-                conveyor.set(CONVEYORSPEED);
-                feeder.set(FEEDER_HOLD_SPEED);
+                Devices.shooterSpark.getPIDController().setReference(0, ControlType.kDutyCycle);
+                Devices.conveyor.set(CONVEYORSPEED);
+                Devices.feeder.set(FEEDER_HOLD_SPEED);
+                Devices.frontLeft.set(0);
+                Devices.frontRight.set(0);
+                Devices.backLeft.set(0);
+                Devices.backRight.set(0);
                 Devices.frontLeftEncoder.setPosition(0);
                 Devices.frontRightEncoder.setPosition(0);
                 Devices.backLeftEncoder.setPosition(0);
@@ -181,7 +179,6 @@ public class AutoShooter {
                     q.autoShooterState = AutoShooterStates.shooterFINISHED;
                 } // image empty
                 else {
-                    WriteShooterStatus("AutoShooter-target");
                     Target current = detectTopTarget(image);
                     if (current == null) {
                         WriteShooterStatus("TeleOpt-lost target");
@@ -189,16 +186,21 @@ public class AutoShooter {
                     } // no target found
                     else {
                         WriteShooterStatus("AutoShooter-target get dist");
-                        SaveTargetImage("shooterTarget" + (cnt++), current, image);
+                        SaveTargetImage("shooterTarget"+(cnt)+(tgt++), current, image);
 
-                        AreaCameraDistanceEstimator distanceEstimator = new AreaCameraDistanceEstimator(
-                                new AreaCameraDistanceEstimator.AreaDistancePair(100, 0),
-                                new AreaCameraDistanceEstimator.AreaDistancePair(50, 20));
-                        Double currdistance = Math.abs(distanceEstimator.getDistance(current));
+                        FixedAngleCameraDistanceEstimator distanceEstimator2 = 
+                            new FixedAngleCameraDistanceEstimator(TARGET_HEIGHT, 12, 27.7);
+                        Double currdistance = Math.abs(distanceEstimator2.getDistance(current));
+                        WriteShooterStatus("AutoShooter-Targ "+currdistance);
+                        Double currhorz = current.getHorizontalAngle() - CAMERA_CENTER_ADJUST;
+//                        AreaCameraDistanceEstimator distanceEstimator = new AreaCameraDistanceEstimator(
+//                                new AreaCameraDistanceEstimator.AreaDistancePair(100, 0),
+//                                new AreaCameraDistanceEstimator.AreaDistancePair(50, 20));
+//                        Double currdistance = Math.abs(distanceEstimator.getDistance(current));
                         // FixedAngleCameraDistanceEstimator distanceEstimator2 =
                         // new FixedAngleCameraDistanceEstimator(10, 7, 10);
                         // currdistance = Math.abs(distanceEstimator2.getDistance(current));
-                        Double currhorz = current.getHorizontalAngle() - CAMERA_CENTER_ADJUST;
+                        //Double currhorz = current.getHorizontalAngle() - CAMERA_CENTER_ADJUST;
                         // TODO: adjust angle here
                         q.TargetDriveAngle = currhorz; // placeholder for target
                         q.CurrentDriveAngle = currhorz; // save current angle so angles can be adjusted
@@ -207,7 +209,7 @@ public class AutoShooter {
                                                                                                                     // robot
                         q.LeftDriveSpeed = SHOOTER_DRIVE_SPEED;
                         q.RightDriveSpeed = SHOOTER_DRIVE_SPEED;
-                        WriteShooterStatus("AutoTarget-Targ " + q.LeftDrivePos);
+                        WriteShooterStatus("AutoShooter-Targ " + q.LeftDrivePos);
 
                         q.shooterDistance = currdistance;
                         if (Math.abs(currhorz) < okShooter) {
@@ -228,7 +230,7 @@ public class AutoShooter {
             double rightDiff = java.lang.Math.abs(q.RightDrivePos - frontRightPos);
             // TODO: adjust angle here
             WriteShooterStatus("AutoShooter-driv " +  leftDiff);
-            if (leftDiff > .32 || rightDiff > .32) {
+            if (leftDiff > .3 || rightDiff > .3) {
                 Devices.frontLeftPID.setReference(q.LeftDrivePos, ControlType.kPosition);
                 Devices.frontRightPID.setReference(q.RightDrivePos, ControlType.kPosition);
                 Devices.backLeftPID.setReference(q.LeftDrivePos, ControlType.kPosition);
@@ -252,7 +254,7 @@ public class AutoShooter {
                 }
             } else {
                 StopAutoDrive();
-                q.autoShooterState = AutoShooterStates.shooterFindTarget; // check again
+                q.autoShooterState = AutoShooterStates.shooterTarget; // check again
             }
         }
         break;
@@ -267,8 +269,8 @@ public class AutoShooter {
             if (setPID(q.shooterDistance)) {
                 q.autoShooterState = AutoShooterStates.shooterSHOOTING;
             }
-            conveyor.set(CONVEYORSPEED);
-            feeder.set(FEEDER_HOLD_SPEED);
+            Devices.conveyor.set(CONVEYORSPEED);
+            Devices.feeder.set(FEEDER_HOLD_SPEED);
             break;
 
         // Set Shooting Speed
@@ -278,14 +280,14 @@ public class AutoShooter {
                 q.autoShooterState = AutoShooterStates.shooterFINISHED;
             }
             if (setPID(q.shooterDistance)) {
-//                WriteShooterStatus("AutoShooter-Shoot");
-                feeder.set(FEEDER_FEED_SPEED);
-                conveyor.set(CONVEYORSHOOTSPEED); // shooter right speed, shoot!
+                WriteShooterStatus("AutoShooter-Shoot");
+                Devices.feeder.set(FEEDER_FEED_SPEED);
+                Devices.conveyor.set(CONVEYORSHOOTSPEED); // shooter right speed, shoot!
             }
             else {
-//                WriteShooterStatus("AutoShooter-Wait");
-                feeder.set(FEEDER_HOLD_SPEED);
-                conveyor.set(CONVEYORSPEED); // shooter too slow wait
+                WriteShooterStatus("AutoShooter-Wait");
+                Devices.feeder.set(FEEDER_HOLD_SPEED);
+                Devices.conveyor.set(CONVEYORSPEED); // shooter too slow wait
             }
             break;
 
@@ -296,16 +298,15 @@ public class AutoShooter {
             Devices.frontRight.set(0);
             Devices.backLeft.set(0);
             Devices.backRight.set(0);
-            shooter.getPIDController().setReference(0, ControlType.kDutyCycle);
-            conveyor.set(0); // Will be changed if we move to something fancier
-            feeder.set(0);
+            Devices.shooterSpark.getPIDController().setReference(0, ControlType.kDutyCycle);
+            Devices.conveyor.set(0); // Will be changed if we move to something fancier
+            Devices.feeder.set(0);
             AutoQueue.removeCurrent();
             break;
 
         // just in case an error occurs stop shooter all together~
         default:
-        WriteShooterStatus("AutoShooter-finished");
-
+            WriteShooterStatus("AutoShooter-finished");
             q.autoShooterState = AutoShooterStates.shooterFINISHED;
             break;
         }
@@ -314,14 +315,14 @@ public class AutoShooter {
     // This is a work in progress
     public static boolean setPID(Double shooterDistance) {
         Double speed;
-        Double Velocity = shooter.getEncoder().getVelocity();
+        Double Velocity = Devices.shooterSpark.getEncoder().getVelocity();
    //     System.out.println("distance:"+shooterDistance);
             if (shooterDistance <= LOW_DISTANCE) {
                 speed =  (shooterDistance/LOW_DISTANCE)*LOW_SPEED;
                 if (!shooterSet) {
 //                    System.out.println("lowSpeed:"+speed);
                     shooterSolenoid.set(true);
-                    shooter.getPIDController().setReference(speed, ControlType.kVelocity);
+                    Devices.shooterSpark.getPIDController().setReference(speed, ControlType.kVelocity);
                 }
             }
             else {
@@ -329,7 +330,7 @@ public class AutoShooter {
 //                System.out.println("highSpeed:"+speed);
                 if (!shooterSet) {
                     shooterSolenoid.set(false);
-                    shooter.getPIDController().setReference(speed, ControlType.kVelocity);
+                    Devices.shooterSpark.getPIDController().setReference(speed, ControlType.kVelocity);
                 }
             }
             shooterSet = true;
@@ -425,7 +426,6 @@ public class AutoShooter {
                 if (targets.get(i).getVerticalAngle() >= 10) {
                     // System.out.println("-->"+targets.get(i).toString());
                     foundTarget = targets.get(i);
-                    SaveTargetImage("findTopTarget", foundTarget, image);
                     return targets.get(i);
                 }
             }
@@ -476,17 +476,9 @@ public class AutoShooter {
         }
     }
 
-    public static void InitEncoderController(CANSparkMax motor) {
+    public static void InitEncoderController(Object Spark) {
         // motor.restoreFactoryDefaults();
-        motor.set(0);
-        motor.getEncoder().setPosition(0);
-        motor.getPIDController().setP(driveKP);
-        motor.getPIDController().setD(driveKD);
-        motor.getPIDController().setI(driveKI);
-        motor.getPIDController().setOutputRange(driveMINOUT, driveMAXOUT);
-        motor.getPIDController().setIZone(driveIZONE);
-        motor.getPIDController().setFF(driveFFVALUE / driveTARGETRPM);
-        //motor.setReference(0, ControlType.kPosition);
+        Devices.InitEncoderController(Spark,driveKP,driveKD,driveKI,driveMINOUT,driveMAXOUT,driveIZONE,driveFFVALUE,driveTARGETRPM,0,0);
     }
 
 }       

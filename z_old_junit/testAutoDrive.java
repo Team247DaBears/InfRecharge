@@ -7,15 +7,17 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import static org.mockito.Mockito.*;
+
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 //
 @RunWith(JUnit4.class)
 public class testAutoDrive {  
   static Devices devices;
   @Test
   public void test(){
-      devices = new Devices();
       Devices.Init();
-
       // The following 3 lines are for desktop usage, assign the Mat image to the camera image when deploying to a robot
       AutoQueue.clearQueue();
       AutoControlData q=new AutoControlData();      
@@ -35,7 +37,7 @@ public class testAutoDrive {
       AutoDrive.Drive();
       AutoDrive.Drive();
       AutoDrive.Drive();
-      Assert.assertEquals(5,Devices.frontLeft.getPosition(),.1);
+      Assert.assertEquals(5,Devices.frontLeftEncoder.getPosition(),.1);
       AutoDrive.Drive();
       Assert.assertEquals(1,AutoQueue.getSize());
       AutoDrive.Drive();

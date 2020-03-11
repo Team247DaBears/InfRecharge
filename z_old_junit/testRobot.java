@@ -25,7 +25,7 @@ public class testRobot {
       robot = new Robot();
       userinput=new UserInput();
       UserInput.Init();
-      UserInput.leftStick.resetIndexes();
+      UserInput.leftStick.setOutputs(0); // reset indexes
       robot.robotInit();
       System.out.println("size:"+AutoQueue.getSize());
       robot.autonomousInit();
@@ -35,8 +35,8 @@ public class testRobot {
 //        System.out.println(AutoQueue.currentQueue());
 
         robot.autonomousPeriodic();
-        Double frontLeftPos = devices.frontLeft.getPosition();
-        Double frontRightPos = devices.frontRight.getPosition();
+        Double frontLeftPos = devices.frontLeftEncoder.getPosition();
+        Double frontRightPos = devices.frontRightEncoder.getPosition();
         AutoControlData q = AutoQueue.currentQueue();
 //       System.out.println("diff:"+(java.lang.Math.abs(q.LeftDrivePos - frontLeftPos)));
 //       System.out.println("diff:"+(java.lang.Math.abs(q.RightDrivePos - frontRightPos)));
@@ -63,7 +63,7 @@ public class testRobot {
       robot.teleopPeriodic();
       System.out.println("TeliopInit size:"+AutoQueue.getSize());
       System.out.println("feeder"+Devices.feeder.get());
-      UserInput.leftStick.resetIndexes();
+      UserInput.leftStick.setOutputs(0); // reset indexes
 
       robot.teleopPeriodic();
       System.out.println("TeliopInit size:"+AutoQueue.getSize());
@@ -81,7 +81,7 @@ public class testRobot {
       System.out.println("TeliopInit size:"+AutoQueue.getSize());
       System.out.println("feeder"+Devices.feeder.get());
 
-      UserInput.leftStick.resetIndexes();
+      UserInput.leftStick.setOutputs(0); // reset indexes
       robot.teleopPeriodic();
       System.out.println("TeliopInit size:"+AutoQueue.getSize());
       System.out.println("feeder"+Devices.feeder.get());

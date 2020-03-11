@@ -1,6 +1,6 @@
 package frc.robot;
 
-public enum IntakeStates {
+public enum AutoIntakeStates {
     intakeRun,
     intakeDown,
     intakeUp,

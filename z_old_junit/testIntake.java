@@ -22,7 +22,7 @@ public class testIntake {
       UserInput.Init();
       intake=new Intake();
       intake.Init();
-      UserInput.leftStick.resetIndexes();
+      UserInput.leftStick.setOutputs(0); // reset indexes
       Assert.assertEquals(0.0,intake.intakeMotor.get(),.01);
       intake.operate();
       Assert.assertEquals(DoubleSolenoid.Value.kReverse,intake.intakeSolenoid.get());

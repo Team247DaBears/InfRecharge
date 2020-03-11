@@ -6,35 +6,35 @@ import java.util.regex.Pattern;
 
 public class AutoControlData implements Cloneable {
 
-    boolean WriteLog = false;
-    AutoStates autoState = AutoStates.TeleOpt;
-    GearStates gearState = GearStates.LowGearPressed;
-    DeviceStates deviceState = DeviceStates.Drive;
-    DriveStates driveState = DriveStates.Stop;
-    LifterStates lifterState = LifterStates.LifterDown;
-    AutoShooterStates autoShooterState = AutoShooterStates.shooterIDLE;
-    double shooterDistance = 0.0;
-    double lifterLeftPos = 0;
-    double lifterRightPos = 0;
-    ShootingStates shootingState = ShootingStates.IDLE;
-    double shootingRamp = 0;
-    IntakeStates intakeState = IntakeStates.intakeStop;
-    TargetStates targetState = TargetStates.TargetOff;
-    double targetLoop = 0;
+    public boolean WriteLog = false;
+    public AutoStates autoState = AutoStates.TeleOpt;
+    public GearStates gearState = GearStates.LowGearPressed;
+    public DeviceStates deviceState = DeviceStates.Drive;
+    public DriveStates driveState = DriveStates.Stop;
+    public LifterStates lifterState = LifterStates.LifterDown;
+    public AutoShooterStates autoShooterState = AutoShooterStates.shooterIDLE;
+    public double shooterDistance = 0.0;
+    public double lifterLeftPos = 0;
+    public double lifterRightPos = 0;
+    public ShootingStates shootingState = ShootingStates.IDLE;
+    public double shootingRamp = 0;
+    public AutoIntakeStates autoIntakeState = AutoIntakeStates.intakeStop;
+    public TargetStates targetState = TargetStates.TargetOff;
+    public double targetLoop = 0;
 
-    Double CurrentDriveAngle=0.0;
-    Double TargetDriveAngle=999.999;
-    Double LeftDriveSpeed=0.0;
-    double LeftDrivePos=0.0;
+    public Double CurrentDriveAngle=0.0;
+    public Double TargetDriveAngle=999.999;
+    public Double LeftDriveSpeed=0.0;
+    public double LeftDrivePos=0.0;
 
-    Double RightDriveSpeed=0.0;
-    double RightDrivePos=0.0;
+    public Double RightDriveSpeed=0.0;
+    public double RightDrivePos=0.0;
     
-    double distance = 0;
-    double height = 0;
-    double width = 0;
-    double horizontal = 0;
-    double virtical = 0;
+    public double distance = 0;
+    public double height = 0;
+    public double width = 0;
+    public double horizontal = 0;
+    public double virtical = 0;
 
     public AutoControlData() {
 

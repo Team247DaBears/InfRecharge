@@ -12,8 +12,8 @@ package frc.robot;
  */
 public enum AutoShooterStates {
     shooterIDLE,
+    shooterRun, 
     shooterTarget, 
-    shooterFindTarget, 
     shooterSTART_RAMP,
     shooterRAMPING_UP,
     shooterSHOOTING,

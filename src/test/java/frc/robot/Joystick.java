@@ -2,9 +2,10 @@ package frc.robot;
 
 import java.lang.reflect.Array;
 
+//import edu.wpi.first.wpilibj.Joystick;
 
-public class Joystick extends  edu.wpi.first.wpilibj.Joystick {
-    Joystick joystick;
+
+public class Joystick extends  edu.wpi.first.wpilibj.GenericHID {
     public static int buttonI = 0;
     public static boolean[] buttonResponse = {true,false,true,true,true,false,true,false,true,false,false,false,false,true,true,false,true,false,true,false,false,false,true,true,false,true,false,true,true,true,false,false,false,true,true,true,true,true,true,true};
 
@@ -12,10 +13,10 @@ public class Joystick extends  edu.wpi.first.wpilibj.Joystick {
     public static double[] joystickResponse = {0,1,-1,0,.5,-.5,0,0,-.3,.3,.7,.6,-.6,-.9,0,0,0,1,1,-1,-1,.5,.5,.1,.1,0,0,.01,.09,.08,.06,.05,.4,.3,.9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     public static final boolean[] initbutton = {true,false,true,true,true,false,true,false,true,false,false,false,false,true,true,false,true,false,true,false,false,false,true,true,false,true,false,true,true,true,false,false,false,true,true,true,true,true,true,true};
     public static final double[] initjoystick = {0,1,-1,0,.5,-.5,0,0,-.3,.3,.7,.6,-.6,-.9,0,0,0,1,1,-1,-1,.5,.5,.1,.1,0,0,.01,.09,.08,.06,.05,.4,.3,.9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    public int port;
 
     public Joystick(int port){
         super(port);
-        joystick = new Joystick(port);
         System.out.println("init Joystick");
         buttonResponse = initbutton;
         joystickResponse = initjoystick;
@@ -23,6 +24,11 @@ public class Joystick extends  edu.wpi.first.wpilibj.Joystick {
         joystickI = 0;
     }
 
+    public void setOutputs(int value) {
+        buttonI = 0;
+        joystickI = 0;
+        return;
+    }
     public double getRawAxis(int axis){
         //System.out.println("junit.RawAxis:"+joystickResponse[joystickI]);
         return joystickResponse[joystickI++];
@@ -41,30 +47,25 @@ public class Joystick extends  edu.wpi.first.wpilibj.Joystick {
         //System.out.println("junit.POV:"+buttonResponse[buttonI]);
         return (int)joystickResponse[joystickI++];
     }
-
-    // for debugging only junit tests
-    /**/public void resetIndexes(){
-    /**/    buttonI = 0;
-    /**/    joystickI = 0;
-    /**/}
-    /**/public void setButtonResp(boolean resp1,boolean resp2, boolean resp3){
-    /**/    System.out.println("setButtonResp");
-    /**/    resetIndexes();
-    /**/    boolean b[] = {true,true,true};
-    /**/    b[0] = resp1;
-    /**/    b[1] = resp2;
-    /**/    b[2] = resp3;
-    /**/    buttonResponse = b;
-    /**/}
-    /**/public void setButtonResp(boolean[] resp){
-    /**/    System.out.println("setButtonResp");
-    /**/    resetIndexes();
-    /**/    buttonResponse = resp;
-    /**/}
-    /**/public void setJoystickResp(double[] resp){
-    /**/    System.out.println("setJoystickResp");
-    /**/    resetIndexes();
-    /**/    joystickResponse = resp;
-    /**/}
-    // for debugging only junit tests
+    public void setOutput(int i, boolean value) {
+        buttonI = 0;
+        joystickI = 0;
+        buttonResponse[i] = value;
+        return;
+    }
+    public void wait(double value, int i) {
+        // TODO Auto-generated method stub
+        buttonI = 0;
+        joystickI = 0;
+        joystickResponse[i] = value;
+        return;
+    }
+ @Override
+ public double getY(Hand hand) {
+     return 0;
+ }
+@Override
+public double getX(Hand hand) {
+    return 0;
+}
 }

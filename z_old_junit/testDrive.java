@@ -22,7 +22,7 @@ public class testDrive {
       userinput=new UserInput();
       UserInput.Init();
       drive=new Drive();
-      UserInput.leftStick.resetIndexes();
+      UserInput.leftStick.setOutputs(0); // reset indexes
       double resp[] = {0.0,0.1,0.2,0.3};
       //Arrays.fill(resp, 12.2);
       //UserInput.leftStick.setJoystickResp(resp);

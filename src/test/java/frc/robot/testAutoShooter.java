@@ -5,24 +5,20 @@ import com.kylecorry.frc.vision.targeting.Target;
 import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 //
-
-public class Main {  
+@RunWith(JUnit4.class)
+public class testAutoShooter {  
   static Devices devices;
   static AutoShooter autoshooter;
   static CameraStream camerastream;
-  private Main() {
-}
 
-/**
- * Main initialization function. Do not perform any initialization here.
- *
- * <p>If you change your main robot class, change the parameter type.
- */
-
-
-public static void main(String... args) {
-    // The following 3 lines are for desktop usage, assign the Mat image to the camera image when deploying to a robot
+  @Test
+  public void test(){
+      // The following 3 lines are for desktop usage, assign the Mat image to the camera image when deploying to a robot
       devices = new Devices();
       Devices.Init();
       camerastream = new CameraStream();
@@ -63,6 +59,8 @@ AutoQueue.addAutoShooterQueue();
          //       AutoShooter.AutoShoot();
          //   }
       
+        DaBearsCloseDevices.close(devices);
+        DaBearsCloseDevices.close(autoshooter);  
       }
 
 }

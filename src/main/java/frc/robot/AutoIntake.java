@@ -7,15 +7,19 @@
 
 package frc.robot;
 
-import com.revrobotics.CANSparkMax;
+import edu.wpi.cscore.CvSource;
+
 import com.revrobotics.ControlType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.kylecorry.frc.vision.distance.FixedAngleCameraDistanceEstimator;
-import com.kylecorry.frc.vision.distance.AreaCameraDistanceEstimator;
+//import com.kylecorry.frc.vision.distance.AreaCameraDistanceEstimator;
 import com.kylecorry.frc.vision.targeting.Target;
+
+import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
 import org.opencv.core.*;
 
 import com.kylecorry.frc.vision.Range;
@@ -36,11 +40,13 @@ public class AutoIntake {
     DoubleSolenoid intakeSolenoid;
     private double CONVEYORSPEED = -0.60;
     CameraStream camerastream;
-    DetectTarget detectTarget;
+    CvSource outputStream;
+
     long cnt = 0;
+    long tgt = 0;
 
     SpeedController intakeMotor;
-    IntakeStates intakeState;
+    AutoIntakeStates intakeState;
     private final double INTAKE_DRIVE_SPEED = .5;
     private final double INTAKE_SPEED = .5;
     // Variables for AutoIntake
@@ -63,20 +69,22 @@ public class AutoIntake {
     private static final double TARGETRPM = -1000; // Will begin with a single setpoint. We'll modify that for multiple
                                                    // distance ranges later.
 
-    public void Init(CameraStream camerastream, DetectTarget detectTarget) {
+    public void Init(CameraStream camerastream) {
         isRunningTest();
         WriteIntakeStatus("Teleopt");
         Devices.conveyor.set(0); // turn off conveyor
         intakeSolenoid = Devices.intake_solenoid;
         intakeMotor = Devices.intake_motor;
         this.camerastream = camerastream;
-        this.detectTarget = detectTarget;
     }
 
     public void autoIntake(){
         if (AutoQueue.getSize() ==0) {return;}
         AutoControlData q = AutoQueue.currentQueue();
-        switch (q.intakeState) {
+        if (q.autoState != AutoStates.Intake) {
+            return;
+        } // keep from having Auto overlap with TeleOpt
+        switch (q.autoIntakeState) {
             case intakeRun:
                 WriteIntakeStatus("AutoIntake-Run");
                 Devices.gearShift.set(false); // set low speed
@@ -84,72 +92,80 @@ public class AutoIntake {
 
                 Devices.conveyor.set(CONVEYORSPEED);
                 intakeMotor.set(INTAKE_SPEED);
-                q.intakeState = IntakeStates.intakeTarget;
+                q.autoIntakeState = AutoIntakeStates.intakeTarget;
 
                 InitEncoderController(Devices.frontLeftSpark);
                 InitEncoderController(Devices.frontRightSpark);
                 InitEncoderController(Devices.backLeftSpark);
-                InitEncoderController(Devices.backRightSpark);        
+                InitEncoderController(Devices.backRightSpark);
+                cnt = 0;
+
             break;
             case intakeTarget:
-                Devices.frontLeftEncoder.setPosition(0);
-                Devices.frontRightEncoder.setPosition(0);
-                Devices.backLeftEncoder.setPosition(0);
-                Devices.backRightEncoder.setPosition(0);
-
+                if (cnt++>3) {
+                    WriteIntakeStatus("TeleOpt-max Attempts");
+                    q.autoIntakeState = AutoIntakeStates.intakeStop;
+                } 
                 Mat image = camerastream.getLowImage();
                 if (image==null){
                     WriteIntakeStatus("TeleOpt-image null");
-                    q.intakeState = IntakeStates.intakeStop;
+                    q.autoIntakeState = AutoIntakeStates.intakeStop;
                 } // image null (not set)
                 else if (image.height()==0){
                     WriteIntakeStatus("TeleOpt-image invalid");
-                    q.intakeState = IntakeStates.intakeStop;
+                    q.autoIntakeState = AutoIntakeStates.intakeStop;
                 } // image empty
                 else {
                     WriteIntakeStatus("AutoIntake-target");
                     Target current = detectBallTarget(image);
                     if (current==null) {
                         WriteIntakeStatus("TeleOpt-lost target");
-                        q.intakeState = IntakeStates.intakeStop;
+                        q.autoIntakeState = AutoIntakeStates.intakeStop;
                     } // no target found
                     else {
-                        detectTarget.SaveTargetImage("ballTarget"+(cnt++), current, image);
-                        System.out.println("ball"+current);
+                        SaveTargetImage("ballTarget"+(cnt)+(tgt++), current, image);
                         //AreaCameraDistanceEstimator distanceEstimator = new AreaCameraDistanceEstimator(new AreaCameraDistanceEstimator.AreaDistancePair(100, 0), new AreaCameraDistanceEstimator.AreaDistancePair(50, 20));
                         //Double currdistance = Math.abs(distanceEstimator.getDistance(current));
                         //WriteIntakeStatus("AutoTarget-Targ "+currdistance);
                         FixedAngleCameraDistanceEstimator distanceEstimator2 = 
                             new FixedAngleCameraDistanceEstimator(0, 12, -27.7);
                         Double currdistance = Math.abs(distanceEstimator2.getDistance(current));
-                        WriteIntakeStatus("AutoTarget-Targ "+currdistance);
+                        WriteIntakeStatus("AutoIntake-Targ "+currdistance);
                         Double currhorz = current.getHorizontalAngle() - CAMERA_CENTER_ADJUST;
                         if (currdistance < SCOOP_DISTANCE) { // Time to just scoop it up?
                             currdistance = SCOOP_DISTANCE;
-                            q.intakeState = IntakeStates.intakeDown;    
+                            q.autoIntakeState = AutoIntakeStates.intakeDown;    
                             currhorz = 0.0;        
                         }
                         else if (currdistance > TARGET_CORRECT_DISTANCE) { // set distance before next target correction
                             currdistance = TARGET_CORRECT_DISTANCE;
-                            q.intakeState = IntakeStates.intakeDrive;
+                            q.autoIntakeState = AutoIntakeStates.intakeDrive;
                         } 
                         q.LeftDrivePos = currdistance;
                         q.RightDrivePos = currdistance+(currdistance*(currhorz/100/TARGET_CORRECT_DISTANCE)); // adjust angle of robot
                         q.LeftDriveSpeed = INTAKE_DRIVE_SPEED;
                         q.RightDriveSpeed = INTAKE_DRIVE_SPEED;
+                        Devices.frontLeftEncoder.setPosition(0);
+                        Devices.frontRightEncoder.setPosition(0);
+                        Devices.backLeftEncoder.setPosition(0);
+                        Devices.backRightEncoder.setPosition(0);
+                        Devices.frontLeftPID.setReference(q.LeftDrivePos, ControlType.kPosition);
+                        Devices.frontRightPID.setReference(q.RightDrivePos, ControlType.kPosition);
+                        Devices.backLeftPID.setReference(q.LeftDrivePos, ControlType.kPosition);
+                        Devices.backRightPID.setReference(q.RightDrivePos, ControlType.kPosition);
                     }
                     intakeSolenoid.set(DoubleSolenoid.Value.kReverse); // Start with intake up
                 }
                 break;
-             case intakeDrive:
+            case intakeDrive:
                 double frontLeftPos = Devices.frontLeftEncoder.getPosition();
                 double frontRightPos = Devices.frontRightEncoder.getPosition();
 
                 double leftDiff = java.lang.Math.abs(q.LeftDrivePos - frontLeftPos);
                 double rightDiff = java.lang.Math.abs(q.RightDrivePos - frontRightPos);
-                WriteIntakeStatus("AutoTarget-Driv "+leftDiff);
+                WriteIntakeStatus("AutoIntake-Driv "+leftDiff);
                 if (leftDiff < RECHECK_TARGET && rightDiff < RECHECK_TARGET) { // time to reject target?
-                    q.intakeState = IntakeStates.intakeTarget;
+                    q.autoIntakeState = AutoIntakeStates.intakeTarget;
                 }
                 if (leftDiff > .2 || rightDiff > .2) {
                     // TODO: Add angle correction here
@@ -162,21 +178,21 @@ public class AutoIntake {
             case intakeDown:
                 //System.out.println("intakeDown: (bounce)");
                 // bounce intake
-               if (intakeSolenoid.get() == DoubleSolenoid.Value.kForward) {
+            if (intakeSolenoid.get() == DoubleSolenoid.Value.kForward) {
                     intakeSolenoid.set(DoubleSolenoid.Value.kReverse); // raise intake
-               }
-               else {
+            }
+            else {
                 intakeSolenoid.set(DoubleSolenoid.Value.kForward); // lower intake
-                q.intakeState = IntakeStates.intakeUp; // switch back to driving
-               }
-               // Intentual flow into IntakeUp... Allows skipping of bounce
-           case intakeUp:
+                q.autoIntakeState = AutoIntakeStates.intakeUp; // switch back to driving
+            }
+            // Intentual flow into IntakeUp... Allows skipping of bounce
+        case intakeUp:
                 frontLeftPos = Devices.frontLeftEncoder.getPosition();
                 frontRightPos = Devices.frontRightEncoder.getPosition();
 
                 leftDiff = java.lang.Math.abs(q.LeftDrivePos - frontLeftPos);
                 rightDiff = java.lang.Math.abs(q.RightDrivePos - frontRightPos);
-                WriteIntakeStatus("AutoTarget-Scop "+leftDiff);
+                WriteIntakeStatus("AutoIntake-Scop "+leftDiff);
                 if (leftDiff > .2 || rightDiff > .2) {
                     //System.out.println("LeftDrivePos:" + leftDiff);
                     //System.out.println("RightDrivePos:" + rightDiff);
@@ -186,13 +202,13 @@ public class AutoIntake {
                     Devices.backRightPID.setReference(q.RightDrivePos, ControlType.kPosition);
                     if (BounceCount++ > MAX_BOUNCE_COUNT) { // time for bounce again? 
                         BounceCount = 0;
-                        q.intakeState = IntakeStates.intakeUp; // switch back to driving
+                        q.autoIntakeState = AutoIntakeStates.intakeUp; // switch back to driving
                     }
                 }
                 else {
-                    WriteIntakeStatus("AutoTarget-Ending");
+                    WriteIntakeStatus("AutoIntake-Ending");
                     intakeMotor.set(0);
-                    q.intakeState = IntakeStates.intakeStop;
+                    q.autoIntakeState = AutoIntakeStates.intakeStop;
                     intakeSolenoid.set(DoubleSolenoid.Value.kReverse);
                 }
             break;
@@ -200,21 +216,14 @@ public class AutoIntake {
                 WriteIntakeStatus("Teleopt");
                 intakeSolenoid.set(DoubleSolenoid.Value.kOff);
                 AutoQueue.removeCurrent();
+                System.out.println("queue size"+AutoQueue.getSize());
                 break;    
         }
-     }
+    }
 
-    public static void InitEncoderController(CANSparkMax motor) {
+    public static void InitEncoderController(Object Spark) {
         // motor.restoreFactoryDefaults();
-        motor.set(0);
-        motor.getPIDController().setP(KP);
-        motor.getPIDController().setD(KD);
-        motor.getPIDController().setI(KI);
-        motor.getPIDController().setOutputRange(MINOUT, MAXOUT);
-        motor.getPIDController().setIZone(IZONE);
-        motor.getPIDController().setFF(FFVALUE / TARGETRPM);
-        motor.set(0);
-        motor.getEncoder().setPosition(0);
+        Devices.InitEncoderController(Spark,KP,KD,KI,MINOUT,MAXOUT,IZONE,FFVALUE,TARGETRPM,0,0);
     }
 
     public static void WriteIntakeStatus(String message) {
@@ -305,4 +314,24 @@ public Target detectBallTarget(Mat image){
         return isRunningTest;
     }
     
+    public void SaveTargetImage(String name, Target target, Mat image) {
+        RotatedRect boundary = target.getBoundary();
+    
+        double height = boundary.boundingRect().height;
+        double verticalPPI = height / 100;
+        double holeYDist = 8.25;
+        double centerY = boundary.center.y + holeYDist * verticalPPI;
+    
+        Imgproc.circle(image, new Point(boundary.center.x, centerY), boundary.boundingRect().width/2, new Scalar(255, 0, 255), 4);
+        Imgproc.drawMarker(image, new Point(boundary.center.x, centerY), new Scalar(255, 0, 255), Core.TYPE_GENERAL, 30, 2);    
+    
+        // The following line is for desktop testing, use the CameraServer to display the image on a robot
+    
+        if (isRunningTest()) {
+            Imgcodecs.imwrite("snap_" + name + ".jpg", image);
+        }
+        else {
+            outputStream.putFrame(image);
+        }
+    }
 }

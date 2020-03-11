@@ -17,12 +17,11 @@ public class AutoQueue {
    * @param ShootingRamp Number of cycles before changing state
    * @return int number of entries in the queue
    */
-  public static int addAutoShooterQueue(AutoStates autostate,
-  AutoShooterStates shootingstates) {
-  AutoControlData q = new AutoControlData();
-  q.autoState = autostate;
-  q.autoShooterState = shootingstates;
-  return addQueue(q);
+  public static int addAutoShooterQueue() {
+    AutoControlData q = new AutoControlData();
+    q.autoState = AutoStates.AutoShooter;
+    q.autoShooterState = AutoShooterStates.shooterRun;
+    return addQueue(q);
   }
 
   /**
@@ -48,10 +47,10 @@ public class AutoQueue {
    * @return int number of entries in the queue
    */
   public static int addIntakeQueue(AutoStates autostate,
-  IntakeStates intakestate) {
+  AutoIntakeStates autointakestate) {
   AutoControlData q = new AutoControlData();
   q.autoState = autostate;
-  q.intakeState = intakestate;
+  q.autoIntakeState = autointakestate;
   return addQueue(q);
   }
 /**
@@ -80,26 +79,6 @@ public class AutoQueue {
         q.LeftDrivePos = leftdrivepos;
         q.RightDriveSpeed = rightdrivespeed;
         q.RightDrivePos = rightdrivepos;
-        return addQueue(q);
-        }
-    /**
-   * Queue AutoTarget States. 
-   * @param targetState Automous targeting
-   * @return int number of entries in the queue
-   */
-  public static int addTargetQueue(AutoStates autostate,
-        TargetStates targetstate,
-        double targetloop
-        ) {
-        AutoControlData q = new AutoControlData();
-        q.autoState = autostate;
-        q.targetState = targetstate;
-        q.targetLoop = targetloop;
-        q.distance = DetectTarget.default_distance;
-        q.height = DetectTarget.default_height;
-        q.width = DetectTarget.default_width;
-        q.horizontal = DetectTarget.default_horizontal;
-        q.virtical = DetectTarget.default_virtical;
         return addQueue(q);
         }
     /**
@@ -138,7 +117,7 @@ public class AutoQueue {
         LifterStates lifterstate,
         double lifterleftpos,
         double lifterrightpos,
-        IntakeStates intakestate,
+        AutoIntakeStates autointakestate,
         TargetStates targetstate,
         Double leftdrivespeed,
         Double leftdrivepos,
@@ -151,7 +130,7 @@ public class AutoQueue {
         q.lifterState = lifterstate;
         q.lifterLeftPos = lifterleftpos;
         q.lifterRightPos = lifterrightpos;
-        q.intakeState = intakestate;
+        q.autoIntakeState = autointakestate;
         q.targetState = targetstate;
         q.LeftDriveSpeed = leftdrivespeed;
         q.LeftDrivePos = leftdrivepos;
