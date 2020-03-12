@@ -31,6 +31,7 @@ public class CANPIDController {
     public CANError setOutputRange(double mino, double maxo) {
   //          System.out.println("speed Output Range:"+.001);
             speedController.set(.001); // set the speed very slow for testing
+                                        // don't know which way to go until ref set
             return CANError.kOk;
         }
 

@@ -35,28 +35,27 @@ public class CANEncoder extends CANSensor {
     }
     public void updatePosition() {
         double speed = speedController.get();
-        double sign = java.lang.Math.signum(targetPosition);
-        currentPosition = currentPosition + (speed * sign);
+//        double sign = java.lang.Math.signum(targetPosition);
+        currentPosition = currentPosition + speed;
         if (speed == 0) {
-            speedController.set(.001); // set the speed very slow for testing
-        }
-    if (sign==-1) {
-            if (currentPosition<targetPosition) { 
-//                System.out.println("reset<:"+speed+","+sign+","+currentPosition+"."+targetPosition);
-                currentPosition = targetPosition;
+            if (controlType == ControlType.kVelocity) {
+                speed = .1*Math.signum(targetPosition);
             }
-        }
-        else {
-            if (currentPosition>targetPosition) { 
-//                System.out.println("reset>:"+speed+","+sign+","+currentPosition+"."+targetPosition);
-                currentPosition = targetPosition;
+            else
+            {
+                speed = .01*Math.signum(targetPosition);
             }
+            speedController.set(speed);
         }
-        speedController.set(speed+speed+speed+speed+speed+speed+speed+speed);
+        if (Math.abs(speed) > 1.0) {
+            currentPosition = targetPosition;
+        }
+        speedController.set(speed+speed+speed+speed+speed+speed);
     }
 
     public double getVelocity() {
-        return speedController.get(); // otherwise return speed
+        updatePosition();
+        return currentPosition; // otherwise return speed
     }
     public void restoreFactoryDefaults() {
         return;
@@ -71,15 +70,16 @@ public class CANEncoder extends CANSensor {
         switch (ct) {
             case kPosition:
                 if (speedController.get() > 7) {
-                    speedController.set(.001); // set the speed very slow for testing
+                    speedController.set(.001*Math.signum(targetPosition));
                 } 
                 break;
             case kVoltage:
             case kVelocity:
             case kDutyCycle:
-                if (speedController.get() > 7){
-                    speedController.set(position); // set the speed very slow for testing
-                }
+                //speedController.set(position); // set the speed very slow for testing
+                if (speedController.get() > 7 || targetPosition!=position) {
+                    speedController.set(.01*Math.signum(targetPosition));
+                } 
             break;
         }
         targetPosition = position;

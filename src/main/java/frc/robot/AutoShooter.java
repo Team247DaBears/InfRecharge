@@ -48,8 +48,8 @@ public class AutoShooter {
 
     private static Solenoid shooterSolenoid;
 
-    private static final double LOW_DISTANCE = 10;
-    private static final double HIGH_DISTANCE = 15;
+    private static final double LOW_DISTANCE = 10*12; // 10 feet in inches
+    private static final double HIGH_DISTANCE = 15*12; // 15 feet in inches
     private static final double LOW_SPEED = -1250;
     private static final double HIGH_SPEED = -1450;
     private static final double CUTOFFRPM = -10; // diff between target and cutoff
@@ -84,7 +84,7 @@ public class AutoShooter {
     static double width;
     static double horizontal;
     static double virtical;
-    static final double okShooter = 0.3; // ok shooter final distance diff
+    static final double okShooter = 3.; // ok shooter final distance diff
     static final double okDist = 0.1; // ok distance diff
     static final double okVirt = 0.1; // ok Vertical diff
     static final double okHztl = 0.1; // ok Horizontal diff
@@ -113,6 +113,9 @@ public class AutoShooter {
         camerastream = cameraStream;
     }
 
+    static boolean AWait = false;
+    static boolean AShoot = false;
+
     public static void AutoShoot() {
         long elapsed;
         if (AutoQueue.getSize() == 0) {
@@ -120,7 +123,7 @@ public class AutoShooter {
         } // keep from having Auto overlap with TeleOpt
         AutoControlData q = AutoQueue.currentQueue();
         if (q.autoState != AutoStates.AutoShooter) {
-            System.out.println("not Shooter"+q.autoState);
+            System.out.println("not Shooter" + q.autoState);
             return;
         } // keep from having Auto overlap with TeleOpt
         if (q.WriteLog) {
@@ -130,11 +133,11 @@ public class AutoShooter {
         switch (q.autoShooterState) {
         case shooterIDLE:
             WriteShooterStatus("Shooter-Idle");
-        // do nothing when shooter is IDLE
+            // do nothing when shooter is IDLE
             break;
 
         case shooterRun:
-            WriteShooterStatus("Shooter-Targ");
+            WriteShooterStatus("AutoShooter-Targ");
             Devices.shooterSpark.getPIDController().setP(KP);
             Devices.shooterSpark.getPIDController().setD(KD);
             Devices.shooterSpark.getPIDController().setI(KI);
@@ -148,15 +151,16 @@ public class AutoShooter {
             InitEncoderController(Devices.backLeftSpark); // init drive motors
             InitEncoderController(Devices.backRightSpark); // init drive motors
             cnt = 0;
+            AWait = true;
+            AShoot = true;
+            autoBeginTime = System.currentTimeMillis();
 
             case shooterTarget:
-            WriteShooterStatus("AutoShooter-targ");
+            WriteShooterStatus("AutoShooter-targ "+cnt);
             if (cnt++ > 3) { // give up and fire
                 q.autoShooterState = AutoShooterStates.shooterSTART_RAMP; // check again
             }
             else {
-                WriteShooterStatus("AutoShooter-target get target");
-                autoBeginTime = System.currentTimeMillis();
                 Devices.shooterSpark.getPIDController().setReference(0, ControlType.kDutyCycle);
                 Devices.conveyor.set(CONVEYORSPEED);
                 Devices.feeder.set(FEEDER_HOLD_SPEED);
@@ -169,6 +173,7 @@ public class AutoShooter {
                 Devices.backLeftEncoder.setPosition(0);
                 Devices.backRightEncoder.setPosition(0);
 
+                WriteShooterStatus("AutoShooter-targ image");
                 Mat image = camerastream.getHighImage();
                 if (image == null) {
                     WriteShooterStatus("TeleOpt-image null");
@@ -185,7 +190,6 @@ public class AutoShooter {
                         q.autoShooterState = AutoShooterStates.shooterFINISHED;
                     } // no target found
                     else {
-                        WriteShooterStatus("AutoShooter-target get dist");
                         SaveTargetImage("shooterTarget"+(cnt)+(tgt++), current, image);
 
                         FixedAngleCameraDistanceEstimator distanceEstimator2 = 
@@ -265,6 +269,7 @@ public class AutoShooter {
             autoBeginTime = System.currentTimeMillis();
         // Ramp up the flywheel
         case shooterRAMPING_UP:
+            q.autoShooterState = AutoShooterStates.shooterRAMPING_UP; // check again
             elapsed = System.currentTimeMillis() - autoBeginTime;
             if (setPID(q.shooterDistance)) {
                 q.autoShooterState = AutoShooterStates.shooterSHOOTING;
@@ -276,18 +281,24 @@ public class AutoShooter {
         // Set Shooting Speed
         case shooterSHOOTING:
             elapsed = System.currentTimeMillis() - autoBeginTime;
-            if (elapsed > AUTO_SHOOT_TIME_MS) {
-                q.autoShooterState = AutoShooterStates.shooterFINISHED;
-            }
             if (setPID(q.shooterDistance)) {
-                WriteShooterStatus("AutoShooter-Shoot");
+                if (AShoot) {
+                    WriteShooterStatus("AutoShooter-Shoot");
+                    AShoot=false;
+                }
                 Devices.feeder.set(FEEDER_FEED_SPEED);
                 Devices.conveyor.set(CONVEYORSHOOTSPEED); // shooter right speed, shoot!
             }
             else {
-                WriteShooterStatus("AutoShooter-Wait");
+                if (AWait) {
+                    WriteShooterStatus("AutoShooter-Wait");
+                    AWait=false;
+                }
                 Devices.feeder.set(FEEDER_HOLD_SPEED);
                 Devices.conveyor.set(CONVEYORSPEED); // shooter too slow wait
+            }
+            if (elapsed > AUTO_SHOOT_TIME_MS) {
+                q.autoShooterState = AutoShooterStates.shooterFINISHED;
             }
             break;
 
@@ -335,7 +346,7 @@ public class AutoShooter {
             }
             shooterSet = true;
 //            System.out.println("lowSpeed:"+(speed-CUTOFFRPM));
-            if (Velocity >= (speed-CUTOFFRPM)) { //reached shooting speed?
+            if (Velocity <= (speed-CUTOFFRPM)) { //reached shooting speed?
 //                System.out.println("shoot!");
                 return true;    // yes, shoot
             }
