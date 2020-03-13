@@ -81,7 +81,7 @@ public class AutoIntake {
     public void autoIntake(){
         if (AutoQueue.getSize() ==0) {return;}
         AutoControlData q = AutoQueue.currentQueue();
-        if (q.autoState != AutoStates.Intake) {
+        if (q.autoState != AutoStates.AutoIntake) {
             return;
         } // keep from having Auto overlap with TeleOpt
         switch (q.autoIntakeState) {

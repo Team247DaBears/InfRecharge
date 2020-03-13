@@ -21,7 +21,7 @@ public class Intake {
 
     SpeedController intakeMotor;
     IntakeStates intakeState;
-    private final double INTAKE_SPEED=.5;
+    public final double INTAKE_SPEED=.5;
 
     public void Init()
     {

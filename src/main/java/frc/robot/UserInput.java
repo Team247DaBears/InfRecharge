@@ -44,6 +44,10 @@ public class UserInput
     private static final int JSB_FEED=99;//Obviously, it isn't 99
     private static final int JSB_SHOOT=99;
 
+    private static final int JSB_SEMIAUTO_DEADMAN=7; // must be pressed for SEMIAUTO
+    private static final int JSB_AUTO_SHOOTER=4; // Press for targetting shooter
+    private static final int JSB_AUTO_INTAKE=5; // Press for targetting intake
+
 public static void Init()
     {
         if (leftStick==null) {
@@ -144,6 +148,16 @@ public static boolean getLifterClimb()
     public static boolean getShooterSpeedIncrement()
     {
         return operatorStick.getRawButton(JSB_SHOOTERSPEEDS);
+    }
+
+    public static boolean getSemiAutoShooter()
+    {
+      return (operatorStick.getRawButton(JSB_AUTO_SHOOTER) && operatorStick.getRawButton(JSB_SEMIAUTO_DEADMAN));
+    }
+
+    public static boolean getSemiAutoIntake()
+    {
+      return (operatorStick.getRawButton(JSB_AUTO_INTAKE) && operatorStick.getRawButton(JSB_SEMIAUTO_DEADMAN));
     }
 
 }

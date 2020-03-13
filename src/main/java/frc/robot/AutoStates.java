@@ -2,10 +2,9 @@ package frc.robot;
 
 public enum AutoStates {
     TeleOpt,
-    Target,
-    Intake,
-    Lifter,
-    Shooter,
+    AutoIntake,
+    AutoLifter,
+    Shooter, // no targeting
     AutoShooter,
-    Drive
+    AutoDrive
 }

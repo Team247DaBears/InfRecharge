@@ -46,11 +46,10 @@ public class AutoQueue {
    * @param IntakeState State of the Shooter
    * @return int number of entries in the queue
    */
-  public static int addIntakeQueue(AutoStates autostate,
-  AutoIntakeStates autointakestate) {
+  public static int addIntakeQueue() {
   AutoControlData q = new AutoControlData();
-  q.autoState = autostate;
-  q.autoIntakeState = autointakestate;
+  q.autoState = AutoStates.AutoIntake;
+  q.autoIntakeState = AutoIntakeStates.intakeRun;
   return addQueue(q);
   }
 /**
@@ -64,17 +63,15 @@ public class AutoQueue {
    * @param RightPos PID Position (double) 
    * @return int number of entries in the queue
    */
-    public static int addDriveQueue(AutoStates autostate,
-        DriveStates drivestate,
-        GearStates gearstate,
+    public static int addDriveQueue(
         Double leftdrivespeed,
         Double leftdrivepos,
         Double rightdrivespeed,
         Double rightdrivepos) {
         AutoControlData q = new AutoControlData();
-        q.autoState = autostate;
-        q.gearState = gearstate;
-        q.driveState = drivestate;
+        q.autoState = AutoStates.AutoDrive;
+        q.gearState = GearStates.LowGearPressed;
+        q.driveState = DriveStates.DriveStart;
         q.LeftDriveSpeed = leftdrivespeed;
         q.LeftDrivePos = leftdrivepos;
         q.RightDriveSpeed = rightdrivespeed;

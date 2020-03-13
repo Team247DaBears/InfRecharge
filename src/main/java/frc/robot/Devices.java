@@ -15,6 +15,7 @@ import com.revrobotics.CANError;
 import com.revrobotics.CANPIDController.ArbFFUnits;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.ControlType;
 
 import edu.wpi.first.wpilibj.Victor;
 import com.revrobotics.CANSparkMax;
@@ -234,5 +235,11 @@ public class Devices {
       motor.getEncoder().setPosition(j);
   }
 
+  public static void InitEncoderController(Object Spark,Double KP, Double KD, Double KI, Double MINOUT, Double MAXOUT, Double IZONE, Double FFVALUE, Double TARGETRPM, int i, ControlType ct) {
+    CANSparkMax motor = (CANSparkMax)Spark;
+    Devices.InitEncoderController(Spark,KP,KD,KI,MINOUT,MAXOUT,IZONE,FFVALUE,TARGETRPM, 0, 0); 
+    motor.getPIDController().setReference(0, ControlType.kPosition);
   }
+
+}
 
