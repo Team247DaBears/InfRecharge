@@ -278,17 +278,5 @@ public class Shooter {
         }
     
 
-    public void AutoShoot() {
-        if (AutoQueue.getSize() == 0) {return;}
-        AutoControlData q = AutoQueue.currentQueue();
-        currentState = q.shootingState;
-        System.out.println(currentState);
-        calcNextStateAuto();
-        setOutputs();
-        q.shootingState = currentState;
-        if (currentState == ShootingStates.FINISHED) {
-            AutoQueue.removeCurrent();
-        }
-    }
 
 }

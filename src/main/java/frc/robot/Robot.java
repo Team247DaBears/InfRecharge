@@ -7,8 +7,6 @@
 
 package frc.robot;
 
-import frc.robot.AutoControlData;
-
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -32,11 +30,9 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private SendableChooser<String> m_chooser = new SendableChooser<>();
 
-  static AutoQueue autoQueue;
   static Drive drive;
   static Devices devices;
   static Intake intake;  
-  static AutoIntake autoIntake;       
   static Lifter lifter;
   static UserInput userinput;
 
@@ -60,13 +56,11 @@ public class Robot extends TimedRobot {
 
 
 
-    autoQueue = new AutoQueue();
     lifter=new Lifter();
     intake=new Intake();
     shooter=new Shooter();
     userinput=new UserInput();
     devices=new Devices();
-    autoIntake=new AutoIntake();
     Devices.Init();
     UserInput.Init();
     lifter.Init();
@@ -74,101 +68,28 @@ public class Robot extends TimedRobot {
     shooter.Init();
     cameraStream = new CameraStream();
     cameraStream.initCamera(); // comment out until camera installed. 
-    autoIntake.Init(cameraStream);
     drive=new Drive();    
   }
 
   @Override
   public void autonomousInit() {
-    try {
-      m_autoSelected = m_chooser.getSelected();
-    }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-    }
-    System.out.println("Auto selected: " + m_autoSelected);
-    switch(m_autoSelected) {
-      case kLeft:
-        AutoDrive.autonomousInitLeft();
-      break;
-      case kCenter:
-        AutoDrive.autonomousInitCenter();
-      break;
-      case kCenterDelay:
-        AutoDrive.autonomousInitCenterDelay();
-      break;
-      case kRight:
-        AutoDrive.autonomousInitRight();
-      break;
-      case kBackLeft:
-        AutoDrive.autonomousInitBackupLeft();
-      break;
-      case kBackRight:
-        AutoDrive.autonomousInitBackupRight();
-      break;
-      case kTestMode:
-      AutoDrive.autonomousInitDefault();
-      break;
-      case kDefault:
-      AutoDrive.autonomousInitCenterDelay();
-      break;
-    }
-    //AutoDrive.autonomousInitLeft();
-    //  AutoDrive.autonomousInitCenter();
-    //  AutoDrive.autonomousInitCenterDelay();
-    //  AutoDrive.autonomousInitRight();
-    //  AutoDrive.autonomousInitBackupLeft();
-    //  AutoDrive.autonomousInitBackupRight();
-    //AutoDrive.autonomousInitDefault();
-    //AutoDrive.autonomousInitCenterDelay();
+ 
 }
 
   @Override
   public void autonomousPeriodic() {
-    //System.out.println("auto size:"+AutoQueue.getSize());
-
-    AutoControlData autoControlData = AutoQueue.currentQueue();
-//    System.out.println(autoControlData.toJson());
-
-    switch (autoControlData.autoState) {
-        case TeleOpt: {
-          // do nothing in autonomous mode
-        }
-        break;
-        case AutoShooter: {
-          AutoShooter.AutoShoot();
-        }
-        break;
-        case Shooter: {
-          shooter.AutoShoot();
-        }
-        break;
-        case AutoIntake: {
-          autoIntake.autoIntake();
-        }
-        break;
-        case AutoLifter: {
-          // not needed for autonomous
-        }
-        break;
-        case AutoDrive: {
-          AutoDrive.Drive();
-        }
-        break;
-      }
+  
 }
 
   @Override
   public void teleopInit() {
-    AutoQueue.clearQueue();
+
   }
   
   int counter=0;
   @Override
   public void teleopPeriodic() {
-    manualTeleopPeriodic(); // uncomment for manual only teleop (comment SemiAuto)
-    //SemiAutoTeleopPeriodic(); // uncomment for Semi-Autonomous  (comment manual)
+    manualTeleopPeriodic(); 
   }  
 
   public void manualTeleopPeriodic() {
@@ -178,37 +99,7 @@ public class Robot extends TimedRobot {
     shooter.operate();
   }
 
-  public void SemiAutoTeleopPeriodic() {
-    AutoStates autoState = AutoStates.TeleOpt;
-    autoState = SemiAuto.getAutoState(); // comment this line to disable all semiAuto buttons
-
-    switch (autoState) {
-        case TeleOpt: {
-          manualTeleopPeriodic(); 
-        }
-        break;
-        case AutoShooter: {
-          AutoShooter.AutoShoot();
-        }
-        break;
-        case Shooter: {
-          shooter.AutoShoot();
-        }
-        break;
-        case AutoIntake: {
-          autoIntake.autoIntake();
-        }
-        break;
-        case AutoLifter: {
-          // not needed for autonomous
-        }
-        break;
-        case AutoDrive: {
-          AutoDrive.Drive();
-        }
-        break;
-      }
-    }
+ 
 
   @Override
   public void testInit() {

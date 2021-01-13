@@ -92,12 +92,10 @@ public class Devices {
       public static SpeedController lifter_right_motor;
 
       public static DoubleSolenoid intake_solenoid;
- // public static DaBearsSpeedController intake_motor;
       public static SpeedController intake_motor;
 
       public static SpeedController feeder;
       public static SpeedController conveyor;
-      //public static CANSparkMax shooter;
       public static SpeedController shooter;
       public static CANSparkMax shooterSpark;
       public static CANEncoder shooterEncoder;
@@ -112,11 +110,7 @@ public class Devices {
     // This will be called from robot.init, which executes as soon as the power is
     // applied and the roborio boots up.
     public static void Init() {
-//      if (isRunningTest()) { // if running junit tests... set to test mode
-//        UseSparkMax = false;  // use victors if junits
-//        UseEncoder = false; // don't use encoder if junits
-//      }
-        //isRunningTest();
+
         intake_motor=new Victor(PWM_INTAKE_MOTOR);
         System.out.println("Inited.");
         intake_solenoid=new DoubleSolenoid(PCM_INTAKE_FORWARD, PCM_INTAKE_BACK);
