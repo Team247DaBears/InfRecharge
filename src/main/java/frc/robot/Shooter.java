@@ -24,16 +24,18 @@ public class Shooter {
 
     private double CONVEYORSPEED = -0.55;
     private double CONVEYORSHOOTSPEED = -1;
+
+    //Feeder operation.  When not shooting, the cfeed pushes the balls away by rotating backwards.
+    //During shooting, balls are pushed into the shooter
+    //Feeder refers to the rotating bar that pushes balls into the feeder
+    //Conveyer refers to the surgical tubing that pushes balls through the hopper.
+
     private double FEEDER_HOLD_SPEED = -1.0;
     private double FEEDER_FEED_SPEED = 1.0;
 
     private SpeedController feeder;        // use Devices version
     private SpeedController conveyor;        // use Devices version
 
-
-//    private CANSparkMax shooter;        // use Devices version
-    //private CANEncoder encoder;
-    //private CANPIDController controlLoop;
 
     private Solenoid shooterSolenoid;
 

@@ -204,17 +204,7 @@ public class Devices {
       backLeftEncoder.setPositionConversionFactor(GearSpeedHigh);
       backRightEncoder.setPositionConversionFactor(GearSpeedHigh);
     }
-    static Boolean isRunningTest() {
-      if (isRunningTest == null) {
-          isRunningTest = true;
-          try {
-              Class.forName("org.junit.Test");
-          } catch (ClassNotFoundException e) {
-              isRunningTest = false;
-          }
-      }
-      return isRunningTest;
-  }
+   
   
   public static void InitEncoderController(Object Spark,Double KP, Double KD, Double KI, Double MINOUT, Double MAXOUT, Double IZONE, Double FFVALUE, Double TARGETRPM, int i, int j) {
     CANSparkMax motor = (CANSparkMax)Spark;
